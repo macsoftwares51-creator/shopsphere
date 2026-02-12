@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Your Cart</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #240c42;
+  color: white;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.cart-item {
+  background: #420629;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls button {
+  margin: 0 5px;
+  padding: 5px 10px;
+}
+
+button {
+  padding: 10px 18px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+button.danger {
+  background: #ef4444;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.total {
+  font-size: 22px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+  margin-top: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 250px;
+  border-radius: 6px;
+  border: none;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #1e0033;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #cbd5f5;
+  font-size: 16px;
+  margin-left: 15px;
+}
+
+.navbar a:hover {
+  color: #22c55e;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+}
+
+</style>
+</head>
+
+<body>
+    <div class="navbar">
+  <div class="brand">ShopSphere</div>
+  <div>
+    <a href="home.html">🏠 Home</a>
+    <a href="products.html">🛍 Products</a>
+    <a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="terms.html">Terms</a>
+
+  </div>
+</div>
+
+
+<h1>🛒 Your Cart</h1>
+
+<div class="center">
+  <input id="customerName" placeholder="Your name">
+</div>
+
+<br>
+
+<div id="cart"></div>
+
+<div class="total" id="total"></div>
+
+<div class="center">
+  <button onclick="placeOrder()">Place Order via WhatsApp</button>
+  <br><br>
+  <button class="danger" onclick="clearCart()">Clear Cart</button>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+function renderCart() {
+  const cartBox = document.getElementById("cart");
+  const totalBox = document.getElementById("total");
+
+  cartBox.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    cartBox.innerHTML = "<p>Your cart is empty</p>";
+    totalBox.innerText = "";
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price * item.qty;
+
+    cartBox.innerHTML += `
+      <div class="cart-item">
+        <div>
+          <strong>${item.name}</strong><br>
+          $${item.price} × ${item.qty}
+        </div>
+
+        <div class="controls">
+          <button onclick="changeQty(${index}, 1)">+</button>
+          <button onclick="changeQty(${index}, -1)">-</button>
+          <button class="danger" onclick="removeItem(${index})">✕</button>
+        </div>
+      </div>
+    `;
+  });
+
+  totalBox.innerText = "Total: $" + total;
+}
+
+function changeQty(index, delta) {
+  cart[index].qty += delta;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  saveCart();
+}
+
+function clearCart() {
+  if (!confirm("Clear cart?")) return;
+  cart = [];
+  saveCart();
+}
+
+function placeOrder() {
+  if (cart.length === 0) return alert("Cart is empty");
+
+  const name = document.getElementById("customerName").value.trim();
+  if (!name) return alert("Please enter your name");
+
+  let message = `Hello, my name is ${name}. I want to order:%0A%0A`;
+
+cart.forEach(item => {
+  message += `${item.name} x ${item.qty} = $${item.price * item.qty}%0A`;
+});
+
+message += `%0A💳 Payment Terms:%0A`;
+message += `9% upfront payment to confirm order%0A`;
+message += `91% payable upon delivery%0A`;
+
+message += `%0AThank you!`;
+
+
+  // 🔴 CHANGE TO YOUR NUMBER
+  const phone = "254705779593";
+
+  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
+  // clear cart after order
+  cart = [];
+  saveCart();
+}
+
+renderCart();
+const savedUser = JSON.parse(localStorage.getItem("user"));
+
+if (savedUser && savedUser.name) {
+  document.getElementById("customerName").value = savedUser.name;
+}
+
+</script>
+
+</body>
+</html>

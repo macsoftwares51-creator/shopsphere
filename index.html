@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome – ShopSphere</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #089226, #240c42, #3a0d5f, #1e0033);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+  color: white;
+}
+
+/* Background animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Login box */
+.box {
+  background: rgba(66, 6, 41, 0.95);
+  padding: 45px 35px;
+  border-radius: 16px;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(196, 18, 18, 0.4);
+  animation: slideUp 0.8s ease;
+}
+
+/* Slide animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h2 {
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input:focus {
+  box-shadow: 0 0 0 2px #22c55e;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button.primary {
+  background: #22c55e;
+  color: white;
+}
+
+button.primary:hover {
+  background: #16a34a;
+  transform: translateY(-2px);
+}
+
+button.secondary {
+  background: #555;
+  color: white;
+}
+
+button.secondary:hover {
+  background: #777;
+  transform: translateY(-2px);
+}
+
+/* Small fade for text */
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Welcome to ShopSphere</h2>
+  <div class="subtitle">Create an account or continue as guest</div>
+
+  <input id="name" placeholder="Your Name">
+  <input id="email" placeholder="Email (optional)">
+
+  <button class="primary" onclick="createAccount()">Create Account</button>
+  <button class="secondary" onclick="continueGuest()">Continue as Guest</button>
+</div>
+
+<script>
+function createAccount() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+
+  if (!name) {
+    alert("Please enter your name");
+    return;
+  }
+
+  const user = {
+    name: name,
+    email: email || null,
+    type: "account"
+  };
+
+  localStorage.setItem("user", JSON.stringify(user));
+
+  window.location.href = "home.html"; // change if needed
+}
+
+function continueGuest() {
+  const user = {
+    name: "Guest",
+    type: "guest"
+  };
+
+  localStorage.setItem("user", JSON.stringify(user));
+
+  window.location.href = "home.html"; // change if needed
+}
+</script>
+
+</body>
+</html>

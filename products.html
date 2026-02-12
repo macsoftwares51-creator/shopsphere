@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ShopSphere Products</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #2909bb;
+  color: rgb(36, 134, 7);
+  margin: 0;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  width: 200px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #420629;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+}
+
+.card p {
+  color: #003cff;
+  font-size: 14px;
+}
+
+.price {
+  color: #e3e4e1;
+  font-weight: bold;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  height: 90px;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  position: sticky;
+top: 0;
+z-index: 100;
+
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: rgb(7, 236, 57);
+}
+
+.brand img {
+  height: 92px;
+}
+
+.brand span {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+nav a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: #05f71a;
+  font-size: 16px;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.35);
+}
+
+
+
+
+</style>
+</head>
+<script>
+function addToCart(name, price) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const existing = cart.find(item => item.name === name);
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ name, price, qty: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert(name + " added to cart");
+}
+</script>
+
+
+<body>
+
+<h1><header class="navbar">
+  <a href="home.html" class="brand">
+    <img src="logo3.1.png" alt="ShopSphere Logo">
+    <span>ShopSphere</span>
+  </a>
+
+  <nav>
+    <a href="home.html">Home 🏠</a>
+    <a href="admin.html">Admin</a>
+    <a href="cart.html">Cart 🛒</a>
+    <a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="terms.html">Terms</a>
+
+
+  </nav>
+</header>
+</h1>
+
+<header>
+  <input id="search" placeholder="Search product..." />
+  <select id="category">
+    <option value="">All categories</option>
+  </select>
+</header>
+
+<div class="grid" id="products"></div>
+
+<script>
+let allProducts = [];
+
+fetch("http://localhost:3000/products")
+  .then(res => res.json())
+  .then(data => {
+    allProducts = data;
+    fillCategories(data);
+    render(data);
+  });
+
+function fillCategories(products) {
+  const select = document.getElementById("category");
+  [...new Set(products.map(p => p.category))].forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });5
+}
+
+function render(products) {
+  const box = document.getElementById("products");
+  box.innerHTML = "";
+
+  products.forEach(p => {
+    box.innerHTML += `
+      <div class="card">
+        <img src="http://localhost:3000${p.image}">
+        <h3>${p.name}</h3>
+        <p>${p.category}</p>
+        <div class="price">$${p.price}</div>
+        <button onclick="addToCart('${p.name}', ${p.price})">
+  Add to Cart
+</button>
+
+
+      </div>
+    `;
+  });
+}
+
+document.getElementById("search").oninput =
+document.getElementById("category").onchange = () => {
+  const q = search.value.toLowerCase();
+  const cat = category.value;
+
+  render(allProducts.filter(p =>
+    p.name.toLowerCase().includes(q) &&
+    (!cat || p.category === cat)
+  ));
+};
+</script>
+
+</body>
+</html>
