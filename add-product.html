@@ -11,7 +11,7 @@ document.getElementById("form").onsubmit = async e => {
   e.preventDefault();
   const formData = new FormData(e.target);
 
-  await fetch("http://localhost:3000/add-product", {
+  await fetch("https://shopsphere-61ww.onrender.com/add-products", {
     method: "POST",
     body: formData
   });
