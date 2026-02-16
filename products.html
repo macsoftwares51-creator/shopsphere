@@ -170,7 +170,8 @@ function addToCart(name, price) {
 <script>
 let allProducts = [];
 
-fetch("http://localhost:3000/products")
+fetch("https://shopsphere-61ww.onrender.com/products")
+
   .then(res => res.json())
   .then(data => {
     allProducts = data;
