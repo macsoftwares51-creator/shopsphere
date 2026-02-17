@@ -203,7 +203,7 @@ function fillCategories(products) {
     opt.value = cat;
     opt.textContent = cat;
     select.appendChild(opt);
-  });5
+  });
 }
 
 function render(products) {
@@ -213,16 +213,13 @@ function render(products) {
   products.forEach(p => {
     box.innerHTML += `
       <div class="card">
-        <img src="https://shopsphere-61ww.onrender.com${product.image}
-">
+        <img src="https://shopsphere-61ww.onrender.com${p.image}">
         <h3>${p.name}</h3>
         <p>${p.category}</p>
         <div class="price">Kshs ${p.price}</div>
         <button onclick="addToCart('${p.name}', ${p.price})">
   Add to Cart
 </button>
-
-
       </div>
     `;
   });
