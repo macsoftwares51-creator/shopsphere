@@ -218,7 +218,8 @@ function render(products) {
 
   products.forEach(p => {
 
-    const cancelledPrice = Math.round(p.price * 1.37543);
+    const cancelledPrice = Math.round((p.price * 1.37543) / 10) * 10;
+
 
     box.innerHTML += `
       <div class="card">
