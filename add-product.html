@@ -56,7 +56,7 @@ form.onsubmit = async e => {
 // Fetch and display products
 async function fetchProducts() {
   try {
-    const res = await fetch("https://shopsphere-61ww.onrender.com/products");
+    const res = await fetch("https://shopsphere-61ww.onrender.com/product");
     const products = await res.json();
 
     productsDiv.innerHTML = "";
