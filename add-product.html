@@ -7,7 +7,28 @@
 <body>
   <h1>Add Product</h1>
   <form id="form" enctype="multipart/form-data">
-    <input name="name" placeholder="Product name" required />
+    <input name="name" placeholder="Product name" required /><form id="form" enctype="multipart/form-data">
+  <input name="name" placeholder="Product name" required />
+  <input name="price" placeholder="Price" required />
+  <input name="category" placeholder="Category" required />
+  <input name="image" type="file" accept="image/*" required />
+  <button>Add product</button>
+</form>
+
+<script>
+document.getElementById("form").onsubmit = async e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+
+  await fetch("https://shopsphere-61ww.onrender.com/add-products", {
+    method: "POST",
+    body: formData
+  });
+
+  alert("Product added");
+  e.target.reset();
+};
+</script>
     <input name="price" placeholder="Price" required />
     <input name="category" placeholder="Category" required />
     <input name="image" type="file" accept="image/*" required />
