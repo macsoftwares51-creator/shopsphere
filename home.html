@@ -144,7 +144,42 @@ nav a:hover { color: rgb(228, 208, 208); }
   pointer-events: none;
   transition: left 2s linear, top 2s linear;
 }
+/* BUTTON STYLE ONLY */
+button{
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.25s ease;
+}
 
+/* Hover effect */
+button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+/* Click effect */
+button:active{
+  transform: scale(0.97);
+}
+
+/* Mobile responsiveness */
+@media (max-width:600px){
+
+  button{
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+}
 
 </style>
 </head>
@@ -158,14 +193,12 @@ nav a:hover { color: rgb(228, 208, 208); }
   <h1>ShopSphere</h1>
 </div>
 </h1>
-  <nav>
-    <a href="products.html">Products</a>
-    <a href="admin.html">Admin</a>
-    <a href="about.html">About</a>
-<a href="contact.html">Contact</a>
-<a href="terms.html">Terms</a>
-
-  </nav>
+  <button><a href="products.html">products </a> </button>
+  <button>  <a href="admin.html">Admin</a> </button> 
+  <button> <a href="cart.html">Cart</a> </button>
+  <button> <a href="about.html">About</a></button>
+  <button><a href="contact.html">Contact</a></button>
+  <button><a href="terms.html">Terms</a></button> 
 </header>
 <section class="guide">
   <h2>🛍 How to Shop on ShopSphere</h2>
