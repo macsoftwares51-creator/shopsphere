@@ -91,7 +91,42 @@ input {
   font-weight: bold;
   color: white;
 }
+/* BUTTON STYLE ONLY */
+button{
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.25s ease;
+}
 
+/* Hover effect */
+button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+/* Click effect */
+button:active{
+  transform: scale(0.97);
+}
+
+/* Mobile responsiveness */
+@media (max-width:600px){
+
+  button{
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+}
 </style>
 </head>
 
