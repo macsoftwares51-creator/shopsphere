@@ -15,25 +15,20 @@
   </form>
 
   <script>
-   const form = document.getElementById("form");
+  const form = document.getElementById("form");
 
 form.onsubmit = async (e)=>{
   e.preventDefault();
 
-  const data = {
-    name: form.name.value,
-    price: Number(form.price.value),
-    category: form.category.value,
-    image: ""
-  };
+  const formData = new FormData(form);
 
-  const res = await fetch("https://shopsphere-backend-wr5o.onrender.com/products",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body: JSON.stringify(data)
-  });
+  const res = await fetch(
+    "https://shopsphere-backend-wr5o.onrender.com/products",
+    {
+      method:"POST",
+      body:formData
+    }
+  );
 
   const result = await res.json();
 
