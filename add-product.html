@@ -33,7 +33,7 @@
         }
 
         const result = await response.json();
-        alert("Product added: " + result.product.name);
+        alert("Product added: " + (result.name || "Saved"));
         form.reset();
       } catch (err) {
         console.error(err);
