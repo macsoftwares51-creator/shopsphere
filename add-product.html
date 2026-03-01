@@ -22,7 +22,7 @@
       const formData = new FormData(form);
 
       try {
-        const response = await fetch("https://shopsphere-backend-wr5o.onrender.com", {
+        const response = await fetch("https://shopsphere-backend-wr5o.onrender.com/products", {
           method: "POST",
           body: formData
         });
