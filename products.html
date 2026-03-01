@@ -174,7 +174,7 @@ function addToCart(name, price) {
   localStorage.setItem("cart", JSON.stringify(cart));
   alert(name + " added to cart");
 }
-fetch("https://shopsphere-backend-wr5o.onrender.com")
+fetch("https://shopsphere-backend-wr5o.onrender.com/products")
   .then(response => response.json())
   .then(data => {
     const container = document.getElementById("product-container");
@@ -223,7 +223,7 @@ fetch("https://shopsphere-backend-wr5o.onrender.com")
 <script>
 let allProducts = [];
 
-fetch("https://shopsphere-backend-wr5o.onrender.com")
+fetch("https://shopsphere-backend-wr5o.onrender.com/products")
 
   .then(res => res.json())
   .then(data => {
