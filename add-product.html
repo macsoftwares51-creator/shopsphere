@@ -1,41 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Add Product</title>
+<meta charset="UTF-8" />
+<title>ShopSphere Admin</title>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+  padding:40px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+form{
+  background:#1e293b;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:40px;
+}
+
+input, button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
+}
+
+input{
+  background:#334155;
+  color:white;
+}
+
+button{
+  background:#3b82f6;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  background:#2563eb;
+}
+
+.products{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#1e293b;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.delete{
+  background:#ef4444;
+  margin-top:10px;
+}
+
+.delete:hover{
+  background:#dc2626;
+}
+</style>
 </head>
 <body>
-  <h1>Add Product</h1>
-<form id="form" method="POST" enctype="multipart/form-data">
-    <input name="name" placeholder="Product name" required />
-    <input name="price" placeholder="Price" required />
-    <input name="category" placeholder="Category" required />
-    <input name="image" type="file" accept="image/*" required />
-    <button>Add product</button>
-  </form>
 
-  <script>
-  const form = document.getElementById("form");
+<div class="container">
+<h1>ShopSphere Admin Panel</h1>
+
+<form id="form" enctype="multipart/form-data">
+  <input name="name" placeholder="Product name" required />
+  <input name="price" placeholder="Price" required />
+  <input name="category" placeholder="Category" required />
+  <input name="image" type="file" accept="image/*" required />
+  <button>Add Product</button>
+</form>
+
+<h2>All Products</h2>
+<div class="products" id="products"></div>
+
+</div>
+
+<script>
+
+const API = "https://shopsphere-backend-wr5o.onrender.com/products";
+const form = document.getElementById("form");
+const productsDiv = document.getElementById("products");
 
 form.onsubmit = async (e)=>{
   e.preventDefault();
 
   const formData = new FormData(form);
 
-  const res = await fetch(
-    "https://shopsphere-backend-wr5o.onrender.com/products",
-    {
-      method:"POST",
-      body:formData
-    }
-  );
+  const res = await fetch(API,{
+    method:"POST",
+    body:formData
+  });
 
   const result = await res.json();
-
-  alert("Product added: " + result.name);
+  alert("Product added successfully");
 
   form.reset();
+  loadProducts();
 };
-  </script>
+
+async function loadProducts(){
+  const res = await fetch(API);
+  const products = await res.json();
+
+  productsDiv.innerHTML = "";
+
+  products.forEach(product=>{
+    productsDiv.innerHTML += `
+      <div class="card">
+        <img src="${product.image}" />
+        <h3>${product.name}</h3>
+        <p>KES ${product.price}</p>
+        <p>${product.category}</p>
+        <button class="delete" onclick="deleteProduct('${product._id}')">
+          Delete
+        </button>
+      </div>
+    `;
+  });
+}
+
+async function deleteProduct(id){
+  if(!confirm("Delete this product?")) return;
+
+  await fetch(API + "/" + id,{
+    method:"DELETE"
+  });
+
+  loadProducts();
+}
+
+loadProducts();
+
+</script>
 </body>
 </html>
