@@ -26,6 +26,25 @@ section {
   border-radius: 12px;
   margin-bottom: 25px;
 }
+   .nav-btn{
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.25s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 15px rgba(0,0,0,0.35);
+}
+
+/* Click effect */
+nav-btn:active{
+  transform: scale(0.97);
+}
 </style>
 </head>
 
@@ -37,6 +56,9 @@ section {
 
 
 <section>
+  <nav class="navbar">
+    <a class="nav-btn" href="home.html">home</a>
+  </nav>
   <p>
     ShopSphere is an online shopping platform designed to make ordering easy,
     fast, and reliable. Customers can browse products, add them to a cart,
