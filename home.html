@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ShopSphere</title>
 <style>
 * { box-sizing: border-box; }
@@ -18,6 +19,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap; /* important */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo img {
+  height: 60px; /* 280px was TOO BIG */
 }
 
 header h1 { margin: 0; }
@@ -50,16 +62,7 @@ nav a:hover { color: rgb(228, 208, 208); }
   border-radius: 6px;
   cursor: pointer;
 }
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
 
-.logo img {
-  height:280px;
-}
 .guide {
   margin: 60px auto;
   max-width: 900px;
@@ -174,21 +177,19 @@ nav-btn:active{
 <body>
 
 <header>
-  <h1><div class="logo">
-  <img src="logo3.1.png" alt="ShopSphere Logo">
-  <h1>ShopSphere</h1>
-</div>
-</h1>
-  <nav>
-  <a class="nav-btn" href="products.html">product</a>
-<a class="nav-btn" href="admin.html">Admin</a>
-<a class="nav-btn" href="cart.html">Cart</a>
-</nav>
-  <nav>
-    <a class=" nav-btn" href="about.html">About</a>
-<a class="nav-btn" href="contact.html">Contact</a>
-<a class="nav-btn" href="terms.html">Terms</a>
-  <nav>
+  <div class="logo">
+    <img src="logo3.1.png" alt="ShopSphere Logo">
+    <h1>ShopSphere</h1>
+  </div>
+
+  <nav class="navbar">
+    <a class="nav-btn" href="products.html">Products</a>
+    <a class="nav-btn" href="admin.html">Admin</a>
+    <a class="nav-btn" href="cart.html">Cart</a>
+    <a class="nav-btn" href="about.html">About</a>
+    <a class="nav-btn" href="contact.html">Contact</a>
+    <a class="nav-btn" href="terms.html">Terms</a>
+  </nav>
 </header>
 <section class="guide">
   <h2>🛍 How to Shop on ShopSphere</h2>
