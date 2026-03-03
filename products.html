@@ -93,6 +93,25 @@ input, select {
   border: none;
   width: 200px;
 }
+  .nav-btn{
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.25s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 15px rgba(0,0,0,0.35);
+}
+
+/* Click effect */
+nav-btn:active{
+  transform: scale(0.97);
+}
 </style>
 </head>
 <div id="imageModal" style="
@@ -116,6 +135,11 @@ input, select {
     <img src="logo3.1.png">
     <span>ShopSphere</span>
   </a>
+   <nav class="navbar">
+    <a class="nav-btn" href="products.html">Products</a>
+    <a class="nav-btn" href="home.html">Home</a>
+  </nav>
+
 </header>
 
 <p>Wait 10–30 seconds if server is waking up.</p>
