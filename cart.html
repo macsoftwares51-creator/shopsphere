@@ -91,31 +91,6 @@ input {
   font-weight: bold;
   color: white;
 }
-/* BUTTON STYLE ONLY */
-button{
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  margin-top: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.25s ease;
-}
-
-/* Hover effect */
-button:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.35);
-  background: linear-gradient(135deg, #16a34a, #15803d);
-}
-
-/* Click effect */
-button:active{
-  transform: scale(0.97);
-}
 
 /* Mobile responsiveness */
 @media (max-width:600px){
@@ -126,6 +101,24 @@ button:active{
     border-radius: 10px;
   }
 
+.nav-btn{
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.25s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 15px rgba(0,0,0,0.35);
+}
+
+/* Click effect */
+nav-btn:active{
+  transform: scale(0.97);
 }
 </style>
 </head>
@@ -133,12 +126,14 @@ button:active{
 <body>
     <div class="navbar">
   <div class="brand">ShopSphere</div>
-  <button><a href="home.html">Home </a> </button>
-  <button>  <a href="admin.html">Admin</a> </button> 
-  <button> <a href="products.html">products</a> </button>
-  <button> <a href="about.html">About</a></button>
-  <button><a href="contact.html">Contact</a></button>
-  <button><a href="terms.html">Terms</a></button> 
+   <nav class="navbar">
+    <a class="nav-btn" href="products.html">Products</a>
+    <a class="nav-btn" href="cart.html">Cart</a>
+    <a class="nav-btn" href="about.html">About</a>
+    <a class="nav-btn" href="contact.html">Contact</a>
+    <a class="nav-btn" href="terms.html">Terms</a>
+  </nav>
+
 </div>
 
 
