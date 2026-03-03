@@ -145,28 +145,23 @@ nav a:hover { color: rgb(228, 208, 208); }
   transition: left 2s linear, top 2s linear;
 }
 /* BUTTON STYLE ONLY */
-button{
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  margin-top: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.25s ease;
+.nav-btn{
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.25s;
 }
 
-/* Hover effect */
-button:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.35);
-  background: linear-gradient(135deg, #16a34a, #15803d);
+.nav-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 15px rgba(0,0,0,0.35);
 }
 
 /* Click effect */
-button:active{
+nav-btn:active{
   transform: scale(0.97);
 }
 
@@ -185,14 +180,14 @@ button:active{
 </div>
 </h1>
   <nav>
-  <a class="button" href="products.html">product</a>
-<a class="button" href="admin.html">Admin</a>
-<a class="button" href="cart.html">Cart</a>
+  <a class="nav-btn" href="products.html">product</a>
+<a class="nav-btn" href="admin.html">Admin</a>
+<a class="nav-btn" href="cart.html">Cart</a>
 </nav>
   <nav>
-    <a class=" button" href="about.html">About</a>
-<a class="button" href="contact.html">Contact</a>
-<a class="button" href="terms.html">Terms</a>
+    <a class=" nav-btn" href="about.html">About</a>
+<a class="nav-btn" href="contact.html">Contact</a>
+<a class="nav-btn" href="terms.html">Terms</a>
   <nav>
 </header>
 <section class="guide">
