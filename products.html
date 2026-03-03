@@ -3,6 +3,7 @@
 <head>
 <title>ShopSphere Products</title>
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
 <style>
 body {
   font-family: raleway;
@@ -12,18 +13,26 @@ body {
   padding: 20px;
 }
 
-header {
+.navbar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-input, select {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  width: 200px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: rgb(7, 236, 57);
 }
+
+.brand img { height: 92px; }
+.brand span { font-size: 32px; font-weight: bold; }
 
 .grid {
   display: grid;
@@ -35,6 +44,12 @@ input, select {
   background: #420629;
   padding: 15px;
   border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.35);
 }
 
 .card img {
@@ -44,12 +59,9 @@ input, select {
   border-radius: 8px;
 }
 
-.card h3 {
-  margin: 10px 0 5px;
-}
-
-.card p {
-  color: #003cff;
+.old-price {
+  text-decoration: line-through;
+  color: #999;
   font-size: 14px;
 }
 
@@ -57,112 +69,56 @@ input, select {
   color: #e3e4e1;
   font-weight: bold;
 }
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  margin-bottom: 20px;
-}
 
-.logo img {
-  height: 90px;
-}
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  position: sticky;
-top: 0;
-z-index: 100;
-
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: rgb(7, 236, 57);
-}
-
-.brand img {
-  height: 92px;
-}
-
-.brand span {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-nav a {
-  margin-left: 25px;
-  text-decoration: none;
-  color: #05f71a;
-  font-size: 16px;
-}
-
-nav a:hover {
-  color: #22c55e;
-}
-.product-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 35px rgba(0,0,0,0.35);
-}
-
-.old-price {
-  text-decoration: line-through;
-  color: #999;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-/* BUTTON STYLE ONLY */
 button{
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 10px;
   margin-top: 10px;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   width: 100%;
-  transition: all 0.25s ease;
 }
 
-/* Hover effect */
 button:hover{
   transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.35);
-  background: linear-gradient(135deg, #16a34a, #15803d);
 }
 
-/* Click effect */
-button:active{
-  transform: scale(0.97);
+input, select {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  width: 200px;
 }
-
-/* Mobile responsiveness */
-@media (max-width:600px){
-
-  button{
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 10px;
-  }
-
-}
-
 </style>
 </head>
+
+<body>
+
+<header class="navbar">
+  <a href="home.html" class="brand">
+    <img src="logo3.1.png">
+    <span>ShopSphere</span>
+  </a>
+</header>
+
+<p>Wait 10–30 seconds if server is waking up.</p>
+
+<header>
+  <input id="search" placeholder="Search product..." />
+  <select id="category">
+    <option value="">All categories</option>
+  </select>
+</header>
+
+<div class="grid" id="products"></div>
+
 <script>
+
 function addToCart(name, price) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
   const existing = cart.find(item => item.name === name);
 
   if (existing) {
@@ -175,52 +131,23 @@ function addToCart(name, price) {
   alert(name + " added to cart");
 }
 
-  .catch(error => console.error("Error loading products:", error));
-
-</script>
-
-
-<body>
-
-<h1><header class="navbar">
-  <a href="home.html" class="brand">
-    <img src="logo3.1.png" alt="ShopSphere Logo">
-    <span>ShopSphere</span>
-  </a>
-
-  <button><a href="home.html">Home </a> </button>
-  <button>  <a href="admin.html">Admin</a> </button> 
-  <button> <a href="cart.html">Cart</a> </button>
-  <button> <a href="about.html">About</a></button>
-  <button><a href="contact.html">Contact</a></button>
-  <button><a href="terms.html">Terms</a></button> 
-</header>
-</h1>
-<p>wait for 1-2 minutes for our server to load all the products</p>
-<header>
-  <input id="search" placeholder="Search product..." />
-  <select id="category">
-    <option value="">All categories</option>
-  </select>
-</header>
-
-<div class="grid" id="products"></div>
-
-<script>
 let allProducts = [];
 
 fetch("https://shopsphere-backend-wr5o.onrender.com/products")
-
   .then(res => res.json())
   .then(data => {
+    console.log("Products:", data);
     allProducts = data;
     fillCategories(data);
     render(data);
-  });
+  })
+  .catch(error => console.error("Error loading products:", error));
 
 function fillCategories(products) {
   const select = document.getElementById("category");
-  [...new Set(products.map(p => p.category))].forEach(cat => {
+  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+
+  categories.forEach(cat => {
     const opt = document.createElement("option");
     opt.value = cat;
     opt.textContent = cat;
@@ -234,19 +161,23 @@ function render(products) {
 
   products.forEach(p => {
 
-    const cancelledPrice = Math.round((p.price * 1.37543) / 10) * 10;
+    const name = p.name || "No Name";
+    const category = p.category || "No Category";
+    const price = Number(p.price) || 0;
+    const image = p.image || "https://via.placeholder.com/200";
 
+    const cancelledPrice = Math.round((price * 1.3) / 10) * 10;
 
     box.innerHTML += `
       <div class="card">
-        <img src="${p.image}">
-        <h3>${p.name}</h3>
-        <p>${p.category}</p>
+        <img src="${image}">
+        <h3>${name}</h3>
+        <p>${category}</p>
 
         <div class="old-price">Kshs ${cancelledPrice}</div>
-        <div class="price">Kshs ${p.price}</div>
+        <div class="price">Kshs ${price}</div>
 
-        <button onclick="addToCart('${p.name}', ${p.price})">
+        <button onclick="addToCart('${name}', ${price})">
           Add to Cart
         </button>
       </div>
@@ -254,17 +185,17 @@ function render(products) {
   });
 }
 
-
 document.getElementById("search").oninput =
 document.getElementById("category").onchange = () => {
   const q = search.value.toLowerCase();
   const cat = category.value;
 
   render(allProducts.filter(p =>
-    p.name.toLowerCase().includes(q) &&
+    (p.name || "").toLowerCase().includes(q) &&
     (!cat || p.category === cat)
   ));
 };
+
 </script>
 
 </body>
