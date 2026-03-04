@@ -180,7 +180,7 @@ function renderCart() {
       <div class="cart-item">
         <div>
           <strong>${item.name}</strong><br>
-          Kes${item.price} × ${item.qty}
+          Kes: ${item.price} × ${item.qty}
         </div>
 
         <div class="controls">
@@ -192,7 +192,7 @@ function renderCart() {
     `;
   });
 
-  totalBox.innerText = "Total: Kes" + total;
+  totalBox.innerText = "Total: Kes: " + total;
 }
 
 function changeQty(index, delta) {
@@ -221,7 +221,7 @@ function placeOrder() {
   let message = `Hello, my name is ${name}. I want to order:%0A%0A`;
 
 cart.forEach(item => {
-  message += `${item.name} x ${item.qty} = Kes${item.price * item.qty}%0A`;
+  message += `${item.name} x ${item.qty} = Kes: ${item.price * item.qty}%0A`;
 });
 
 message += `%0A💳 Payment Terms:%0A`;
