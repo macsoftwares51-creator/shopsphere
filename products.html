@@ -13,6 +13,37 @@ body {
   margin: 0;
   padding: 20px;
 }
+.request-section {
+  margin-top: 60px;
+  padding: 30px;
+  background: #111;
+  color: white;
+  border-radius: 12px;
+  max-width: 500px;
+}
+
+.request-section input,
+.request-section textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.request-section button {
+  background: gold;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.request-section button:hover {
+  background: orange;
+}
 
 .navbar {
   display: flex;
@@ -140,16 +171,19 @@ nav-btn:active{
     <a class="nav-btn" href="cart.html">🛒Cart</a>
     <a class="nav-btn" href="home.html">Home</a>
   </nav>
-<h2>Request a Product</h2>
 
-<input id="reqName" placeholder="Your Name">
-<input id="reqEmail" placeholder="Your Email">
-<input id="reqProduct" placeholder="Product you want">
-<button onclick="sendRequest()">Submit</button>
-
-<p id="reqMessage"></p>
 </header>
+<section class="request-section">
+  <h2>Can't find what you're looking for?</h2>
+  <p>Request a product and we'll try to add it!</p>
 
+  <input id="reqName" placeholder="Your Name">
+  <input id="reqEmail" placeholder="Your Email">
+  <textarea id="reqProduct" placeholder="Describe the product you want"></textarea>
+
+  <button onclick="sendRequest()">Send Request</button>
+  <p id="reqMessage"></p>
+</section>
 <p>Wait 10–30 seconds if server is waking up.</p>
 
 <header>
@@ -165,6 +199,12 @@ async function sendRequest() {
   const name = document.getElementById("reqName").value;
   const email = document.getElementById("reqEmail").value;
   const product = document.getElementById("reqProduct").value;
+
+  if (!name || !email || !product) {
+    document.getElementById("reqMessage").innerText =
+      "Please fill all fields.";
+    return;
+  }
 
   const response = await fetch(
     "https://shopsphere-backend-wr5o.onrender.com/requests",
