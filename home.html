@@ -167,9 +167,18 @@ nav a:hover { color: rgb(228, 208, 208); }
 .nav-btn:active{
   transform: scale(0.97);
 }
- .btn:active{
-  transform: scale(0.97);
- }
+ .btn {
+  display: block;
+  width: 100%;               /* stretch full width */
+  text-align: center;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color: white;
+  padding: 14px 0;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.25s;
+}
 /* Mobile responsiveness */
 
 </style>
@@ -236,11 +245,13 @@ nav a:hover { color: rgb(228, 208, 208); }
   <p>Your modern online marketplace</p>
   <p>currently available in:-</p>
   <p>-MERU TOWN -MERU MAKUTANO -NKUBU -IGOJI -NDAGANI -CHUKA -EMBU -RUIRU -CBD</p>
-<h2> <btn> <a href="products.html"><button>Browse Products</button></a></btn></h2>
-    <h2><btn><a href="about.html"><button>About</button></a></btn></h2>
-   <btn><a href="contact.html"><button>Contacts</button></a></btn>
-  <btn> <a href="terms.html"><button>Terms</button></a></btn>
+<a href="products.html"><button>Browse Products</button></a>
 </section>
-
+ 
+ <section class="hero">
+<btn> <a href="about.html"><button>About</button></a></btn>
+<btn> <a href="contact.html"><button>Contacts</button></a></btn>
+<btn> <a href="terms.html"><button>Terms</button></a></btn>
+ </section>
 </body>
 </html>
