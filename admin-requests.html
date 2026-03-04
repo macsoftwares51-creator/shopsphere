@@ -1,0 +1,44 @@
+<h1>Product Requests</h1>
+<div id="requests"></div>
+
+<script>
+async function loadRequests() {
+  const response = await fetch(
+    "https://shopsphere-backend-wr5o.onrender.com/requests"
+  );
+  const requests = await response.json();
+
+  const container = document.getElementById("requests");
+  container.innerHTML = "";
+
+  requests.forEach(r => {
+    container.innerHTML += `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <h3>${r.product}</h3>
+        <p>${r.name} (${r.email})</p>
+        <p>Status: ${r.status}</p>
+        <button onclick="markAdded('${r._id}')">Mark Added</button>
+        <button onclick="deleteRequest('${r._id}')">Delete</button>
+      </div>
+    `;
+  });
+}
+
+async function deleteRequest(id) {
+  await fetch(
+    "https://shopsphere-backend-wr5o.onrender.com/requests/" + id,
+    { method: "DELETE" }
+  );
+  loadRequests();
+}
+
+async function markAdded(id) {
+  await fetch(
+    "https://shopsphere-backend-wr5o.onrender.com/requests/" + id,
+    { method: "PUT" }
+  );
+  loadRequests();
+}
+
+loadRequests();
+</script>
