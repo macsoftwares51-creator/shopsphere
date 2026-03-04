@@ -16,6 +16,7 @@ body {
 
 .navbar {
   display: flex;
+  flex-direction: column; 
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
@@ -139,7 +140,14 @@ nav-btn:active{
     <a class="nav-btn" href="cart.html">🛒Cart</a>
     <a class="nav-btn" href="home.html">Home</a>
   </nav>
+<h2>Request a Product</h2>
 
+<input id="reqName" placeholder="Your Name">
+<input id="reqEmail" placeholder="Your Email">
+<input id="reqProduct" placeholder="Product you want">
+<button onclick="sendRequest()">Submit</button>
+
+<p id="reqMessage"></p>
 </header>
 
 <p>Wait 10–30 seconds if server is waking up.</p>
@@ -152,7 +160,32 @@ nav-btn:active{
 </header>
 
 <div class="grid" id="products"></div>
+<script>
+async function sendRequest() {
+  const name = document.getElementById("reqName").value;
+  const email = document.getElementById("reqEmail").value;
+  const product = document.getElementById("reqProduct").value;
 
+  const response = await fetch(
+    "https://shopsphere-backend-wr5o.onrender.com/requests",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, product })
+    }
+  );
+
+  const data = await response.json();
+
+  if (data.success) {
+    document.getElementById("reqMessage").innerText =
+      "Request sent successfully!";
+  } else {
+    document.getElementById("reqMessage").innerText =
+      "Something went wrong.";
+  }
+}
+</script>
 <script>
 
 function addToCart(name, price) {
