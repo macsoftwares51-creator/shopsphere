@@ -45,7 +45,6 @@ button:hover { background: #16a34a; }
 
 <div class="box">
   <h2>Admin Login</h2>
-   <input type="username" id="username" placeholder="Admin username">
   <input type="password" id="password" placeholder="Admin password">
   <button onclick="login()">Login</button>
   <p id="error"></p>
@@ -65,10 +64,10 @@ async function login() {
 
   const data = await response.json();
 
-  if (response.ok) {
+  if (data.success) {
     window.location.href = "add-product.html";
   } else {
-    document.getElementById("error").innerText = data.message;
+    document.getElementById("error").innerText = "Wrong password";
   }
 }
 </script>
