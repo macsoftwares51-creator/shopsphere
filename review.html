@@ -1,0 +1,53 @@
+<h1>Customer Reviews</h1>
+
+<div id="reviewList"></div>
+
+<h2>Leave a Review</h2>
+<input id="revName" placeholder="Your Name">
+<select id="revRating">
+  <option value="5">⭐⭐⭐⭐⭐</option>
+  <option value="4">⭐⭐⭐⭐</option>
+  <option value="3">⭐⭐⭐</option>
+  <option value="2">⭐⭐</option>
+  <option value="1">⭐</option>
+</select>
+<textarea id="revComment" placeholder="Your comment"></textarea>
+<button onclick="submitReview()">Submit</button>
+
+<script>
+const API = "https://shopsphere-backend-wr5o.onrender.com";
+
+async function loadReviews() {
+  const res = await fetch(API + "/reviews");
+  const reviews = await res.json();
+
+  const container = document.getElementById("reviewList");
+  container.innerHTML = "";
+
+  reviews.forEach(r => {
+    container.innerHTML += `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <strong>${r.name}</strong>
+        <p>Rating: ${"⭐".repeat(r.rating)}</p>
+        <p>${r.comment}</p>
+      </div>
+    `;
+  });
+}
+
+async function submitReview() {
+  const name = document.getElementById("revName").value;
+  const rating = document.getElementById("revRating").value;
+  const comment = document.getElementById("revComment").value;
+
+  await fetch(API + "/reviews", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, rating, comment })
+  });
+
+  loadReviews();
+}
+
+loadReviews();
+</script>
