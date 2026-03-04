@@ -1,6 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
 <h1>Product Requests</h1>
+    </head>
+  <style>
+    body {
+  font-family: impact;
+  background: #240c42;
+  color: white;
+  padding: 20px;
+  </style>
+  <body>
 <div id="requests"></div>
-
+</body>
 <script>
 async function loadRequests() {
   const response = await fetch(
@@ -42,3 +55,4 @@ async function markAdded(id) {
 
 loadRequests();
 </script>
+  </html>
