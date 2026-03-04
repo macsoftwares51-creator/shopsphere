@@ -62,7 +62,12 @@ nav a:hover { color: rgb(228, 208, 208); }
   border-radius: 6px;
   cursor: pointer;
 }
-
+.final {
+  display: flex;
+  flex-direction: column;   /* stack vertically */
+  width: 100%;              /* full width */
+  gap: 10px;
+}
 .guide {
   margin: 60px auto;
   max-width: 900px;
@@ -248,7 +253,7 @@ nav a:hover { color: rgb(228, 208, 208); }
 <a href="products.html"><button>Browse Products</button></a>
 </section>
  
- <section class="hero">
+ <section class="final">
 <btn> <a href="about.html"><button>About</button></a></btn>
 <btn> <a href="contact.html"><button>Contacts</button></a></btn>
 <btn> <a href="terms.html"><button>Terms</button></a></btn>
