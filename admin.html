@@ -51,13 +51,21 @@ button:hover { background: #16a34a; }
 </div>
 
 <script>
-const ADMIN_PASSWORD = "Godisable"; 
+async function login() {
+  const password = document.getElementById("password").value;
 
-function login() {
-  const input = document.getElementById("password").value;
+  const response = await fetch("http://https://shopsphere-backend-wr5o.onrender.com/admin-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ password })
+  });
 
-  if (input === ADMIN_PASSWORD) {
-    location.href = "add-product.html";
+  const data = await response.json();
+
+  if (data.success) {
+    window.location.href = "add-product.html";
   } else {
     document.getElementById("error").innerText = "Wrong password";
   }
