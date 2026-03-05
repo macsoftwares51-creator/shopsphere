@@ -1,0 +1,29 @@
+<h1>Sell Your Product</h1>
+
+<form id="sellForm" enctype="multipart/form-data">
+  <input name="name" placeholder="Your Name" required>
+  <input name="email" placeholder="Your Email" required>
+  <input name="productName" placeholder="Product Name" required>
+  <input name="price" placeholder="Price" required>
+  <textarea name="description" placeholder="Description" required></textarea>
+  <input type="file" name="image" required>
+
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+const API = "https://shopsphere-backend-wr5o.onrender.com";
+
+document.getElementById("sellForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  await fetch(API + "/sellers", {
+    method: "POST",
+    body: formData
+  });
+
+  alert("Application submitted!");
+});
+</script>
