@@ -1,29 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sell Your Product | ShopSphere</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.container{
+  background:#1e293b;
+  padding:30px;
+  border-radius:10px;
+  width:90%;
+  max-width:450px;
+}
+
+h1{
+  text-align:center;
+  color:#22c55e;
+}
+
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  border-radius:6px;
+}
+
+textarea{
+  resize:none;
+  height:100px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:6px;
+  background:#22c55e;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#16a34a;
+}
+
+#preview{
+  width:100%;
+  margin-top:10px;
+  border-radius:6px;
+  display:none;
+}
+
+.success{
+  color:#22c55e;
+  text-align:center;
+  margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
 <h1>Sell Your Product</h1>
 
 <form id="sellForm" enctype="multipart/form-data">
-  <input name="name" placeholder="Your Name" required>
-  <input name="email" placeholder="Your Email" required>
-  <input name="productName" placeholder="Product Name" required>
-  <input name="price" placeholder="Price" required>
-  <textarea name="description" placeholder="Description" required></textarea>
-  <input type="file" name="image" required>
 
-  <button type="submit">Submit</button>
+<input name="name" placeholder="Your Name" required>
+
+<input name="email" placeholder="Your Email" required>
+
+<input name="productName" placeholder="Product Name" required>
+
+<input name="price" placeholder="Price (KES)" required>
+
+<textarea name="description" placeholder="Product Description" required></textarea>
+
+<input type="file" name="image" id="imageInput" accept="image/*" required>
+
+<img id="preview">
+
+<button type="submit">Submit Product</button>
+
+<p id="message" class="success"></p>
+
 </form>
 
+</div>
+
 <script>
+
 const API = "https://shopsphere-backend-wr5o.onrender.com";
 
-document.getElementById("sellForm").addEventListener("submit", async (e) => {
+const form = document.getElementById("sellForm");
+const preview = document.getElementById("preview");
+const message = document.getElementById("message");
+
+/* IMAGE PREVIEW */
+
+document.getElementById("imageInput").addEventListener("change", function(){
+
+  const file = this.files[0];
+
+  if(file){
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+
+});
+
+/* SUBMIT FORM */
+
+form.addEventListener("submit", async (e)=>{
+
   e.preventDefault();
 
-  const formData = new FormData(e.target);
+  const formData = new FormData(form);
 
-  await fetch(API + "/sellers", {
-    method: "POST",
-    body: formData
+  const res = await fetch(API + "/sellers",{
+    method:"POST",
+    body:formData
   });
 
-  alert("Application submitted!");
+  if(res.ok){
+
+    message.innerText = "Product submitted! Admin will review it.";
+
+    form.reset();
+    preview.style.display="none";
+
+  }else{
+
+    message.innerText = "Something went wrong.";
+
+  }
+
 });
+
 </script>
+
+</body>
+</html>
