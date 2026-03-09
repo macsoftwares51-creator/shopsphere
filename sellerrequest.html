@@ -1,159 +1,215 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sell Your Product | ShopSphere</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Seller | ShopSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-<style>
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-body{
-  margin:0;
-  font-family: Arial;
-  background:#0f172a;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-}
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 100% 100%, #1e1b4b, #030712);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 80px 20px 40px;
+        }
 
-.container{
-  background:#1e293b;
-  padding:30px;
-  border-radius:10px;
-  width:90%;
-  max-width:450px;
-}
+        /* Floating Nav */
+        header.navbar {
+            position: fixed; top: 15px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 10px 20px;
+            display: flex; gap: 15px;
+            z-index: 1000;
+        }
 
-h1{
-  text-align:center;
-  color:#22c55e;
-}
+        .nav-btn {
+            background: transparent; color: white;
+            padding: 8px 16px; border-radius: 12px;
+            text-decoration: none; font-weight: 600; font-size: 13px;
+            border: 1px solid var(--glass-border);
+        }
 
-input,textarea{
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border:none;
-  border-radius:6px;
-}
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-textarea{
-  resize:none;
-  height:100px;
-}
+        h1 { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 10px; color: white; letter-spacing: -1px; }
+        .subtitle { text-align: center; color: var(--text-dim); font-size: 14px; margin-bottom: 30px; }
 
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:6px;
-  background:#22c55e;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+        }
 
-button:hover{
-  background:#16a34a;
-}
+        input:focus, textarea:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); }
 
-#preview{
-  width:100%;
-  margin-top:10px;
-  border-radius:6px;
-  display:none;
-}
+        textarea { height: 100px; resize: none; }
 
-.success{
-  color:#22c55e;
-  text-align:center;
-  margin-top:10px;
-}
+        /* Custom File Upload */
+        .file-label {
+            display: block;
+            padding: 20px;
+            border: 2px dashed var(--glass-border);
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            color: var(--text-dim);
+        }
+        .file-label:hover { border-color: var(--accent); color: white; }
 
-</style>
+        #preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid var(--accent);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+        }
+
+        button:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        button:active { transform: scale(0.98); }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .success { color: var(--accent); }
+        .error { color: #ef4444; }
+
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <header class="navbar">
+        <a class="nav-btn" href="home.html">Home</a>
+        <a class="nav-btn" href="CustomerProduct.html">Marketplace</a>
+    </header>
 
-<h1>Sell Your Product</h1>
+    <div class="container">
+        <h1>Sell Your Product</h1>
+        <p class="subtitle">Submit your details and we'll review your item for the community marketplace.</p>
 
-<form id="sellForm" enctype="multipart/form-data">
+        <form id="sellForm" enctype="multipart/form-data">
+            <input name="name" placeholder="Your Name" required>
+            <input name="email" type="email" placeholder="Your Email" required>
+            <input name="productName" placeholder="Product Name" required>
+            <input name="price" type="number" placeholder="Price (KES)" required>
+            
+            <textarea name="description" placeholder="Short description of your product..." required></textarea>
 
-<input name="name" placeholder="Your Name" required>
+            <label for="imageInput" class="file-label" id="fileLabel">
+                📸 Click to upload product image
+            </label>
+            <input type="file" name="image" id="imageInput" accept="image/*" required style="display: none;">
 
-<input name="email" placeholder="Your Email" required>
+            <img id="preview">
 
-<input name="productName" placeholder="Product Name" required>
+            <button type="submit" id="submitBtn">Submit for Review</button>
 
-<input name="price" placeholder="Price (KES)" required>
+            <p id="message" class="message"></p>
+        </form>
+    </div>
 
-<textarea name="description" placeholder="Product Description" required></textarea>
+    <script>
+        const API = "https://shopsphere-backend-wr5o.onrender.com";
+        const form = document.getElementById("sellForm");
+        const preview = document.getElementById("preview");
+        const message = document.getElementById("message");
+        const label = document.getElementById("fileLabel");
+        const btn = document.getElementById("submitBtn");
 
-<input type="file" name="image" id="imageInput" accept="image/*" required>
+        /* IMAGE PREVIEW */
+        document.getElementById("imageInput").addEventListener("change", function(){
+            const file = this.files[0];
+            if(file){
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+                label.innerText = "✅ Image selected: " + file.name;
+            }
+        });
 
-<img id="preview">
+        /* SUBMIT FORM */
+        form.addEventListener("submit", async (e)=>{
+            e.preventDefault();
+            btn.innerText = "Uploading... Please wait";
+            btn.disabled = true;
+            
+            const formData = new FormData(form);
 
-<button type="submit">Submit Product</button>
+            try {
+                const res = await fetch(API + "/SellerRequest", {
+                    method: "POST",
+                    body: formData
+                });
 
-<p id="message" class="success"></p>
-
-</form>
-
-</div>
-
-<script>
-
-const API = "https://shopsphere-backend-wr5o.onrender.com";
-
-const form = document.getElementById("sellForm");
-const preview = document.getElementById("preview");
-const message = document.getElementById("message");
-
-/* IMAGE PREVIEW */
-
-document.getElementById("imageInput").addEventListener("change", function(){
-
-  const file = this.files[0];
-
-  if(file){
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-  }
-
-});
-
-/* SUBMIT FORM */
-
-form.addEventListener("submit", async (e)=>{
-
-  e.preventDefault();
-
-  const formData = new FormData(form);
-
-  const res = await fetch(API + "/SellerRequest",{
-    method:"POST",
-    body:formData
-  });
-
-  if(res.ok){
-
-    message.innerText = "Product submitted! Admin will review it.";
-
-    form.reset();
-    preview.style.display="none";
-
-  }else{
-
-    message.innerText = "Something went wrong.";
-
-  }
-
-});
-
-</script>
-
+                if(res.ok){
+                    message.className = "message success";
+                    message.innerText = "Submission successful! Our admin team will review it soon.";
+                    form.reset();
+                    preview.style.display = "none";
+                    label.innerText = "📸 Click to upload product image";
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                message.className = "message error";
+                message.innerText = "Something went wrong. Please try again.";
+            } finally {
+                btn.innerText = "Submit Product";
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
