@@ -6,147 +6,148 @@
     <title>ShopSphere | Next-Gen Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #030712;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --accent: #22c55e;
-            --text-main: #f9fafb;
-            --text-dim: #9ca3af;
-            --glass-border: rgba(255, 255, 255, 0.1);
+    /* ... Keep previous variables ... */
+    :root {
+        --bg: #030712;
+        --card-bg: rgba(17, 24, 39, 0.7);
+        --accent: #22c55e;
+        --text-main: #f9fafb;
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ANIMATION: Keyframes for the entrance */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
         }
-
-        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% -20%, #1e293b, #030712);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
+    }
 
-        /* 2026 Header: Floating Glassmorphism */
-        header {
-            position: sticky;
-            top: 10px;
-            margin: 10px 20px;
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 12px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
+    /* ANIMATION: Floating background glow */
+    @keyframes orbit {
+        from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+        to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+    }
 
-        .logo { display: flex; align-items: center; gap: 15px; }
-        .logo img { height: 50px; border-radius: 10px; } /* Adjusted size for elegance */
-        .logo h1 { font-size: 22px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg);
+        color: var(--text-main);
+        overflow-x: hidden;
+        position: relative;
+    }
 
-        .nav-btn {
-            background: var(--accent);
-            color: #000;
-            padding: 8px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            margin-left: 10px;
-        }
+    /* The Glow Orb */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 20%;
+        left: 20%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+        z-index: -1;
+        animation: orbit 20s linear infinite;
+    }
 
-        .nav-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+    /* Bento Tiles with Animation Logic */
+    .bento-item {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 32px;
+        padding: 30px;
+        opacity: 0; /* Start invisible for the scroll reveal */
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                    background 0.3s ease, 
+                    box-shadow 0.3s ease;
+    }
 
-        /* Bento Grid Layout */
-        .bento-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: minmax(150px, auto);
-            gap: 20px;
-            padding: 20px;
-        }
+    /* Class added by JavaScript when element scrolls into view */
+    .reveal {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
 
-        .bento-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    .bento-item:hover {
+        transform: translateY(-8px) scale(1.01);
+        background: rgba(31, 41, 55, 0.9);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.4);
+    }
 
-        /* Hero Tile */
-        .hero-tile {
-            grid-column: span 3;
-            grid-row: span 2;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
+    /* Step Cards Stagger */
+    .step-card {
+        opacity: 0;
+        transition: 0.5s ease;
+    }
 
-        .hero-tile h2 { font-size: clamp(32px, 5vw, 56px); line-height: 1.1; margin: 0 0 15px 0; font-weight: 800; }
-        .hero-tile p { color: var(--text-dim); font-size: 18px; max-width: 500px; }
+    .step-card.reveal {
+        opacity: 1;
+    }
 
-        /* Action Buttons Tile */
-        .action-tile { grid-column: span 1; grid-row: span 2; gap: 15px; }
-        .action-tile .btn-modern {
-            background: white;
-            color: black;
-            padding: 15px;
-            border-radius: 16px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: 700;
-        }
-        .btn-green { background: var(--accent) !important; }
+    /* Button "Pulse" Effect */
+    .btn-modern {
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* Payment/Info Tile (Bento Style) */
-        .info-tile { grid-column: span 2; background: #1e1b4b; }
-        .info-tile h3 { color: var(--accent); margin-top: 0; }
+    .btn-modern::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: rgba(255,255,255,0.1);
+        transform: rotate(45deg) translateY(100%);
+        transition: 0.5s;
+    }
 
-        /* Locations Tile */
-        .loc-tile { grid-column: span 2; background: rgba(255,255,255,0.03); }
-        .loc-list { font-size: 13px; color: var(--accent); font-weight: 600; letter-spacing: 1px; }
+    .btn-modern:hover::after {
+        transform: rotate(45deg) translateY(-100%);
+    }
 
-        /* Step Circles */
-        .steps-container {
-            grid-column: span 4;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
+</style>
 
-        .step-card {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            padding: 25px;
-            border-radius: 24px;
-            text-align: center;
-        }
+<script>
+    // Intersection Observer for Scroll Animations
+    const observerOptions = {
+        threshold: 0.1
+    };
 
-        .step-num {
-            width: 40px; height: 40px; background: var(--accent);
-            color: black; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center;
-            margin: 0 auto 15px; font-weight: 800;
-        }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Add a slight delay based on index for the "stagger" effect
+                setTimeout(() => {
+                    entry.target.classList.add('reveal');
+                }, index * 100); 
+            }
+        });
+    }, observerOptions);
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .bento-container { grid-template-columns: 1fr; }
-            .hero-tile, .action-tile, .info-tile, .loc-tile, .steps-container { grid-column: span 1; }
-            .steps-container { grid-template-columns: 1fr; }
-        }
+    // Select all items to animate
+    document.querySelectorAll('.bento-item, .step-card').forEach(el => {
+        observer.observe(el);
+    });
 
-        #shopBuddy { position: fixed; z-index: 99; pointer-events: none; }
-    </style>
+    // Simple "Magnetic" effect for the Hero Title
+    const hero = document.querySelector('.hero-tile');
+    hero.addEventListener('mousemove', (e) => {
+        const { left, top, width, height } = hero.getBoundingClientRect();
+        const x = (e.clientX - left) / width - 0.5;
+        const y = (e.clientY - top) / height - 0.5;
+        
+        hero.style.transform = `perspective(1000px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-8px)`;
+    });
+
+    hero.addEventListener('mouseleave', () => {
+        hero.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0)`;
+    });
+</script>
 </head>
 <body>
 
