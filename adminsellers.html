@@ -122,7 +122,7 @@ async function loadRequests(){
     const res = await fetch(API);
     const data = await res.json();
 
-    const container = document.getElementById("requests");
+    const container = document.getElementById("SellerRequests");
 
     if(data.length === 0){
         container.innerHTML = "<p>No seller requests.</p>";
@@ -177,7 +177,7 @@ async function approve(id){
 
     alert("Product Approved");
 
-    loadRequests();
+    loadSellerRequests();
 }
 
 async function removeRequest(id){
