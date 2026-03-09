@@ -1,0 +1,201 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ShopSphere Admin - Seller Requests</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    overflow:hidden;
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+.card-body{
+    padding:15px;
+}
+
+.card-body h3{
+    margin:0 0 5px 0;
+}
+
+.card-body p{
+    margin:5px 0;
+    color:#555;
+}
+
+.status{
+    font-weight:bold;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+button{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.approve{
+    background:#22c55e;
+    color:white;
+}
+
+.delete{
+    background:#ef4444;
+    color:white;
+}
+
+.refresh{
+    margin-bottom:20px;
+    padding:10px 15px;
+    background:#3b82f6;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>ShopSphere Admin Panel</h1>
+<p>Seller Product Requests</p>
+</header>
+
+<div class="container">
+
+<button class="refresh" onclick="loadRequests()">Refresh Requests</button>
+
+<div id="requests" class="grid"></div>
+
+</div>
+
+<script>
+
+const API = "https://shopsphere-backend-wr5o.onrender.com/seller-requests";
+
+async function loadRequests(){
+
+    const res = await fetch(API);
+    const data = await res.json();
+
+    const container = document.getElementById("requests");
+
+    if(data.length === 0){
+        container.innerHTML = "<p>No seller requests.</p>";
+        return;
+    }
+
+    container.innerHTML = data.map(item => `
+    
+        <div class="card">
+
+            <img src="${item.image}" alt="product">
+
+            <div class="card-body">
+
+                <h3>${item.productName}</h3>
+
+                <p><strong>Seller:</strong> ${item.name}</p>
+
+                <p><strong>Email:</strong> ${item.email}</p>
+
+                <p><strong>Price:</strong> $${item.price}</p>
+
+                <p>${item.description}</p>
+
+                <p class="status">Status: ${item.status}</p>
+
+                <div class="buttons">
+
+                    <button class="approve" onclick="approve('${item._id}')">
+                        Approve
+                    </button>
+
+                    <button class="delete" onclick="removeRequest('${item._id}')">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
+
+async function approve(id){
+
+    await fetch(API + "/" + id,{
+        method:"PUT"
+    });
+
+    alert("Product Approved");
+
+    loadRequests();
+}
+
+async function removeRequest(id){
+
+    if(!confirm("Delete this request?")) return;
+
+    await fetch(API + "/" + id,{
+        method:"DELETE"
+    });
+
+    loadRequests();
+}
+
+loadRequests();
+
+</script>
+
+</body>
+</html>
+```
