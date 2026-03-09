@@ -1,58 +1,182 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    
-<h1>Product Requests</h1>
-    </head>
-  <style>
-    body {
-  font-family: impact;
-  background: #240c42;
-  color: white;
-  padding: 20px;
-  </style>
-  <body>
-<div id="requests"></div>
-</body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Requests | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #3b82f6;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 0% 0%, #1e1b4b, #030712);
+            color: var(--text-main);
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 900px; margin: auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        
+        .nav-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+        }
+        .nav-link:hover { color: white; border-color: white; }
+
+        /* Request Cards */
+        #requests {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .request-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .info h3 { margin: 0 0 5px; font-size: 18px; color: var(--success); }
+        .info p { margin: 2px 0; font-size: 14px; color: var(--text-dim); }
+        .info b { color: white; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+        .status-pending { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+        .status-added { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        .actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-add { background: white; color: black; }
+        .btn-add:hover { background: var(--success); }
+
+        .btn-del { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.1); }
+        .btn-del:hover { background: var(--danger); color: white; }
+
+        @media (max-width: 600px) {
+            .request-item { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .actions { width: 100%; }
+            .btn { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Product Requests</h1>
+        <a href="admin.html" class="nav-link">← Dashboard</a>
+    </header>
+
+    <div id="requests">
+        <p style="text-align: center; color: var(--text-dim);">Checking the inbox...</p>
+    </div>
+</div>
+
 <script>
+const API_URL = "https://shopsphere-backend-wr5o.onrender.com/requests";
+
 async function loadRequests() {
-  const response = await fetch(
-    "https://shopsphere-backend-wr5o.onrender.com/requests"
-  );
-  const requests = await response.json();
+    try {
+        const response = await fetch(API_URL);
+        const requests = await response.json();
 
-  const container = document.getElementById("requests");
-  container.innerHTML = "";
+        const container = document.getElementById("requests");
+        container.innerHTML = requests.length ? "" : "<p style='text-align:center;'>No active requests. You're all caught up!</p>";
 
-  requests.forEach(r => {
-    container.innerHTML += `
-      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <h3>${r.product}</h3>
-        <p>${r.name} (${r.email})</p>
-        <p>Status: ${r.status}</p>
-        <button onclick="markAdded('${r._id}')">Mark Added</button>
-        <button onclick="deleteRequest('${r._id}')">Delete</button>
-      </div>
-    `;
-  });
+        requests.forEach(r => {
+            const isAdded = r.status?.toLowerCase() === 'added';
+            
+            container.innerHTML += `
+                <div class="request-item">
+                    <div class="info">
+                        <h3>${r.product}</h3>
+                        <p>Requested by: <b>${r.name}</b></p>
+                        <p>Email: <b>${r.email}</b></p>
+                        <span class="status-pill ${isAdded ? 'status-added' : 'status-pending'}">
+                            ${r.status || 'Pending'}
+                        </span>
+                    </div>
+                    <div class="actions">
+                        ${!isAdded ? `<button class="btn btn-add" onclick="markAdded('${r._id}')">Mark as Added</button>` : ''}
+                        <button class="btn btn-del" onclick="deleteRequest('${r._id}')">Remove</button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (err) {
+        document.getElementById("requests").innerHTML = "<p style='color:red;'>Failed to load requests.</p>";
+    }
 }
 
 async function deleteRequest(id) {
-  await fetch(
-    "https://shopsphere-backend-wr5o.onrender.com/requests/" + id,
-    { method: "DELETE" }
-  );
-  loadRequests();
+    if(!confirm("Permanently delete this request?")) return;
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    loadRequests();
 }
 
 async function markAdded(id) {
-  await fetch(
-    "https://shopsphere-backend-wr5o.onrender.com/requests/" + id,
-    { method: "PUT" }
-  );
-  loadRequests();
+    // Note: Assuming your backend PUT route updates the status to "Added"
+    await fetch(`${API_URL}/${id}`, { method: "PUT" });
+    loadRequests();
 }
 
 loadRequests();
 </script>
-  </html>
+</body>
+</html>
