@@ -1,76 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Login</title>
-<style>
-body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to right, #0f172a, #1e293b);
-  font-family: Arial;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | ShopSphere Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.8);
+            --accent: #22c55e;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-.box {
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  width: 320px;
-  text-align: center;
-}
+        * { box-sizing: border-box; transition: all 0.3s ease; }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 15px 0;
-}
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background: #22c55e;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
+        /* Ambient background glow */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+        }
 
-button:hover { background: #16a34a; }
-#error { color: red; margin-top: 10px; }
-</style>
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 50px 40px;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { 
+            font-size: 28px; 
+            font-weight: 800; 
+            margin-bottom: 8px; 
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 4px; /* Makes password dots look cooler */
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            border: none;
+            border-radius: 16px;
+            color: #052e16;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #error {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 15px;
+            font-weight: 600;
+            min-height: 20px;
+        }
+
+        .footer-brand {
+            margin-top: 30px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="box">
-  <h2>Admin Login</h2>
-  <input type="password" id="password" placeholder="Admin password">
-  <button onclick="login()">Login</button>
-  <p id="error"></p>
-</div>
+    <div class="login-card">
+        <h2>Command Access</h2>
+        <p class="subtitle">Enter administrator credentials to proceed</p>
+        
+        <div class="input-group">
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        
+        <button id="loginBtn" onclick="login()">Authorize Entry</button>
+        
+        <p id="error"></p>
 
-<script>
-async function login() {
-  const password = document.getElementById("password").value;
+        <div class="footer-brand">ShopSphere OS v3.0</div>
+    </div>
 
-  const response = await fetch("https://shopsphere-backend-wr5o.onrender.com/admin-login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ password })
-  });
+    <script>
+        async function login() {
+            const password = document.getElementById("password").value;
+            const errorElement = document.getElementById("error");
+            const btn = document.getElementById("loginBtn");
 
-  const data = await response.json();
+            if(!password) {
+                errorElement.innerText = "Access code required";
+                return;
+            }
 
-  if (data.success) {
-    window.location.href = "add-product.html";
-  } else {
-    document.getElementById("error").innerText = "Wrong password";
-  }
-}
-</script>
+            // Visual feedback
+            btn.innerText = "Verifying...";
+            btn.disabled = true;
+            errorElement.innerText = "";
+
+            try {
+                const response = await fetch("https://shopsphere-backend-wr5o.onrender.com/admin-login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = "admin.html"; // Updated to point to your main dashboard
+                } else {
+                    errorElement.innerText = "Invalid credentials. Access denied.";
+                    btn.innerText = "Authorize Entry";
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                errorElement.innerText = "Connection lost. Try again.";
+                btn.innerText = "Authorize Entry";
+                btn.disabled = false;
+            }
+        }
+
+        // Allow 'Enter' key to trigger login
+        document.getElementById("password").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                login();
+            }
+        });
+    </script>
 
 </body>
 </html>
