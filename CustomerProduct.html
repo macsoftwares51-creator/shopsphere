@@ -46,14 +46,12 @@ function render(products) {
     const category = p.category || "General";
     const price = Number(p.price) || 0;
     const image = p.image || "https://via.placeholder.com/200";
-    const cancelledPrice = Math.round((price * 1.3) / 10) * 10;
 
     box.innerHTML += `
       <div class="card" style="border: 1px solid #ddd; padding: 10px; margin: 10px; display: inline-block; width: 200px; vertical-align: top;">
         <img src="${image}" onclick="openImage('${image}')" style="width:100%; cursor:pointer; height: 150px; object-fit: cover;" />
         <h3>${name}</h3>
         <p><em>${category}</em></p>
-        <div style="text-decoration: line-through; color: gray;">Kshs ${cancelledPrice}</div>
         <div style="font-weight: bold; color: green;">Kshs ${price}</div>
         <button onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})" style="margin-top: 10px; cursor: pointer;">
           Add to Cart
