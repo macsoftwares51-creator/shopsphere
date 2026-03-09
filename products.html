@@ -15,6 +15,7 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
+        /* Entrance Animation */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -29,9 +30,10 @@
             background-image: radial-gradient(circle at 50% 0%, #1e293b, #030712);
             color: var(--text-main);
             padding: 0 20px 40px;
+            min-height: 100vh;
         }
 
-        /* Modern Header */
+        /* 2026 Floating Header */
         header.navbar {
             position: sticky; top: 10px;
             background: rgba(3, 7, 18, 0.8);
@@ -44,46 +46,50 @@
         }
 
         .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
-        .brand img { height: 45px; border-radius: 8px; }
+        .brand img { height: 40px; border-radius: 8px; }
         .brand span { font-size: 20px; font-weight: 800; letter-spacing: -1px; }
 
         .nav-btn {
             background: var(--accent); color: #000;
             padding: 8px 18px; border-radius: 12px;
             text-decoration: none; font-weight: 700; font-size: 14px;
+            position: relative;
         }
 
-        /* Filter Section */
-        .controls {
-            max-width: 1200px; margin: 0 auto 30px;
-            display: flex; gap: 15px; flex-wrap: wrap;
+        /* Cart Badge Style */
+        #cart-badge {
+            position: absolute; top: -8px; right: -8px;
+            background: #ef4444; color: white; font-size: 11px;
+            font-weight: 800; width: 20px; height: 20px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg); transform: scale(0);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .badge-pop { transform: scale(1) !important; }
 
-        input, select, textarea {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            color: white; padding: 12px 16px;
-            border-radius: 14px; font-family: inherit; outline: none;
-        }
-
-        input:focus { border-color: var(--accent); }
-
-        /* Bento-style Request Section */
+        /* Request Bento Section */
         .request-section {
             max-width: 1200px; margin: 0 auto 50px;
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(17, 24, 39, 0.7));
             padding: 30px; border-radius: 32px;
             border: 1px solid rgba(34, 197, 94, 0.2);
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;
         }
 
-        .request-form { display: flex; flex-direction: column; gap: 10px; }
-        .request-section h2 { margin: 0; font-size: 28px; font-weight: 800; }
-
+        .request-form { display: flex; flex-direction: column; gap: 12px; }
+        input, select, textarea {
+            background: var(--card-bg); border: 1px solid var(--glass-border);
+            color: white; padding: 12px 16px; border-radius: 14px; outline: none;
+        }
         .btn-gold { 
-            background: #fbbf24; color: #000; border: none; 
-            padding: 14px; border-radius: 12px; font-weight: 800; 
-            cursor: pointer; font-size: 16px;
+            background: #fbbf24; color: #000; border: none; padding: 14px; 
+            border-radius: 14px; font-weight: 800; cursor: pointer;
+        }
+
+        /* Search & Filter Bar */
+        .controls {
+            max-width: 1200px; margin: 0 auto 30px;
+            display: flex; gap: 15px;
         }
 
         /* Product Grid */
@@ -94,48 +100,33 @@
         }
 
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
+            background: var(--card-bg); backdrop-filter: blur(8px);
             border: 1px solid var(--glass-border);
-            padding: 20px; border-radius: 28px;
-            opacity: 0; /* For reveal */
+            padding: 20px; border-radius: 28px; opacity: 0;
         }
-
         .reveal { animation: fadeInUp 0.6s forwards; }
 
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .card img {
-            width: 100%; height: 200px;
-            object-fit: cover; border-radius: 20px;
-            margin-bottom: 15px;
-        }
-
-        .card h3 { margin: 10px 0 5px; font-size: 18px; font-weight: 700; }
-        .card p { color: var(--text-dim); font-size: 14px; margin-bottom: 15px; }
-
-        .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 15px; }
-        .price { color: var(--accent); font-size: 20px; font-weight: 800; }
-        .old-price { text-decoration: line-through; color: #6b7280; font-size: 14px; }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 20px; cursor: zoom-in; }
+        .card h3 { margin: 15px 0 5px; font-size: 18px; font-weight: 700; color: white; }
+        .card p { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
+        .price { color: var(--accent); font-size: 20px; font-weight: 800; display: block; margin-bottom: 15px; }
 
         .add-btn {
             background: var(--accent); color: #000; border: none;
             width: 100%; padding: 12px; border-radius: 14px;
             font-weight: 800; cursor: pointer;
         }
+        .add-btn:active { transform: scale(0.95); }
 
-        /* Image Modal */
+        /* Modal */
         #imageModal {
             display:none; position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
         }
 
         @media (max-width: 768px) {
-            .request-section { grid-template-columns: 1fr; }
+            .request-section { grid-template-columns: 1fr; text-align: center; }
+            .controls { flex-direction: column; }
             header.navbar { flex-direction: column; gap: 15px; }
         }
     </style>
@@ -143,7 +134,7 @@
 <body>
 
 <div id="imageModal" onclick="this.style.display='none'">
-    <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;" />
+    <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;">
 </div>
 
 <header class="navbar">
@@ -152,23 +143,25 @@
         <span>ShopSphere</span>
     </a>
     <nav style="display: flex; gap: 10px;">
-        <a class="nav-btn" href="home.html">Home</a>
-        <a class="nav-btn" href="cart.html" style="background: white;">🛒 Cart</a>
+        <a class="nav-btn" href="home.html" style="background: rgba(255,255,255,0.1); color: white;">Home</a>
+        <a class="nav-btn" href="cart.html" style="background: white;">
+            🛒 Cart <span id="cart-badge">0</span>
+        </a>
     </nav>
 </header>
 
 <section class="request-section">
     <div>
-        <h2>Missing something?</h2>
-        <p>Tell us what you're looking for and we'll source it for you at the best price.</p>
-        <p style="font-size: 12px; color: var(--accent);">⚡ Server wake-up: 10-30s</p>
+        <h2 style="margin-bottom: 10px;">Missing something?</h2>
+        <p style="color: var(--text-dim);">Tell us what you're looking for and we'll source it for you at the best price.</p>
+        <p style="font-size: 12px; color: var(--accent); font-weight: bold;">⚡ Ready in 10-30s if server is sleeping.</p>
     </div>
     <div class="request-form">
         <input id="reqName" placeholder="Your Name">
         <input id="reqEmail" placeholder="Your Email">
-        <textarea id="reqProduct" placeholder="Describe the item (size, color, brand)..."></textarea>
+        <textarea id="reqProduct" placeholder="Item details (Size, color, brand)..." rows="3"></textarea>
         <button class="btn-gold" onclick="sendRequest()">Send Request</button>
-        <p id="reqMessage" style="font-size: 14px; text-align: center;"></p>
+        <p id="reqMessage" style="font-size: 14px; text-align: center; margin: 0;"></p>
     </div>
 </section>
 
@@ -182,41 +175,39 @@
 <div class="grid" id="products"></div>
 
 <script>
-// --- API LOGIC ---
 let allProducts = [];
 
+// Initialize Page
 fetch("https://shopsphere-backend-wr5o.onrender.com/products")
-  .then(res => res.json())
-  .then(data => {
-    allProducts = data;
-    fillCategories(data);
-    render(data);
-  })
-  .catch(err => console.error("Error:", err));
+    .then(res => res.json())
+    .then(data => {
+        allProducts = data;
+        fillCategories(data);
+        render(data);
+    })
+    .catch(err => console.error("Error:", err));
 
+// Render Products
 function render(products) {
     const box = document.getElementById("products");
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-        const name = p.name || "Unnamed";
+        const name = p.name || "Unnamed Item";
         const category = p.category || "General";
         const price = Number(p.price) || 0;
         const image = p.image || "https://via.placeholder.com/200";
-        // Removed strike-through price calculation as requested earlier
         
         const card = document.createElement('div');
         card.className = 'card';
-        // Add reveal class with stagger
-        setTimeout(() => card.classList.add('reveal'), index * 50);
+        // Staggered reveal animation
+        setTimeout(() => card.classList.add('reveal'), index * 60);
 
         card.innerHTML = `
-            <img src="${image}" onclick="openImage('${image}')" style="cursor:zoom-in;">
+            <img src="${image}" onclick="openImage('${image}')">
             <h3>${name}</h3>
             <p>${category}</p>
-            <div class="price-row">
-                <span class="price">Kshs ${price}</span>
-            </div>
+            <span class="price">Kshs ${price}</span>
             <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
                 Add to Cart
             </button>
@@ -225,7 +216,35 @@ function render(products) {
     });
 }
 
-// --- UTILITIES ---
+// Cart Logic
+function addToCart(name, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existing = cart.find(item => item.name === name);
+    if (existing) { existing.qty++; } 
+    else { cart.push({ name, price, qty: 1 }); }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    
+    updateCartBadge();
+}
+
+function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const badge = document.getElementById("cart-badge");
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    
+    badge.innerText = totalItems;
+    if (totalItems > 0) {
+        badge.classList.add("badge-pop");
+        badge.style.display = "flex";
+    } else {
+        badge.style.display = "none";
+    }
+}
+
+// Initial badge check
+updateCartBadge();
+
+// --- Utilities ---
 function fillCategories(products) {
     const select = document.getElementById("category");
     const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
@@ -240,15 +259,6 @@ function fillCategories(products) {
 function openImage(src) {
     document.getElementById("modalImg").src = src;
     document.getElementById("imageModal").style.display = "flex";
-}
-
-function addToCart(name, price) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existing = cart.find(item => item.name === name);
-    if (existing) { existing.qty++; } 
-    else { cart.push({ name, price, qty: 1 }); }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert(name + " added to cart!");
 }
 
 async function sendRequest() {
@@ -270,15 +280,15 @@ async function sendRequest() {
             body: JSON.stringify({ name, email, product })
         });
         const data = await response.json();
-        document.getElementById("reqMessage").innerText = data.success ? "Request sent! ✅" : "Error sending request.";
+        document.getElementById("reqMessage").innerText = data.success ? "Sent! We'll be in touch. ✅" : "Error.";
     } catch {
-        document.getElementById("reqMessage").innerText = "Network error.";
+        document.getElementById("reqMessage").innerText = "Check your connection.";
     } finally {
         btn.innerText = "Send Request";
     }
 }
 
-// Search & Filter
+// Search & Filter Listeners
 document.getElementById("search").oninput = 
 document.getElementById("category").onchange = () => {
     const q = document.getElementById("search").value.toLowerCase();
@@ -289,5 +299,6 @@ document.getElementById("category").onchange = () => {
     ));
 };
 </script>
+<script src="shopbuddy.js"></script>
 </body>
 </html>
