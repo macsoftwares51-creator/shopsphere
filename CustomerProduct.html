@@ -25,7 +25,7 @@ let allProducts = [];
 fetch("https://shopsphere-backend-wr5o.onrender.com/SellerRequest/approved")
   .then(res => res.json())
   .then(data => {
-    console.log("Products:", data);
+    console.log("sellerrequests:", data);
     allProducts = data;
     fillCategories(data);
     render(data);
