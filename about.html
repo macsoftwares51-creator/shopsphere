@@ -1,121 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>About Us – ShopSphere</title>
-<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-<style>
-body {
-  font-family: impact;
-  background: #240c42;
-  color: white;
-  padding: 30px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | ShopSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-}
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-h1, h2 {
-  color: #22c55e;
-}
+        * { box-sizing: border-box; transition: all 0.3s ease; }
 
-section {
-  background: #420629;
-  padding: 25px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-}
-   .nav-btn{
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:0.25s;
-}
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 100% 0%, #1e1b4b, #030712);
+            color: var(--text-main);
+            padding: 0 20px 60px;
+        }
 
-.nav-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 15px rgba(0,0,0,0.35);
-}
+        header.navbar {
+            position: sticky; top: 10px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 10px auto 40px; z-index: 1000; max-width: 900px;
+        }
 
-/* Click effect */
-nav-btn:active{
-  transform: scale(0.97);
-}
-</style>
+        .brand { font-size: 20px; font-weight: 800; color: white; text-decoration: none; }
+        
+        .nav-btn {
+            background: var(--accent); color: #000;
+            padding: 8px 18px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .bento-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 32px;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        h1 { font-size: 48px; font-weight: 800; margin: 0 0 10px; letter-spacing: -2px; }
+        h2 { color: var(--accent); font-size: 20px; font-weight: 800; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        p { line-height: 1.7; color: var(--text-dim); }
+        strong { color: white; }
+
+        ul { padding-left: 20px; margin: 0; }
+        li { margin-bottom: 8px; color: var(--text-dim); }
+
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stat-box span { display: block; font-size: 24px; font-weight: 800; color: var(--accent); }
+        .stat-box label { font-size: 11px; text-transform: uppercase; opacity: 0.6; }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            h1 { font-size: 32px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <header class="navbar">
+        <a href="home.html" class="brand">ShopSphere</a>
+        <a class="nav-btn" href="home.html">Home</a>
+    </header>
 
-<h1>About ShopSphere</h1>
+    <div class="container">
+        
+        <div class="bento-item full-width" style="animation-delay: 0.1s;">
+            <h1>Our Mission</h1>
+            <p>ShopSphere is a next-generation marketplace designed to make ordering <strong>easy, fast, and reliable</strong>. We bridge the gap between high-end electronics and local accessibility by integrating seamless WhatsApp ordering with physical partner stores.</p>
+        </div>
 
- <nav class="navbar">
-    <a class="nav-btn" href="home.html">home</a>
-  </nav>
-<section>
-  <p>
-    ShopSphere is an online shopping platform designed to make ordering easy,
-    fast, and reliable. Customers can browse products, add them to a cart,
-    and place orders directly via WhatsApp.
-  </p>
-   <h2>Partner Stores in the CBD</h2>
-  <ul>
-    <li>City Mart Electronic</li>
-    <li>HK Vision</li>
-    <li>Electroplanet</li>
-    <li>Steady Electronics</li>
-    <li>Samch Phone Accessories</li>
-    <li>Jaymax Technologies</li>
-  </ul>
+        <div class="bento-item highlight-card" style="animation-delay: 0.2s;">
+            <h2>💳 Payment Policy</h2>
+            <p>Transparency is our priority. Our 9/91 split ensures trust for both parties.</p>
+            <div class="stat-grid">
+                <div class="stat-box"><span>9%</span><label>Upfront</label></div>
+                <div class="stat-box"><span>91%</span><label>On Delivery</label></div>
+            </div>
+        </div>
 
-  <h2>Other Partner Stores</h2>
-  <p>Located inside:</p>
-  <ul>
-    <li>Tokyo Mall</li>
-    <li>Tansim Mall</li>
-    <li>Pacific Mall</li>
-    <li>Daresalam Mall</li>
-  </ul>
+        <div class="bento-item" style="animation-delay: 0.3s;">
+            <h2>🔁 Return Policy</h2>
+            <ul>
+                <li>Return within <strong>48 hours</strong></li>
+                <li>Original unused condition</li>
+                <li>Instant swap for damage</li>
+            </ul>
+        </div>
 
-</section>
+        <div class="bento-item" style="animation-delay: 0.4s;">
+            <h2>Partner Stores (CBD)</h2>
+            <ul>
+                <li>City Mart Electronic</li>
+                <li>HK Vision</li>
+                <li>Electroplanet</li>
+                <li>Steady Electronics</li>
+                <li>Jaymax Technologies</li>
+            </ul>
+        </div>
 
-<section>
-  <h2>💳 Payment Policy</h2>
-  <p>
-    To confirm an order, customers are required to pay <strong>9% of the total cost</strong>
-    in advance.
-  </p>
-  <p>
-    The remaining <strong>91%</strong> is paid upon delivery of the products.
-  </p>
-</section>
+        <div class="bento-item" style="animation-delay: 0.5s;">
+            <h2>Mall Locations</h2>
+            <p>Find our collection points inside:</p>
+            <ul>
+                <li>Tokyo Mall</li>
+                <li>Tansim Mall</li>
+                <li>Pacific Mall</li>
+                <li>Daresalam Mall</li>
+            </ul>
+        </div>
 
-<section>
-  <h2>🔁 Return Policy</h2>
-  <p>
-    We accept returns under the following conditions:
-  </p>
-  <ul>
-    <li>Items must be returned within <strong>48 hours</strong> after delivery</li>
-    <li>Products must be unused and in original condition</li>
-    <li>Damaged or incorrect items qualify for replacement or refund</li>
-  </ul>
+    </div>
 
-  <p>
-    Return shipping costs may apply depending on the reason for return.
-  </p>
-
-  <p>
-    To request a return, please contact us via WhatsApp or through our contact page.
-  </p>
-</section>
-
-</div>
-
+    <script src="shopbuddy.js"></script>
 </body>
 </html>
