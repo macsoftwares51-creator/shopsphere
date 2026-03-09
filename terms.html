@@ -1,101 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Terms & Conditions – ShopSphere</title>
-<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-<style>
-body {
-  font-family: impact;
-  background: #240c42;
-  color: white;
-  padding: 30px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions | ShopSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-}
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-section {
-  background: #420629;
-  padding: 25px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
+        * { box-sizing: border-box; transition: all 0.3s ease; }
 
-h1, h2 {
-  color: #22c55e;
-}
-  .nav-btn{
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:0.25s;
-}
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 0% 100%, #1e1b4b, #030712);
+            color: var(--text-main);
+            padding: 0 20px 60px;
+        }
 
-.nav-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 15px rgba(0,0,0,0.35);
-}
+        header.navbar {
+            position: sticky; top: 10px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 10px auto 40px; z-index: 1000; max-width: 800px;
+        }
 
-/* Click effect */
-nav-btn:active{
-  transform: scale(0.97);
-}
-</style>
+        .brand { font-size: 20px; font-weight: 800; color: white; text-decoration: none; }
+        
+        .nav-btn {
+            background: var(--accent); color: #000;
+            padding: 8px 18px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 14px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .bento-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 28px;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        h1 { font-size: 42px; font-weight: 800; text-align: center; margin: 0 0 10px; letter-spacing: -2px; }
+        h2 { color: var(--accent); font-size: 18px; font-weight: 800; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        p { line-height: 1.6; color: var(--text-dim); font-size: 15px; }
+        strong { color: white; }
+
+        /* The Secret Gateway Style */
+        .secret-gate {
+            color: var(--text-dim);
+            text-decoration: none;
+            cursor: text; /* Makes it look like regular text on hover */
+        }
+        .secret-gate:hover { color: var(--text-dim); }
+
+        @media (max-width: 600px) {
+            .container { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
 
-<h1>Terms & Conditions</h1>
-  <nav class="navbar">
-    <a class="nav-btn" href="home.html">home</a>
-  </nav>
+    <header class="navbar">
+        <a href="home.html" class="brand">Legal Portal</a>
+        <a class="nav-btn" href="home.html">Home</a>
+    </header>
 
-<section>
-  <h2>Orders</h2>
-  <p>
-    By placing an order on ShopSphere, you agree to provide accurate information
-    and be available for delivery.
-  </p>
-</section>
+    <div class="container">
+        
+        <div class="bento-item full-width">
+            <h1>Terms of Service</h1>
+            <p style="text-align: center;">Effective 2026. Please read our operating policies carefully.</p>
+        </div>
 
-<section>
-  <h2>Payments</h2>
-  <p>
-    A <strong>9% upfront payment</strong> is required to confirm your order.
-    The remaining <strong>91%</strong> is payable upon delivery.
-  </p>
-</section>
+        <div class="bento-item">
+            <h2>🛒 Orders</h2>
+            <p>By placing an order, you agree to provide accurate delivery information and remain reachable for the handover.</p>
+        </div>
 
-<section>
-  <h2>Delivery</h2>
-  <p>
-    Delivery times depend on your location and product availability.
-    We will contact you if delays occur.
-  </p>
-</section>
+        <div class="bento-item">
+            <h2>💳 Payments</h2>
+            <p>A <strong>9% upfront payment</strong> is required for confirmation. The remaining <strong>91% balance</strong> is settled upon delivery.</p>
+        </div>
 
-<section>
-  <h2>Returns</h2>
-  <p>
-    Returns are accepted within <strong>48 hours</strong> of delivery,
-    subject to our return policy.
-  </p>
-</section>
+        <div class="bento-item">
+            <h2>🚚 Delivery</h2>
+            <p>Times vary by location. We prioritize speed but will notify you instantly if supply chain delays occur.</p>
+        </div>
 
-<section>
-  <h2>Misuse</h2>
-   <p>
-  <a href="admin.html">Fake </a> orders or refusal to accept delivery may result in account restriction.
-  </p>
- 
-</section>
+        <div class="bento-item">
+            <h2>🔁 Returns</h2>
+            <p>We accept returns within <strong>48 hours</strong> of receipt, provided items are in their original, unused state.</p>
+        </div>
 
-</div>
+        <div class="bento-item full-width" style="border: 1px solid rgba(239, 68, 68, 0.2);">
+            <h2>⚠️ Misuse Policy</h2>
+            <p>
+                <a href="admin.html" class="secret-gate">Fake</a> orders, harassment, or repeated refusal to accept confirmed deliveries will result in permanent account restriction.
+            </p>
+        </div>
+
+    </div>
+
 </body>
 </html>
