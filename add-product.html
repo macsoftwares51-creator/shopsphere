@@ -1,180 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>ShopSphere Admin</title>
-<style>
-body{
-  font-family: Arial, sans-serif;
-  background:#0f172a;
-  color:white;
-  padding:40px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center | ShopSphere Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --card-bg: #0f172a;
+            --accent: #3b82f6;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-.container{
-  max-width:900px;
-  margin:auto;
-}
+        * { box-sizing: border-box; transition: all 0.2s ease; }
 
-h1{
-  text-align:center;
-  margin-bottom:30px;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #1e1b4b, transparent);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+        }
 
-form{
-  background:#1e293b;
-  padding:20px;
-  border-radius:10px;
-  margin-bottom:40px;
-}
+        .container { max-width: 1100px; margin: auto; }
 
-input, button{
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  border-radius:6px;
-  border:none;
-}
+        h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 40px; text-align: left; }
+        h1 span { color: var(--success); }
 
-input{
-  background:#334155;
-  color:white;
-}
+        /* Admin Navigation Grid */
+        .admin-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 50px;
+        }
 
-button{
-  background:#3b82f6;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-}
+        .nav-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-button:hover{
-  background:#2563eb;
-}
+        .nav-card:hover {
+            border-color: var(--accent);
+            background: #1e293b;
+            transform: translateY(-5px);
+        }
 
-.products{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
-  gap:20px;
-}
+        .nav-card b { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+        .nav-card span { font-size: 18px; font-weight: 700; }
 
-.card{
-  background:#1e293b;
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
-}
+        /* Main Content Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
 
-.card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  border-radius:8px;
-}
+        /* Form Styling */
+        .form-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
 
-.delete{
-  background:#ef4444;
-  margin-top:10px;
-}
+        .form-section h2 { font-size: 20px; margin-top: 0; margin-bottom: 20px; }
 
-.delete:hover{
-  background:#dc2626;
-}
-  .nav-btn{
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:0.25s;
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #1e293b;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+        }
 
-.nav-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 15px rgba(0,0,0,0.35);
-}
-.nav-btn:active{
-  transform: scale(0.97);
-</style>
+        input:focus { border-color: var(--accent); }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .add-btn:hover { background: #2563eb; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+
+        /* Product Inventory Grid */
+        .inventory-section h2 { font-size: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 { font-size: 16px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card p { color: var(--text-dim); font-size: 14px; margin: 5px 0 15px; }
+        .card .price { color: var(--success); font-weight: 800; font-size: 16px; }
+
+        .delete-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover { background: var(--danger); color: white; }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .form-section { position: relative; }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-<h1>ShopSphere Admin Panel</h1>
- <a class="nav-btn" href="products.html">Products</a>
- <a class="nav-btn" href="admin-requests.html">REQUESTS</a>
-   <a class="nav-btn" href="adminsellers.html">products awaiting approval</a>
-     <a class="nav-btn" href="admin-review.html">reviews awaiting approval</a>
-<form id="form" enctype="multipart/form-data">
-  <input name="name" placeholder="Product name" required />
-  <input name="price" placeholder="Price" required />
-  <input name="category" placeholder="Category" required />
-  <input name="image" type="file" accept="image/*" required />
-  <button>Add Product</button>
-</form>
+    <h1>Command <span>Center</span></h1>
 
-<h2>All Products</h2>
-<div class="products" id="products"></div>
+    <div class="admin-nav">
+        <a href="products.html" class="nav-card">
+            <b>Live Site</b>
+            <span>Public Store</span>
+        </a>
+        <a href="admin-requests.html" class="nav-card">
+            <b>Orders</b>
+            <span>Incoming Requests</span>
+        </a>
+        <a href="adminsellers.html" class="nav-card" style="border-color: var(--success);">
+            <b>Inventory</b>
+            <span>Seller Approvals</span>
+        </a>
+        <a href="admin-review.html" class="nav-card" style="border-color: #fbbf24;">
+            <b>Feedback</b>
+            <span>Review Moderation</span>
+        </a>
+    </div>
 
+    <div class="dashboard-grid">
+        <div class="form-section">
+            <h2>Add New Product</h2>
+            <form id="form">
+                <input name="name" placeholder="Product Name" required />
+                <input name="price" placeholder="Price (KES)" type="number" required />
+                <input name="category" placeholder="Category (e.g. Phones)" required />
+                <label style="font-size: 12px; color: var(--text-dim); margin-bottom: 5px; display: block;">Product Image</label>
+                <input name="image" type="file" accept="image/*" required />
+                <button class="add-btn">Publish to Store</button>
+            </form>
+        </div>
+
+        <div class="inventory-section">
+            <h2>Live Inventory <span id="count" style="color: var(--accent);">0</span></h2>
+            <div class="products-grid" id="products">
+                </div>
+        </div>
+    </div>
 </div>
 
 <script>
-
 const API = "https://shopsphere-backend-wr5o.onrender.com/products";
 const form = document.getElementById("form");
 const productsDiv = document.getElementById("products");
+const countSpan = document.getElementById("count");
 
 form.onsubmit = async (e)=>{
-  e.preventDefault();
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerText = "Processing...";
+    btn.disabled = true;
 
-  const formData = new FormData(form);
+    const formData = new FormData(form);
 
-  const res = await fetch(API,{
-    method:"POST",
-    body:formData
-  });
-
-  const result = await res.json();
-  alert("Product added successfully");
-
-  form.reset();
-  loadProducts();
+    try {
+        const res = await fetch(API, {
+            method: "POST",
+            body: formData
+        });
+        if(res.ok) {
+            form.reset();
+            loadProducts();
+        }
+    } catch (err) {
+        alert("Upload failed. Check console.");
+    } finally {
+        btn.innerText = "Publish to Store";
+        btn.disabled = false;
+    }
 };
 
 async function loadProducts(){
-  const res = await fetch(API);
-  const products = await res.json();
+    const res = await fetch(API);
+    const products = await res.json();
+    countSpan.innerText = products.length;
+    productsDiv.innerHTML = "";
 
-  productsDiv.innerHTML = "";
-
-  products.forEach(product=>{
-    productsDiv.innerHTML += `
-      <div class="card">
-        <img src="${product.image}" />
-        <h3>${product.name}</h3>
-        <p>KES ${product.price}</p>
-        <p>${product.category}</p>
-        <button class="delete" onclick="deleteProduct('${product._id}')">
-          Delete
-        </button>
-      </div>
-    `;
-  });
+    products.forEach(product=>{
+        productsDiv.innerHTML += `
+            <div class="card">
+                <img src="${product.image}" />
+                <h3>${product.name}</h3>
+                <p class="price">KES ${Number(product.price).toLocaleString()}</p>
+                <p>${product.category}</p>
+                <button class="delete-btn" onclick="deleteProduct('${product._id}')">
+                    Remove Product
+                </button>
+            </div>
+        `;
+    });
 }
 
 async function deleteProduct(id){
-  if(!confirm("Delete this product?")) return;
-
-  await fetch(API + "/" + id,{
-    method:"DELETE"
-  });
-
-  loadProducts();
+    if(!confirm("Are you sure? This will remove the product from the public site immediately.")) return;
+    await fetch(API + "/" + id, { method: "DELETE" });
+    loadProducts();
 }
 
 loadProducts();
-
 </script>
 </body>
 </html>
