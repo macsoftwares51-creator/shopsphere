@@ -1,162 +1,227 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Welcome – ShopSphere</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | ShopSphere</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-off: #121417;
+            --bg-on: #1c1f24;
+            --lamp-color: #f5f5dc;
+            --accent: #22c55e;
+        }
 
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  font-family: Arial, sans-serif;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(-45deg, #089226, #240c42, #3a0d5f, #1e0033);
-  background-size: 400% 400%;
-  animation: gradientMove 12s ease infinite;
-  color: white;
-}
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-off);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            transition: background 0.6s ease;
+        }
 
-/* Background animation */
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+        /* --- THE LAMP CSS --- */
+        .lamp-container {
+            position: relative;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
 
-/* Login box */
-.box {
-  background: rgba(66, 6, 41, 0.95);
-  padding: 45px 35px;
-  border-radius: 16px;
-  width: 340px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(196, 18, 18, 0.4);
-  animation: slideUp 0.8s ease;
-}
+        .lamp-top {
+            width: 120px;
+            height: 60px;
+            background: var(--lamp-color);
+            border-radius: 60px 60px 0 0;
+            position: relative;
+            z-index: 2;
+            transition: box-shadow 0.4s ease;
+        }
 
-/* Slide animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+        /* The Glow effect when ON */
+        body[data-on="true"] .lamp-top {
+            box-shadow: 0 -10px 50px rgba(245, 245, 220, 0.6), 
+                        0 0 100px rgba(245, 245, 220, 0.2);
+        }
 
-h2 {
-  margin-bottom: 25px;
-  font-weight: 600;
-}
+        .lamp-neck {
+            width: 12px;
+            height: 100px;
+            background: var(--lamp-color);
+            margin-top: -2px;
+        }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 12px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  transition: 0.3s ease;
-}
+        .lamp-base {
+            width: 80px;
+            height: 12px;
+            background: var(--lamp-color);
+            border-radius: 10px 10px 0 0;
+        }
 
-input:focus {
-  box-shadow: 0 0 0 2px #22c55e;
-}
+        /* The Pull String */
+        .pull-string {
+            position: absolute;
+            width: 2px;
+            height: 70px;
+            background: #555;
+            left: 70%;
+            top: 50px;
+            transition: transform 0.1s ease;
+        }
 
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
+        .pull-bead {
+            position: absolute;
+            bottom: -8px;
+            left: -3px;
+            width: 8px;
+            height: 8px;
+            background: #cd7f32;
+            border-radius: 50%;
+        }
 
-button.primary {
-  background: #22c55e;
-  color: white;
-}
+        /* --- THE LOGIN BOX --- */
+        .box {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 24px;
+            width: 340px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-button.primary:hover {
-  background: #16a34a;
-  transform: translateY(-2px);
-}
+        /* Shows when lamp is "ON" */
+        .box.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
 
-button.secondary {
-  background: #555;
-  color: white;
-}
+        h2 { margin-bottom: 10px; color: white; }
+        .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
 
-button.secondary:hover {
-  background: #777;
-  transform: translateY(-2px);
-}
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            outline: none;
+        }
 
-/* Small fade for text */
-.subtitle {
-  font-size: 14px;
-  margin-bottom: 20px;
-  opacity: 0.8;
-}
-</style>
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .primary { background: var(--accent); color: #052e16; }
+        .secondary { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); margin-top: 8px; }
+
+        .hint {
+            position: absolute;
+            top: -30px;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: bold;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
 </head>
 
-<body>
+<body data-on="false">
 
-<div class="box">
-  <h2>Welcome to ShopSphere</h2>
-  <div class="subtitle">Create an account or continue as guest</div>
+    <div class="lamp-container" onclick="toggleLamp()">
+        <div class="hint" id="hint">Pull string to start</div>
+        <div class="lamp-top"></div>
+        <div class="lamp-neck"></div>
+        <div class="lamp-base"></div>
+        <div class="pull-string" id="string">
+            <div class="pull-bead"></div>
+        </div>
+    </div>
 
-  <input id="name" placeholder="Your Name">
-  <input id="email" placeholder="Email (optional)">
+    <div class="box" id="loginForm">
+        <h2>ShopSphere</h2>
+        <div class="subtitle">Illuminate your shopping experience</div>
 
-  <button class="primary" onclick="createAccount()">Create Account</button>
-  <button class="secondary" onclick="continueGuest()">Continue as Guest</button>
-</div>
+        <input id="name" placeholder="Your Name">
+        <input id="email" placeholder="Email (optional)">
 
-<script>
-function createAccount() {
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
+        <button class="primary" onclick="createAccount()">Sign In</button>
+        <button class="secondary" onclick="continueGuest()">Guest Access</button>
+    </div>
 
-  if (!name) {
-    alert("Please enter your name");
-    return;
-  }
+    <script>
+        let isOn = false;
 
-  const user = {
-    name: name,
-    email: email || null,
-    type: "account"
-  };
+        function toggleLamp() {
+            isOn = !isOn;
+            
+            // Animation for the string pull
+            const string = document.getElementById("string");
+            string.style.transform = "translateY(10px)";
+            setTimeout(() => string.style.transform = "translateY(0)", 100);
 
-  localStorage.setItem("user", JSON.stringify(user));
+            // Hide the hint after first click
+            document.getElementById("hint").style.display = "none";
 
-  window.location.href = "home.html"; // change if needed
-}
+            // Update Body state
+            document.body.setAttribute("data-on", isOn);
 
-function continueGuest() {
-  const user = {
-    name: "Guest",
-    type: "guest"
-  };
+            const loginForm = document.getElementById("loginForm");
 
-  localStorage.setItem("user", JSON.stringify(user));
+            if (isOn) {
+                loginForm.classList.add("active");
+                // GSAP background transition
+                gsap.to("body", { backgroundColor: "#1c1f24", duration: 0.6 });
+            } else {
+                loginForm.classList.remove("active");
+                // GSAP background transition back
+                gsap.to("body", { backgroundColor: "#121417", duration: 0.6 });
+            }
+        }
 
-  window.location.href = "home.html"; // change if needed
-}
-</script>
+        /* --- LOGIC FROM YOUR PREVIOUS CODE --- */
+        function createAccount() {
+            const name = document.getElementById("name").value.trim();
+            if (!name) return alert("Please enter your name");
+            
+            localStorage.setItem("user", JSON.stringify({ name: name, type: "account" }));
+            window.location.href = "home.html";
+        }
 
+        function continueGuest() {
+            localStorage.setItem("user", JSON.stringify({ name: "Guest", type: "guest" }));
+            window.location.href = "home.html";
+        }
+    </script>
 </body>
 </html>
