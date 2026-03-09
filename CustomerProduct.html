@@ -1,111 +1,259 @@
-<h1>Customer Marketplace</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Market | ShopSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-<div class="filters">
-  <input id="search" placeholder="Search products...">
-  <select id="category">
-    <option value="">All Categories</option>
-  </select>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 0% 0%, #1e1b4b, #030712);
+            color: var(--text-main);
+            padding: 0 20px 40px;
+        }
+
+        /* Nav Header */
+        header.navbar {
+            position: sticky; top: 10px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 10px auto 30px; z-index: 1000; max-width: 1200px;
+        }
+
+        .brand { font-size: 20px; font-weight: 800; text-decoration: none; color: white; }
+        
+        .nav-btn {
+            background: var(--accent); color: #000;
+            padding: 8px 18px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 14px;
+            position: relative;
+        }
+
+        #cart-badge {
+            position: absolute; top: -8px; right: -8px;
+            background: #ef4444; color: white; font-size: 11px;
+            font-weight: 800; width: 20px; height: 20px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg); transform: scale(0);
+        }
+        .badge-pop { transform: scale(1) !important; }
+
+        /* Hero Banner for Marketplace */
+        .market-hero {
+            max-width: 1200px; margin: 0 auto 30px;
+            background: linear-gradient(to right, rgba(34, 197, 94, 0.1), transparent);
+            padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border);
+        }
+        .market-hero h1 { font-size: 42px; font-weight: 800; margin: 0; letter-spacing: -1.5px; }
+        .market-hero p { color: var(--text-dim); margin: 10px 0 0; }
+
+        /* Search & Filter */
+        .controls {
+            max-width: 1200px; margin: 0 auto 30px;
+            display: flex; gap: 15px;
+        }
+        input, select {
+            background: var(--card-bg); border: 1px solid var(--glass-border);
+            color: white; padding: 14px; border-radius: 16px; outline: none; flex: 1;
+        }
+
+        /* Product Grid */
+        .grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 28px; opacity: 0;
+            display: flex; flex-direction: column;
+        }
+        .reveal { animation: fadeInUp 0.6s forwards; }
+
+        .card:hover { transform: translateY(-8px); border-color: var(--accent); }
+
+        .card img {
+            width: 100%; height: 180px; object-fit: cover;
+            border-radius: 20px; margin-bottom: 15px; cursor: zoom-in;
+        }
+
+        .card h3 { font-size: 18px; margin: 0 0 5px; font-weight: 700; }
+        .card em { color: var(--accent); font-style: normal; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .card .price { font-size: 20px; font-weight: 800; margin: 15px 0; display: block; }
+
+        .add-btn {
+            background: white; color: black; border: none;
+            width: 100%; padding: 12px; border-radius: 14px;
+            font-weight: 800; cursor: pointer; margin-top: auto;
+        }
+        .add-btn:hover { background: var(--accent); }
+
+        /* Modal */
+        #imageModal {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
+        }
+
+        @media (max-width: 600px) {
+            .market-hero h1 { font-size: 28px; }
+            .controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="imageModal" onclick="this.style.display='none'">
+    <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;">
 </div>
 
-<div id="products"></div>
+<header class="navbar">
+    <a href="home.html" class="brand">ShopSphere Market</a>
+    <nav style="display: flex; gap: 10px;">
+        <a class="nav-btn" href="home.html" style="background: rgba(255,255,255,0.1); color: white;">Home</a>
+        <a class="nav-btn" href="cart.html" style="background: white;">
+            🛒 Cart <span id="cart-badge">0</span>
+        </a>
+    </nav>
+</header>
 
-<div id="imageModal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
-  <img id="modalImg" style="max-width:90%; max-height:90%; border-radius: 8px;">
+<div class="market-hero">
+    <h1>Customer Marketplace</h1>
+    <p>Unique items sold directly by our trusted community.</p>
+</div>
+
+<div class="controls">
+    <input id="search" placeholder="🔍 Search marketplace...">
+    <select id="category">
+        <option value="">All Categories</option>
+    </select>
+</div>
+
+<div class="grid" id="products">
+    <p style="text-align: center; grid-column: 1/-1;">Connecting to marketplace server...</p>
 </div>
 
 <script>
 let allProducts = [];
 
-// 1. FETCH DATA: Updated to ensure we handle the 404/HTML error safely
+// Fetch Marketplace Items
 fetch("https://shopsphere-backend-wr5o.onrender.com/SellerRequest/approved")
   .then(res => {
-    // If the server sends a 404, this stops it from trying to parse HTML as JSON
-    if (!res.ok) throw new Error("Could not find the approved products list.");
+    if (!res.ok) throw new Error("404");
     return res.json();
   })
   .then(data => {
-    console.log("Loaded approved products:", data);
     allProducts = data;
     fillCategories(data);
     render(data);
   })
-  .catch(error => {
-    console.error("Error loading products:", error);
-    document.getElementById("products").innerHTML = "<p>Unable to load products. Please check the API endpoint.</p>";
+  .catch(err => {
+    document.getElementById("products").innerHTML = `<p style="text-align:center; grid-column:1/-1; color: #ef4444;">Marketplace items couldn't be loaded. Try refreshing.</p>`;
   });
 
-// 2. RENDER FUNCTION: Builds the product cards
 function render(products) {
-  const box = document.getElementById("products");
-  if (!box) return; 
-  
-  box.innerHTML = "";
+    const box = document.getElementById("products");
+    box.innerHTML = "";
+    
+    products.forEach((p, index) => {
+        const name = p.name || "Unnamed Item";
+        const category = p.category || "General";
+        const price = Number(p.price) || 0;
+        const image = p.image || "https://via.placeholder.com/200";
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        setTimeout(() => card.classList.add('reveal'), index * 50);
 
-  products.forEach(p => {
-    const name = p.name || "Unnamed Product";
-    const category = p.category || "General";
-    const price = Number(p.price) || 0;
-    const image = p.image || "https://via.placeholder.com/200";
-
-    box.innerHTML += `
-      <div class="card" style="border: 1px solid #ddd; padding: 10px; margin: 10px; display: inline-block; width: 200px; vertical-align: top;">
-        <img src="${image}" onclick="openImage('${image}')" style="width:100%; cursor:pointer; height: 150px; object-fit: cover;" />
-        <h3>${name}</h3>
-        <p><em>${category}</em></p>
-        <div style="font-weight: bold; color: green;">Kshs ${price}</div>
-        <button onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})" style="margin-top: 10px; cursor: pointer;">
-          Add to Cart
-        </button>
-      </div>
-    `;
-  });
+        card.innerHTML = `
+            <img src="${image}" onclick="openImage('${image}')">
+            <em>${category}</em>
+            <h3>${name}</h3>
+            <span class="price">Kshs ${price.toLocaleString()}</span>
+            <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
+                Add to Cart
+            </button>
+        `;
+        box.appendChild(card);
+    });
 }
 
-// 3. UTILITY FUNCTIONS
+// Global Cart Utils
+function addToCart(name, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existing = cart.find(item => item.name === name);
+    if (existing) { existing.qty++; } 
+    else { cart.push({ name, price, qty: 1 }); }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartBadge();
+}
+
+function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const badge = document.getElementById("cart-badge");
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    badge.innerText = totalItems;
+    if (totalItems > 0) {
+        badge.classList.add("badge-pop");
+        badge.style.display = "flex";
+    } else {
+        badge.style.display = "none";
+    }
+}
+
 function fillCategories(products) {
-  const select = document.getElementById("category");
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
-  categories.forEach(cat => {
-    const opt = document.createElement("option");
-    opt.value = cat;
-    opt.textContent = cat;
-    select.appendChild(opt);
-  });
+    const select = document.getElementById("category");
+    const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+    categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        select.appendChild(opt);
+    });
 }
 
 function openImage(src) {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImg");
-  modalImg.src = src;
-  modal.style.display = "flex";
+    document.getElementById("modalImg").src = src;
+    document.getElementById("imageModal").style.display = "flex";
 }
 
-// Close modal when clicked
-document.getElementById("imageModal").onclick = function() {
-  this.style.display = "none";
-};
-
-// Filter logic
+// Filters
 document.getElementById("search").oninput = 
 document.getElementById("category").onchange = () => {
-  const q = document.getElementById("search").value.toLowerCase();
-  const cat = document.getElementById("category").value;
-
-  render(allProducts.filter(p =>
-    (p.name || "").toLowerCase().includes(q) &&
-    (!cat || p.category === cat)
-  ));
+    const q = document.getElementById("search").value.toLowerCase();
+    const cat = document.getElementById("category").value;
+    render(allProducts.filter(p => 
+        (p.name || "").toLowerCase().includes(q) && 
+        (!cat || p.category === cat)
+    ));
 };
 
-function addToCart(name, price) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const existing = cart.find(item => item.name === name);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ name, price, qty: 1 });
-  }
-  localStorage.setItem("cart", JSON.stringify(cart));
-  alert(name + " added to cart");
-}
+// Start
+updateCartBadge();
 </script>
+<script src="shopbuddy.js"></script>
+</body>
+</html>
