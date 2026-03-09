@@ -1,253 +1,302 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Your Cart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | ShopSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ef4444;
+        }
 
-<style>
-body {
-  font-family: impact;
-  background: #240c42;
-  color: white;
-  padding: 20px;
-}
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-h1 {
-  text-align: center;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 100%, #1e1b4b, #030712);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 20px 40px;
+            min-height: 100vh;
+        }
 
-.cart-item {
-  background: #420629;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+        /* Modern Header */
+        header.navbar {
+            position: sticky; top: 10px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 10px auto 40px; z-index: 1000; max-width: 800px;
+        }
 
-.controls button {
-  margin: 0 5px;
-  padding: 5px 10px;
-}
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -1px; }
+        .nav-btn {
+            background: rgba(255,255,255,0.1); color: white;
+            padding: 8px 16px; border-radius: 12px;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+        }
 
-button {
-  padding: 10px 18px;
-  background: #22c55e;
-  border: none;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 6px;
-}
+        /* Cart Layout */
+        .cart-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-button.danger {
-  background: #ef4444;
-}
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 30px; text-align: center; }
 
-button:hover {
-  opacity: 0.85;
-}
+        /* Customer Input Bento Tile */
+        .user-tile {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.total {
-  font-size: 22px;
-  margin-top: 20px;
-  text-align: center;
-}
+        .user-tile label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
 
-.center {
-  text-align: center;
-  margin-top: 20px;
-}
+        input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+        }
+        input:focus { border-color: var(--accent); }
 
-input {
-  padding: 10px;
-  width: 250px;
-  border-radius: 6px;
-  border: none;
-}
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 25px;
-  background: #1e0033;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
+        /* Cart Items */
+        .cart-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.5s ease forwards;
+        }
 
-.navbar a {
-  text-decoration: none;
-  color: #cbd5f5;
-  font-size: 16px;
-  margin-left: 15px;
-}
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.navbar a:hover {
-  color: #22c55e;
-}
-.nav-btn{
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:0.25s;
-}
+        .item-info b { font-size: 18px; display: block; margin-bottom: 4px; }
+        .item-info span { color: var(--text-dim); font-size: 14px; }
 
-.nav-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 15px rgba(0,0,0,0.35);
-}
+        .controls { display: flex; align-items: center; gap: 10px; }
+        
+        .qty-btn {
+            background: rgba(255,255,255,0.1);
+            color: white; border: none;
+            width: 32px; height: 32px;
+            border-radius: 8px; font-weight: 800;
+            cursor: pointer;
+        }
+        .qty-btn:hover { background: var(--accent); color: black; }
 
-/* Click effect */
-nav-btn:active{
-  transform: scale(0.97);
-}
-.brand {
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
-}
+        .remove-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 12px; border-radius: 10px;
+            cursor: pointer; font-weight: 600;
+        }
 
-/* Mobile responsiveness */
-@media (max-width:600px){
+        /* Summary Tile */
+        .summary-tile {
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            border: 1px solid var(--accent);
+            padding: 30px;
+            border-radius: 32px;
+            text-align: center;
+            margin-top: 30px;
+        }
 
-  button{
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 10px;
-  }
+        .total-amount { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 20px; }
 
+        .place-order-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+        }
+        .place-order-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .place-order-btn:active { transform: scale(0.98); }
 
-</style>
+        .clear-btn {
+            background: transparent;
+            color: var(--text-dim);
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+        /* Empty State */
+        .empty-msg { text-align: center; padding: 50px; color: var(--text-dim); }
+    </style>
 </head>
-
 <body>
-    <div class="navbar">
-  <div class="brand">ShopSphere</div>
-   <nav class="navbar">
-    <a class="nav-btn" href="products.html">Products</a>
-    <a class="nav-btn" href="home.html">Home</a>
-  </nav>
 
-</div>
+    <header class="navbar">
+        <div class="brand">ShopSphere</div>
+        <nav style="display: flex; gap: 10px;">
+            <a class="nav-btn" href="products.html">Store</a>
+            <a class="nav-btn" href="home.html">Home</a>
+        </nav>
+    </header>
 
+    <main class="cart-container">
+        <h1>🛒 Checkout</h1>
 
-<h1>🛒 Your Cart</h1>
-
-<div class="center">
-  <input id="customerName" placeholder="Your name">
-</div>
-
-<br>
-
-<div id="cart"></div>
-
-<div class="total" id="total"></div>
-
-<div class="center">
-  <button onclick="placeOrder()">Place Order via WhatsApp</button>
-  <br><br>
-  <button class="danger" onclick="clearCart()">Clear Cart</button>
-</div>
-
-<script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-function renderCart() {
-  const cartBox = document.getElementById("cart");
-  const totalBox = document.getElementById("total");
-
-  cartBox.innerHTML = "";
-  let total = 0;
-
-  if (cart.length === 0) {
-    cartBox.innerHTML = "<p>Your cart is empty</p>";
-    totalBox.innerText = "";
-    return;
-  }
-
-  cart.forEach((item, index) => {
-    total += item.price * item.qty;
-
-    cartBox.innerHTML += `
-      <div class="cart-item">
-        <div>
-          <strong>${item.name}</strong><br>
-          Kes: ${item.price} × ${item.qty}
+        <div class="user-tile">
+            <label>Confirm Your Name</label>
+            <input id="customerName" placeholder="Enter your full name">
         </div>
 
-        <div class="controls">
-          <button onclick="changeQty(${index}, 1)">+</button>
-          <button onclick="changeQty(${index}, -1)">-</button>
-          <button class="danger" onclick="removeItem(${index})">✕</button>
+        <div id="cart-items-list">
+            </div>
+
+        <div id="cart-summary" class="summary-tile" style="display: none;">
+            <div class="total-amount" id="total-display">Total: Kes 0</div>
+            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">
+                9% upfront to confirm • 91% on delivery
+            </p>
+            <button class="place-order-btn" onclick="placeOrder()">Order via WhatsApp</button>
+            <button class="clear-btn" onclick="clearCart()">Empty Cart</button>
         </div>
-      </div>
-    `;
-  });
 
-  totalBox.innerText = "Total: Kes: " + total;
-}
+        <div id="empty-state" class="empty-msg" style="display: none;">
+            <p>Your cart feels a bit light...</p>
+            <a href="products.html" class="nav-btn" style="background: var(--accent); color: black;">Go Shopping</a>
+        </div>
+    </main>
 
-function changeQty(index, delta) {
-  cart[index].qty += delta;
-  if (cart[index].qty <= 0) cart.splice(index, 1);
-  saveCart();
-}
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function removeItem(index) {
-  cart.splice(index, 1);
-  saveCart();
-}
+        function renderCart() {
+            const list = document.getElementById("cart-items-list");
+            const summary = document.getElementById("cart-summary");
+            const empty = document.getElementById("empty-state");
+            const totalDisplay = document.getElementById("total-display");
 
-function clearCart() {
-  if (!confirm("Clear cart?")) return;
-  cart = [];
-  saveCart();
-}
+            list.innerHTML = "";
+            let total = 0;
 
-function placeOrder() {
-  if (cart.length === 0) return alert("Cart is empty");
+            if (cart.length === 0) {
+                summary.style.display = "none";
+                empty.style.display = "block";
+                return;
+            }
 
-  const name = document.getElementById("customerName").value.trim();
-  if (!name) return alert("Please enter your name");
+            summary.style.display = "block";
+            empty.style.display = "none";
 
-  let message = `Hello, my name is ${name}. I want to order:%0A%0A`;
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                const itemEl = document.createElement("div");
+                itemEl.className = "cart-item";
+                itemEl.innerHTML = `
+                    <div class="item-info">
+                        <b>${item.name}</b>
+                        <span>Kes ${item.price.toLocaleString()} per unit</span>
+                    </div>
+                    <div class="controls">
+                        <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                        <span style="font-weight:bold; min-width: 20px; text-align:center">${item.qty}</span>
+                        <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                        <button class="remove-btn" onclick="removeItem(${index})">✕</button>
+                    </div>
+                `;
+                list.appendChild(itemEl);
+            });
 
-cart.forEach(item => {
-  message += `${item.name} x ${item.qty} = Kes: ${item.price * item.qty}%0A`;
-});
+            totalDisplay.innerText = "Total: Kes " + total.toLocaleString();
+        }
 
-message += `%0A💳 Payment Terms:%0A`;
-message += `9% upfront payment to confirm order%0A`;
-message += `91% payable upon delivery%0A`;
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
+            updateAndSave();
+        }
 
-message += `%0AThank you!`;
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateAndSave();
+        }
 
+        function clearCart() {
+            if (!confirm("Remove all items?")) return;
+            cart = [];
+            updateAndSave();
+        }
 
-  const phone = "254705779593";
+        function updateAndSave() {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+        }
 
-  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+        function placeOrder() {
+            const name = document.getElementById("customerName").value.trim();
+            if (!name) return alert("Please enter your name for delivery");
+            if (cart.length === 0) return;
 
-  // clear cart after order
-  cart = [];
-  saveCart();
-}
+            let message = `Hello ShopSphere!%0A%0A`;
+            message += `*Order for:* ${name}%0A`;
+            message += `*Items:*%0A`;
 
-renderCart();
-const savedUser = JSON.parse(localStorage.getItem("user"));
+            cart.forEach(item => {
+                message += `• ${item.name} (x${item.qty}) - Kes ${item.price * item.qty}%0A`;
+            });
 
-if (savedUser && savedUser.name) {
-  document.getElementById("customerName").value = savedUser.name;
-}
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            message += `%0A*Grand Total: Kes ${total}*%0A%0A`;
+            message += `_I understand the 9% upfront and 91% on delivery terms._`;
 
-</script>
+            const phone = "254705779593";
+            window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
 
+            // Optional: Clear cart after order
+            // cart = [];
+            // updateAndSave();
+        }
+
+        // Initialize
+        renderCart();
+
+        // Load saved user name
+        const savedUser = JSON.parse(localStorage.getItem("user"));
+        if (savedUser && savedUser.name) {
+            document.getElementById("customerName").value = savedUser.name;
+        }
+    </script>
 </body>
 </html>
