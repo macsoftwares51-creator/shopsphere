@@ -9,7 +9,7 @@ const API = "https://shopsphere-backend-wr5o.onrender.com";
 let products = [];
 
 async function loadProducts() {
-  const res = await fetch(API + "/sellers/approved");
+  const res = await fetch(API + "/SellerRequest/approved");
   products = await res.json();
   displayProducts(products);
 }
