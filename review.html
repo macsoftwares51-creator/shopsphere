@@ -18,7 +18,7 @@
 const API = "https://shopsphere-backend-wr5o.onrender.com";
 
 async function loadReviews() {
-  const res = await fetch(API + "/reviews");
+  const res = await fetch(API + "/Review");
   const reviews = await res.json();
 
   const container = document.getElementById("reviewList");
@@ -40,7 +40,7 @@ async function submitReview() {
   const rating = document.getElementById("revRating").value;
   const comment = document.getElementById("revComment").value;
 
-  await fetch(API + "/reviews", {
+  await fetch(API + "/Review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, rating, comment })
