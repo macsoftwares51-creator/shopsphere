@@ -179,22 +179,26 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-  const pName = p.productName || p.name || "Unnamed Item";
-        const pDesc = p.productDescription || p.description || p.desc || "No description available.";
-        const category = p.category || "General";
-        const price = Number(p.price) || 0;
-        const image = p.image || "https://via.placeholder.com/200";
-        
+        // EXACT MAPPING FROM YOUR BACKEND:
+        const itemTitle = p.productName || "Unnamed Item";
+        const itemPrice = p.price || 0;
+        const itemDesc = p.description || "No description provided.";
+        const itemImg = p.image || "https://via.placeholder.com/200";
+        const sellerName = p.name || "Unknown Seller"; // This is the person's name
+
         const card = document.createElement('div');
         card.className = 'card';
         setTimeout(() => card.classList.add('reveal'), index * 50);
 
         card.innerHTML = `
-            <img src="${image}" onclick="openImage('${image}')">
-            <em>${category}</em>
-            <h3>${name}</h3>
-            <span class="price">Kshs ${price.toLocaleString()}</span>
-            <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
+            <img src="${itemImg}" onclick="openImage('${itemImg}')" alt="${itemTitle}">
+            <em>Sold by: ${sellerName}</em>
+            <h3 style="margin-top: 10px; color: white;">${itemTitle}</h3>
+            <p style="font-size: 13px; color: var(--text-dim); margin: 10px 0; line-height: 1.4;">
+                ${itemDesc}
+            </p>
+            <span class="price">Kshs ${itemPrice.toLocaleString()}</span>
+            <button class="add-btn" onclick="addToCart('${itemTitle.replace(/'/g, "\\'")}', ${itemPrice})">
                 Add to Cart
             </button>
         `;
@@ -248,15 +252,14 @@ document.getElementById("category").onchange = () => {
     const cat = document.getElementById("category").value;
     
     const filtered = allProducts.filter(p => {
-        const nameToSearch = (p.productName || p.name || "").toLowerCase();
-        const matchesSearch = nameToSearch.includes(q);
-        const matchesCategory = !cat || p.category === cat;
-        return matchesSearch && matchesCategory;
+        // Matches against the Product Name instead of Seller Name
+        const productNameMatch = (p.productName || "").toLowerCase().includes(q);
+        const categoryMatch = !cat || p.category === cat;
+        return productNameMatch && categoryMatch;
     });
     
     render(filtered);
 };
-
 // Start
 updateCartBadge();
 </script>
