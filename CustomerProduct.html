@@ -179,11 +179,11 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-      const pName = p.productName || "Unnamed Item";
-        const pDesc = p.productDescription || "No description available.";
-        const category = p.category || "General";
-        const price = Number(p.price) || 0;
-        const image = p.image || "https://via.placeholder.com/200";
+     const itemTitle = p.productName || "Unnamed Item";
+        const itemPrice = p.price || 0;
+        const itemDesc = p.description || "No description provided.";
+        const itemImg = p.image || "https://via.placeholder.com/200";
+        const sellerName = p.name || "Unknown Seller";
         
         const card = document.createElement('div');
         card.className = 'card';
@@ -246,10 +246,15 @@ document.getElementById("search").oninput =
 document.getElementById("category").onchange = () => {
     const q = document.getElementById("search").value.toLowerCase();
     const cat = document.getElementById("category").value;
-    render(allProducts.filter(p => 
-        (p.productName || "").toLowerCase().includes(q) && 
-        (!cat || p.category === cat)
-    ));
+    
+    const filtered = allProducts.filter(p => {
+        // Matches against the Product Name instead of Seller Name
+        const productNameMatch = (p.productName || "").toLowerCase().includes(q);
+        const categoryMatch = !cat || p.category === cat;
+        return productNameMatch && categoryMatch;
+    });
+    
+    render(filtered);
 };
 
 // Start
