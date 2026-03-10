@@ -179,7 +179,8 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-        const productName = p.productName || "Unnamed Item";
+      const pName = p.productName || "Unnamed Item";
+        const pDesc = p.productDescription || "No description available.";
         const category = p.category || "General";
         const price = Number(p.price) || 0;
         const image = p.image || "https://via.placeholder.com/200";
@@ -246,7 +247,7 @@ document.getElementById("category").onchange = () => {
     const q = document.getElementById("search").value.toLowerCase();
     const cat = document.getElementById("category").value;
     render(allProducts.filter(p => 
-        (p.name || "").toLowerCase().includes(q) && 
+        (p.productName || "").toLowerCase().includes(q) && 
         (!cat || p.category === cat)
     ));
 };
