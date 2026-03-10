@@ -125,7 +125,7 @@ const API = "https://shopsphere-backend-wr5o.onrender.com";
 
 async function loadReviews() {
     try {
-        const res = await fetch(API + "/admin-review/approved",);
+        const res = await fetch(API + "/Review",);
         
         // Check if we got a 404 or 500
         if (!res.ok) {
