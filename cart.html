@@ -1,302 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart | ShopSphere</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #030712;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --accent: #22c55e;
-            --text-main: #f9fafb;
-            --text-dim: #9ca3af;
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --danger: #ef4444;
-        }
+<script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 100%, #1e1b4b, #030712);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0 20px 40px;
-            min-height: 100vh;
-        }
-
-        /* Modern Header */
-        header.navbar {
-            position: sticky; top: 10px;
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 12px 25px;
-            display: flex; justify-content: space-between; align-items: center;
-            margin: 10px auto 40px; z-index: 1000; max-width: 800px;
-        }
-
-        .brand { font-size: 20px; font-weight: 800; letter-spacing: -1px; }
-        .nav-btn {
-            background: rgba(255,255,255,0.1); color: white;
-            padding: 8px 16px; border-radius: 12px;
-            text-decoration: none; font-weight: 600; font-size: 14px;
-        }
-
-        /* Cart Layout */
-        .cart-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h1 { font-size: 32px; font-weight: 800; margin-bottom: 30px; text-align: center; }
-
-        /* Customer Input Bento Tile */
-        .user-tile {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            padding: 25px;
-            border-radius: 24px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .user-tile label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-
-        input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            width: 100%;
-            outline: none;
-        }
-        input:focus { border-color: var(--accent); }
-
-        /* Cart Items */
-        .cart-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: fadeInUp 0.5s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .item-info b { font-size: 18px; display: block; margin-bottom: 4px; }
-        .item-info span { color: var(--text-dim); font-size: 14px; }
-
-        .controls { display: flex; align-items: center; gap: 10px; }
+    function renderCart() {
+        const list = document.getElementById("cart-items-list");
+        const summary = document.getElementById("cart-summary");
+        const empty = document.getElementById("empty-state");
         
-        .qty-btn {
-            background: rgba(255,255,255,0.1);
-            color: white; border: none;
-            width: 32px; height: 32px;
-            border-radius: 8px; font-weight: 800;
-            cursor: pointer;
-        }
-        .qty-btn:hover { background: var(--accent); color: black; }
+        // Breakdown Displays
+        const subtotalDisplay = document.getElementById("subtotal-display");
+        const deliveryDisplay = document.getElementById("delivery-display");
+        const deliveryNote = document.getElementById("delivery-note");
+        const totalDisplay = document.getElementById("total-display");
 
-        .remove-btn {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 8px 12px; border-radius: 10px;
-            cursor: pointer; font-weight: 600;
+        list.innerHTML = "";
+        let subtotal = 0;
+
+        if (cart.length === 0) {
+            summary.style.display = "none";
+            empty.style.display = "block";
+            return;
         }
 
-        /* Summary Tile */
-        .summary-tile {
-            background: linear-gradient(135deg, #1e1b4b, #0f172a);
-            border: 1px solid var(--accent);
-            padding: 30px;
-            border-radius: 32px;
-            text-align: center;
-            margin-top: 30px;
+        summary.style.display = "block";
+        empty.style.display = "none";
+
+        cart.forEach((item, index) => {
+            subtotal += item.price * item.qty;
+            const itemEl = document.createElement("div");
+            itemEl.className = "cart-item";
+            itemEl.innerHTML = `
+                <div class="item-info">
+                    <b>${item.name}</b>
+                    <span>Kes ${item.price.toLocaleString()} per unit</span>
+                </div>
+                <div class="controls">
+                    <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                    <span style="font-weight:bold; min-width: 20px; text-align:center">${item.qty}</span>
+                    <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                    <button class="remove-btn" onclick="removeItem(${index})">✕</button>
+                </div>
+            `;
+            list.appendChild(itemEl);
+        });
+
+        // --- DELIVERY FEE LOGIC ---
+        let deliveryFee = 0;
+        let note = "";
+
+        if (subtotal < 1000) {
+            deliveryFee = 200;
+            note = "Delivery is Kes 200 for orders below Kes 1,000.";
+        } else if (subtotal >= 1000 && subtotal < 2000) {
+            deliveryFee = 100;
+            note = "Delivery is Kes 100 for orders between Kes 1,000 and Kes 2,000.";
+        } else {
+            deliveryFee = 0;
+            note = "Congrats! You've unlocked FREE delivery (Orders above Kes 2,000).";
         }
 
-        .total-amount { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 20px; }
+        const grandTotal = subtotal + deliveryFee;
 
-        .place-order-btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
-        }
-        .place-order-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .place-order-btn:active { transform: scale(0.98); }
+        // Update UI
+        subtotalDisplay.innerText = "Kes " + subtotal.toLocaleString();
+        deliveryDisplay.innerText = deliveryFee === 0 ? "FREE" : "Kes " + deliveryFee.toLocaleString();
+        deliveryNote.innerText = note;
+        totalDisplay.innerText = "Total: Kes " + grandTotal.toLocaleString();
+    }
 
-        .clear-btn {
-            background: transparent;
-            color: var(--text-dim);
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: underline;
-        }
+    function changeQty(index, delta) {
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+        updateAndSave();
+    }
 
-        /* Empty State */
-        .empty-msg { text-align: center; padding: 50px; color: var(--text-dim); }
-    </style>
-</head>
-<body>
+    function removeItem(index) {
+        cart.splice(index, 1);
+        updateAndSave();
+    }
 
-    <header class="navbar">
-        <div class="brand">ShopSphere</div>
-        <nav style="display: flex; gap: 10px;">
-            <a class="nav-btn" href="products.html">Store</a>
-            <a class="nav-btn" href="home.html">Home</a>
-        </nav>
-    </header>
+    function clearCart() {
+        if (!confirm("Remove all items?")) return;
+        cart = [];
+        updateAndSave();
+    }
 
-    <main class="cart-container">
-        <h1>🛒 Checkout</h1>
-
-        <div class="user-tile">
-            <label>Confirm Your Name</label>
-            <input id="customerName" placeholder="Enter your full name">
-        </div>
-
-        <div id="cart-items-list">
-            </div>
-
-        <div id="cart-summary" class="summary-tile" style="display: none;">
-            <div class="total-amount" id="total-display">Total: Kes 0</div>
-            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">
-                9% upfront to confirm • 91% on delivery
-            </p>
-            <button class="place-order-btn" onclick="placeOrder()">Order via WhatsApp</button>
-            <button class="clear-btn" onclick="clearCart()">Empty Cart</button>
-        </div>
-
-        <div id="empty-state" class="empty-msg" style="display: none;">
-            <p>Your cart feels a bit light...</p>
-            <a href="products.html" class="nav-btn" style="background: var(--accent); color: black;">Go Shopping</a>
-        </div>
-    </main>
-
-    <script>
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        function renderCart() {
-            const list = document.getElementById("cart-items-list");
-            const summary = document.getElementById("cart-summary");
-            const empty = document.getElementById("empty-state");
-            const totalDisplay = document.getElementById("total-display");
-
-            list.innerHTML = "";
-            let total = 0;
-
-            if (cart.length === 0) {
-                summary.style.display = "none";
-                empty.style.display = "block";
-                return;
-            }
-
-            summary.style.display = "block";
-            empty.style.display = "none";
-
-            cart.forEach((item, index) => {
-                total += item.price * item.qty;
-                const itemEl = document.createElement("div");
-                itemEl.className = "cart-item";
-                itemEl.innerHTML = `
-                    <div class="item-info">
-                        <b>${item.name}</b>
-                        <span>Kes ${item.price.toLocaleString()} per unit</span>
-                    </div>
-                    <div class="controls">
-                        <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
-                        <span style="font-weight:bold; min-width: 20px; text-align:center">${item.qty}</span>
-                        <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
-                        <button class="remove-btn" onclick="removeItem(${index})">✕</button>
-                    </div>
-                `;
-                list.appendChild(itemEl);
-            });
-
-            totalDisplay.innerText = "Total: Kes " + total.toLocaleString();
-        }
-
-        function changeQty(index, delta) {
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) cart.splice(index, 1);
-            updateAndSave();
-        }
-
-        function removeItem(index) {
-            cart.splice(index, 1);
-            updateAndSave();
-        }
-
-        function clearCart() {
-            if (!confirm("Remove all items?")) return;
-            cart = [];
-            updateAndSave();
-        }
-
-        function updateAndSave() {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            renderCart();
-        }
-
-        function placeOrder() {
-            const name = document.getElementById("customerName").value.trim();
-            if (!name) return alert("Please enter your name for delivery");
-            if (cart.length === 0) return;
-
-            let message = `Hello ShopSphere!%0A%0A`;
-            message += `*Order for:* ${name}%0A`;
-            message += `*Items:*%0A`;
-
-            cart.forEach(item => {
-                message += `• ${item.name} (x${item.qty}) - Kes ${item.price * item.qty}%0A`;
-            });
-
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            message += `%0A*Grand Total: Kes ${total}*%0A%0A`;
-            message += `_I understand the 9% upfront and 91% on delivery terms._`;
-
-            const phone = "254111803422";
-            window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-
-            // Optional: Clear cart after order
-            // cart = [];
-            // updateAndSave();
-        }
-
-        // Initialize
+    function updateAndSave() {
+        localStorage.setItem("cart", JSON.stringify(cart));
         renderCart();
+    }
 
-        // Load saved user name
-        const savedUser = JSON.parse(localStorage.getItem("user"));
-        if (savedUser && savedUser.name) {
-            document.getElementById("customerName").value = savedUser.name;
-        }
-    </script>
-</body>
-</html>
+    function placeOrder() {
+        const name = document.getElementById("customerName").value.trim();
+        if (!name) return alert("Please enter your name for delivery");
+        if (cart.length === 0) return;
+
+        // Recalculate for WhatsApp message
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        let deliveryFee = subtotal < 1000 ? 200 : (subtotal < 2000 ? 100 : 0);
+        const total = subtotal + deliveryFee;
+
+        let message = `Hello ShopSphere!%0A%0A`;
+        message += `*Order for:* ${name}%0A`;
+        message += `*Items:*%0A`;
+
+        cart.forEach(item => {
+            message += `• ${item.name} (x${item.qty}) - Kes ${item.price * item.qty}%0A`;
+        });
+
+        message += `%0A--------------------------%0A`;
+        message += `Subtotal: Kes ${subtotal.toLocaleString()}%0A`;
+        message += `Delivery Fee: ${deliveryFee === 0 ? "FREE" : "Kes " + deliveryFee}%0A`;
+        message += `*Grand Total: Kes ${total.toLocaleString()}*%0A`;
+        message += `--------------------------%0A%0A`;
+        message += `_I understand the 9% upfront and 91% on delivery terms._`;
+
+        const phone = "254111803422";
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    }
+
+    renderCart();
+</script>
