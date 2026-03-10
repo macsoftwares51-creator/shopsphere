@@ -401,70 +401,74 @@
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     function renderCart() {
-        const list = document.getElementById("cart-items-list");
-        const summary = document.getElementById("cart-summary");
-        const empty = document.getElementById("empty-state");
-        
-        // Breakdown Displays
-        const subtotalDisplay = document.getElementById("subtotal-display");
-        const deliveryDisplay = document.getElementById("delivery-display");
-        const deliveryNote = document.getElementById("delivery-note");
-        const totalDisplay = document.getElementById("total-display");
+  function renderCart() {
+    const list = document.getElementById("cart-items-list");
+    const summary = document.getElementById("cart-summary");
+    const empty = document.getElementById("empty-state");
+    
+    // Target the specific IDs we added in the previous step
+    const subtotalDisplay = document.getElementById("subtotal-display");
+    const deliveryDisplay = document.getElementById("delivery-display");
+    const deliveryNote = document.getElementById("delivery-note");
+    const totalDisplay = document.getElementById("total-display");
 
-        list.innerHTML = "";
-        let subtotal = 0;
+    list.innerHTML = "";
+    let subtotal = 0;
 
-        if (cart.length === 0) {
-            summary.style.display = "none";
-            empty.style.display = "block";
-            return;
-        }
-
-        summary.style.display = "block";
-        empty.style.display = "none";
-
-        cart.forEach((item, index) => {
-            subtotal += item.price * item.qty;
-            const itemEl = document.createElement("div");
-            itemEl.className = "cart-item";
-            itemEl.innerHTML = `
-                <div class="item-info">
-                    <b>${item.name}</b>
-                    <span>Kes ${item.price.toLocaleString()} per unit</span>
-                </div>
-                <div class="controls">
-                    <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
-                    <span style="font-weight:bold; min-width: 20px; text-align:center">${item.qty}</span>
-                    <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
-                    <button class="remove-btn" onclick="removeItem(${index})">✕</button>
-                </div>
-            `;
-            list.appendChild(itemEl);
-        });
-
-        // --- DELIVERY FEE LOGIC ---
-        let deliveryFee = 0;
-        let note = "";
-
-        if (subtotal < 1000) {
-            deliveryFee = 200;
-            note = "Delivery is Kes 200 for orders below Kes 1,000.";
-        } else if (subtotal >= 1000 && subtotal < 2000) {
-            deliveryFee = 100;
-            note = "Delivery is Kes 100 for orders between Kes 1,000 and Kes 2,000.";
-        } else {
-            deliveryFee = 0;
-            note = "Congrats! You've unlocked FREE delivery (Orders above Kes 2,000).";
-        }
-
-        const grandTotal = subtotal + deliveryFee;
-
-        // Update UI
-        subtotalDisplay.innerText = "Kes " + subtotal.toLocaleString();
-        deliveryDisplay.innerText = deliveryFee === 0 ? "FREE" : "Kes " + deliveryFee.toLocaleString();
-        deliveryNote.innerText = note;
-        totalDisplay.innerText = "Total: Kes " + grandTotal.toLocaleString();
+    if (cart.length === 0) {
+        summary.style.display = "none";
+        empty.style.display = "block";
+        return;
     }
+
+    summary.style.display = "block";
+    empty.style.display = "none";
+
+    // 1. Calculate the subtotal from items in cart
+    cart.forEach((item, index) => {
+        subtotal += item.price * item.qty;
+        const itemEl = document.createElement("div");
+        itemEl.className = "cart-item";
+        itemEl.innerHTML = `
+            <div class="item-info">
+                <b>${item.name}</b>
+                <span>Kes ${item.price.toLocaleString()} per unit</span>
+            </div>
+            <div class="controls">
+                <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                <span style="font-weight:bold; min-width: 20px; text-align:center">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                <button class="remove-btn" onclick="removeItem(${index})">✕</button>
+            </div>
+        `;
+        list.appendChild(itemEl);
+    });
+
+    // 2. Determine Delivery Fee
+    let deliveryFee = 0;
+    let note = "";
+
+    if (subtotal < 1000) {
+        deliveryFee = 200;
+        note = "Delivery is Kes 200 for orders below Kes 1,000.";
+    } else if (subtotal >= 1000 && subtotal < 2000) {
+        deliveryFee = 100;
+        note = "Delivery is Kes 100 for orders between Kes 1,000 and Kes 2,000.";
+    } else {
+        deliveryFee = 0;
+        note = "Congrats! You've unlocked FREE delivery! (Orders above Kes 2,000)";
+    }
+
+    const grandTotal = subtotal + deliveryFee;
+
+    // 3. FORCE UPDATE THE UI (This fixes the Kes 0 issue)
+    if (subtotalDisplay) subtotalDisplay.innerText = "Kes " + subtotal.toLocaleString();
+    if (deliveryDisplay) deliveryDisplay.innerText = deliveryFee === 0 ? "FREE" : "Kes " + deliveryFee.toLocaleString();
+    if (deliveryNote) deliveryNote.innerText = note;
+    
+    // This targets the big Green "Total: Kes 0" in your screenshot
+    totalDisplay.innerText = "Total: Kes " + grandTotal.toLocaleString();
+}
 
     function changeQty(index, delta) {
         cart[index].qty += delta;
