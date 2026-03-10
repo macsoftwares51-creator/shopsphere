@@ -179,7 +179,7 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-        const name = p.name || "Unnamed Item";
+        const productName = p.productName || "Unnamed Item";
         const category = p.category || "General";
         const price = Number(p.price) || 0;
         const image = p.image || "https://via.placeholder.com/200";
