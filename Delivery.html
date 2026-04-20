@@ -56,11 +56,11 @@
                 signatureImg: signaturePad.toDataURL()
             };
 
-            const response = await fetch('/api/proof/submit-proof', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+           const response = await fetch('https://shopsphere-backend.onrender.com/api/proof/submit-proof', { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+});
 
             if (response.ok) alert("Proof submitted! Naming format applied.");
         };
