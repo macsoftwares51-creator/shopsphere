@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopsphere Delivery Proof</title>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        canvas { border: 2px solid #333; width: 100%; height: 200px; background: #fff; border-radius: 5px; }
+        button { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        input { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Shopsphere PoD</h2>
+    <p>Order ID: <b id="orderDisplay">Loading...</b></p>
+
+    <label>1. Take Product Photo</label><br>
+    <input type="file" id="photoInput" accept="image/*" capture="environment"><br>
+
+    <label>2. Customer Signature</label>
+    <canvas id="signature-pad"></canvas>
+    
+    <button id="clear">Clear Signature</button>
+    <button id="submit">UPLOAD PROOF</button>
+</div>
+
+<script>
+    // Get Order ID from URL (e.g., delivery.html?id=1002)
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id') || "UNKNOWN";
+    document.getElementById('orderDisplay').innerText = orderId;
+
+    const canvas = document.getElementById('signature-pad');
+    const signaturePad = new SignaturePad(canvas);
+
+    document.getElementById('clear').addEventListener('click', () => signaturePad.clear());
+
+    document.getElementById('submit').addEventListener('click', async () => {
+        const photoFile = document.getElementById('photoInput').files[0];
+        if (!photoFile || signaturePad.isEmpty()) {
+            return alert("Please provide both a photo and a signature.");
+        }
+
+        // Convert photo to Base64
+        const reader = new FileReader();
+        reader.readAsDataURL(photoFile);
+        reader.onloadend = async () => {
+            const payload = {
+                orderId: orderId,
+                productImg: reader.result,
+                signatureImg: signaturePad.toDataURL()
+            };
+
+            const response = await fetch('/api/proof/submit-proof', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) alert("Proof submitted! Naming format applied.");
+        };
+    });
+</script>
+</body>
+</html>
