@@ -81,7 +81,7 @@ function updateCarousel(index) {
 }
 
 // Fetch products from your database API
-fetch('https://shopsphere-backend.onrender.com/api/products')
+fetch('https://shopsphere-backend-wr5o.onrender.com/api/products')
     .then(res => res.json())
     .then(data => {
         products = data;
