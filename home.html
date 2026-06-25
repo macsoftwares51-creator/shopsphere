@@ -71,12 +71,12 @@
         /* HEADER - Expanded Edge-to-Edge */
         header {
             position: sticky; top: 10px;
-            margin: 10px 24px;
+            margin: 10px 16px;
             background: rgba(3, 7, 18, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 14px 32px;
+            padding: 14px 24px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 1000;
         }
@@ -172,9 +172,35 @@
         }
 
         @media (max-width: 900px) {
-            .bento-container { grid-template-columns: 1fr; }
-            .hero-tile, .action-tile, .info-tile, .loc-tile, .steps-container, .footer-container { grid-column: span 1 !important; }
-            .steps-container, .footer-container { grid-template-columns: 1fr; }
+            /* Removes empty side spacing on small screens */
+            .bento-container { 
+                grid-template-columns: 1fr; 
+                padding: 0 12px; 
+                gap: 12px; 
+            }
+            header { 
+                margin: 10px 12px; 
+                padding: 12px 16px; 
+            }
+            
+            /* Spans full screen width completely */
+            .hero-tile, .action-tile, .info-tile, .loc-tile, .steps-container, .footer-container { 
+                grid-column: span 1 !important; 
+            }
+            
+            /* Eliminates layout crowding, items dynamically fill screen estate */
+            .steps-container, .footer-container { 
+                grid-template-columns: 1fr; 
+                gap: 12px; 
+            }
+            
+            .bento-item { 
+                padding: 24px 16px; 
+                border-radius: 24px; 
+            }
+            .step-card { 
+                padding: 24px 16px; 
+            }
         }
     </style>
 </head>
@@ -198,17 +224,20 @@
     </header>
 
     <main class="bento-container">
+        <!-- HERO TILE -->
         <section class="bento-item hero-tile">
             <h2>Discover.<br>Shop. Enjoy.</h2>
             <p>Your premium marketplace. Verified sellers, secure payments, and lightning fast delivery.</p>
         </section>
 
+        <!-- ACTION TILE -->
         <section class="bento-item action-tile">
             <a href="products.html" class="btn-modern btn-green">Official Shop</a>
             <a href="CustomerProduct.html" class="btn-modern">Customer Market</a>
             <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
         </section>
 
+        <!-- CAROUSEL PANEL -->
         <section class="bento-item reveal" style="grid-column: span 4; padding: 0; overflow: hidden; background: var(--card-bg);">
             <div class="relative w-full p-6 md:p-12 overflow-hidden flex flex-col justify-between min-h-[450px] md:min-h-0">
                 
@@ -245,11 +274,13 @@
             </div>
         </section>
 
+        <!-- SECURE SHOPPING -->
         <section class="bento-item info-tile">
             <h3>💳 Secure Shopping</h3>
             <p>Pay <strong>9%</strong> commitment fee to confirm your order, and <strong>91%</strong> balance on delivery.</p>
         </section>
 
+        <!-- COVERAGE AREAS -->
         <section class="bento-item loc-tile">
             <h3>📍 Coverage Areas</h3>
             <div class="loc-list">
@@ -257,6 +288,7 @@
             </div>
         </section>
 
+        <!-- STEPS CONTAINER -->
         <div class="steps-container">
             <div class="step-card"><div class="step-num">1</div><p>Pick Item</p></div>
             <div class="step-card"><div class="step-num">2</div><p>Add to Cart</p></div>
@@ -264,6 +296,7 @@
             <div class="step-card"><div class="step-num">4</div><p>WhatsApp</p></div>
         </div>
 
+        <!-- FOOTER LINKS ROW CONTAINER -->
         <div class="footer-container">
             <section class="bento-item reveal" style="padding: 25px 20px; text-align: center; justify-content: center; align-items: center;">
                 <a href="review.html" style="color:var(--accent); text-decoration:none; font-weight:bold; font-size: 16px;">Reviews →</a>
