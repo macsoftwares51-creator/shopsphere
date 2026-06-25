@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShopSphere | Next-Gen Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -40,7 +40,8 @@
             background-color: var(--bg);
             color: var(--text-main);
             line-height: 1.6;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Strict containment to prevent side-scrolling */
+            width: 100%;
         }
 
         /* BACKGROUND GLOW */
@@ -68,7 +69,7 @@
         .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--accent); animation: loading 1.5s infinite; }
         .preloader-hidden { opacity: 0; visibility: hidden; }
 
-        /* HEADER - Expanded Edge-to-Edge */
+        /* HEADER */
         header {
             position: sticky; top: 10px;
             margin: 10px 16px;
@@ -91,11 +92,11 @@
             text-decoration: none; font-weight: 700; font-size: 14px;
         }
 
-        /* BENTO GRID - Full Screen Real Estate (Render Style) */
+        /* BENTO GRID CONTAINER */
         .bento-container {
             width: 100%;
-            max-width: 100%; 
-            margin: 24px 0;
+            max-width: 1400px; 
+            margin: 24px auto;
             display: grid; 
             grid-template-columns: repeat(4, 1fr);
             gap: 24px; 
@@ -108,9 +109,10 @@
             border: 1px solid var(--glass-border);
             border-radius: 32px;
             padding: 32px;
-            opacity: 0; /* For Reveal */
+            opacity: 0;
             display: flex; flex-direction: column; justify-content: center;
             width: 100%;
+            min-width: 0; /* Critical fix for grid items expanding past container boundaries */
         }
 
         .reveal { animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
@@ -133,6 +135,7 @@
             background: white; color: black; padding: 16px;
             border-radius: 16px; text-decoration: none; text-align: center;
             font-weight: 700; position: relative; overflow: hidden;
+            width: 100%;
         }
         .btn-green { background: var(--accent) !important; }
         .btn-modern:active { transform: scale(0.95); }
@@ -141,9 +144,36 @@
         .info-tile { grid-column: span 2; background: #111827; }
         .info-tile h3 { color: var(--accent); margin-top: 0; }
         .loc-tile { grid-column: span 2; }
-        .loc-list { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .loc-list { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; word-break: break-word; }
 
-        /* MULTI-COLUMN INTERIOR TRACKS */
+        /* CAROUSEL FLUIDITY ADJUSTMENTS */
+        .carousel-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 24px;
+        }
+        .carousel-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: center;
+            width: 100%;
+        }
+        .carousel-img-box {
+            background: rgba(3, 7, 18, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1;
+        }
+        .carousel-img-box img { max-width: 100%; max-height: 250px; object-contain; }
+
+        /* NESTED CONTENT TRACKS */
         .steps-container, .footer-container { 
             grid-column: span 4; 
             display: grid; 
@@ -164,42 +194,51 @@
             margin: 0 auto 12px; font-weight: 800; 
         }
 
-        /* RESPONSIVE DESIGN ADJUSTMENTS */
-        @media (max-width: 1024px) {
-            .bento-container { gap: 16px; padding: 0 16px; margin: 16px 0; }
-            header { margin: 10px 16px; padding: 12px 20px; }
-            .steps-container, .footer-container { gap: 16px; }
-        }
-
+        /* MOBILE RESPONSIVE REPAIR OVERHAUL */
         @media (max-width: 900px) {
-            /* Removes empty side spacing on small screens */
             .bento-container { 
                 grid-template-columns: 1fr; 
-                padding: 0 12px; 
-                gap: 12px; 
+                padding: 0 16px; 
+                gap: 16px; 
+                overflow-hidden: hidden;
             }
             header { 
-                margin: 10px 12px; 
+                margin: 10px 16px; 
                 padding: 12px 16px; 
             }
             
-            /* Spans full screen width completely */
             .hero-tile, .action-tile, .info-tile, .loc-tile, .steps-container, .footer-container { 
                 grid-column: span 1 !important; 
             }
             
-            /* Eliminates layout crowding, items dynamically fill screen estate */
+            /* Native 2x2 responsive tracks that respect screen limits */
             .steps-container, .footer-container { 
-                grid-template-columns: 1fr; 
+                grid-template-columns: repeat(2, 1fr); 
                 gap: 12px; 
+                width: 100%;
             }
             
             .bento-item { 
-                padding: 24px 16px; 
+                padding: 24px 20px; 
                 border-radius: 24px; 
             }
             .step-card { 
-                padding: 24px 16px; 
+                padding: 20px 12px; 
+                border-radius: 18px;
+            }
+
+            /* Unravel structural layout issues inside native Carousel frame */
+            .carousel-split {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                text-align: center;
+            }
+            .carousel-img-box {
+                max-width: 220px;
+                margin: 0 auto;
+            }
+            .carousel-wrapper {
+                padding: 20px 16px;
             }
         }
     </style>
@@ -237,40 +276,40 @@
             <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
         </section>
 
-        <!-- CAROUSEL PANEL -->
+        <!-- FLUID CAROUSEL PANEL -->
         <section class="bento-item reveal" style="grid-column: span 4; padding: 0; overflow: hidden; background: var(--card-bg);">
-            <div class="relative w-full p-6 md:p-12 overflow-hidden flex flex-col justify-between min-h-[450px] md:min-h-0">
+            <div class="carousel-wrapper">
                 
-                <div class="mb-6 md:mb-4 flex justify-center md:justify-start">
+                <div style="margin-bottom: 16px; display: flex; justify-content: inherit;">
                     <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); padding: 6px 16px; border-radius: 50px; display: inline-block;">
                         Trending Now
                     </span>
                 </div>
 
-                <div id="carousel-content" style="opacity: 1; transform: translateX(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" class="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-12 items-center w-full grow">
+                <div id="carousel-content" class="carousel-split">
                     
-                    <div class="flex justify-center bg-gray-950/40 p-6 rounded-2xl border border-white/5 w-full max-w-[280px] md:max-w-md mx-auto aspect-square items-center group overflow-hidden shrink-0">
-                        <img id="carousel-img" src="https://via.placeholder.com/300" alt="Product" class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 filter drop-shadow(0 10px 15px rgba(0,0,0,0.5))" />
+                    <div class="carousel-img-box">
+                        <img id="carousel-img" src="https://via.placeholder.com/300" alt="Product" />
                     </div>
 
-                    <div class="flex flex-col justify-center space-y-3 md:space-y-5 text-center md:text-left w-full min-w-0 grow">
+                    <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
                         <span id="carousel-category" style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim);">Loading...</span>
-                        <h2 id="carousel-title" style="font-size: clamp(22px, 3.5vw, 36px); font-weight: 800; line-height: 1.2; margin: 0; color: var(--text-main); word-wrap: break-word;" class="line-clamp-2">Loading Shopsphere favorites...</h2>
-                        <p id="carousel-desc" style="color: var(--text-dim); font-size: clamp(14px, 1.8vw, 16px); margin: 0;" class="line-clamp-2 md:line-clamp-3"></p>
+                        <h2 id="carousel-title" style="font-size: clamp(20px, 3vw, 28px); font-weight: 800; line-heading: 1.2; margin: 0; color: var(--text-main); word-break: break-word;">Loading Shopsphere favorites...</h2>
+                        <p id="carousel-desc" style="color: var(--text-dim); font-size: 14px; margin: 0;"></p>
                         
-                        <div class="flex items-center justify-center md:justify-start pt-1">
-                            <span id="carousel-price" style="font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--accent);"></span>
+                        <div style="padding-top: 4px;">
+                            <span id="carousel-price" style="font-size: 24px; font-weight: 800; color: var(--accent);"></span>
                         </div>
 
-                        <div class="pt-2">
-                            <button class="w-full md:w-auto px-6 py-3 bg-white text-black hover:bg-emerald-500 font-bold text-sm md:text-base rounded-xl transition-all duration-200 cursor-pointer shadow-lg active:scale-95">
+                        <div style="padding-top: 8px;">
+                            <button style="width: 100%; padding: 12px; background: white; color: black; border: none; font-weight: 700; font-size: 14px; border-radius: 12px; cursor: pointer;">
                                 View Details
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div id="carousel-dots" class="flex justify-center gap-2 mt-6 md:mt-8 shrink-0"></div>
+                <div id="carousel-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 16px;"></div>
             </div>
         </section>
 
@@ -290,28 +329,28 @@
 
         <!-- STEPS CONTAINER -->
         <div class="steps-container">
-            <div class="step-card"><div class="step-num">1</div><p>Pick Item</p></div>
-            <div class="step-card"><div class="step-num">2</div><p>Add to Cart</p></div>
-            <div class="step-card"><div class="step-num">3</div><p>Review</p></div>
-            <div class="step-card"><div class="step-num">4</div><p>WhatsApp</p></div>
+            <div class="step-card"><div class="step-num">1</div><p style="margin:0; font-size:14px; font-weight:600;">Pick Item</p></div>
+            <div class="step-card"><div class="step-num">2</div><p style="margin:0; font-size:14px; font-weight:600;">Add to Cart</p></div>
+            <div class="step-card"><div class="step-num">3</div><p style="margin:0; font-size:14px; font-weight:600;">Review</p></div>
+            <div class="step-card"><div class="step-num">4</div><p style="margin:0; font-size:14px; font-weight:600;">WhatsApp</p></div>
         </div>
 
-        <!-- FOOTER LINKS ROW CONTAINER -->
+        <!-- FOOTER LINKS CONTAINER -->
         <div class="footer-container">
-            <section class="bento-item reveal" style="padding: 25px 20px; text-align: center; justify-content: center; align-items: center;">
-                <a href="review.html" style="color:var(--accent); text-decoration:none; font-weight:bold; font-size: 16px;">Reviews →</a>
+            <section class="bento-item reveal" style="padding: 20px; text-align: center; justify-content: center; align-items: center; border-radius: 18px;">
+                <a href="review.html" style="color:var(--accent); text-decoration:none; font-weight:bold; font-size: 15px;">Reviews →</a>
             </section>
             
-            <section class="bento-item reveal" style="padding: 25px 20px; text-align: center; justify-content: center; align-items: center;">
-                <a href="about.html" style="color:white; text-decoration:none; font-size: 16px; font-weight: 600;">About</a>
+            <section class="bento-item reveal" style="padding: 20px; text-align: center; justify-content: center; align-items: center; border-radius: 18px;">
+                <a href="about.html" style="color:white; text-decoration:none; font-size: 15px; font-weight: 600;">About</a>
             </section>
             
-            <section class="bento-item reveal" style="padding: 25px 20px; text-align: center; justify-content: center; align-items: center;">
-                <a href="contact.html" style="color:white; text-decoration:none; font-size: 16px; font-weight: 600;">Contact</a>
+            <section class="bento-item reveal" style="padding: 20px; text-align: center; justify-content: center; align-items: center; border-radius: 18px;">
+                <a href="contact.html" style="color:white; text-decoration:none; font-size: 15px; font-weight: 600;">Contact</a>
             </section>
             
-            <section class="bento-item reveal" style="padding: 25px 20px; text-align: center; justify-content: center; align-items: center;">
-                <a href="terms.html" style="color:white; text-decoration:none; font-size: 16px; font-weight: 600;">Terms</a>
+            <section class="bento-item reveal" style="padding: 20px; text-align: center; justify-content: center; align-items: center; border-radius: 18px;">
+                <a href="terms.html" style="color:white; text-decoration:none; font-size: 15px; font-weight: 600;">Terms</a>
             </section>
         </div>
     </main>
