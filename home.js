@@ -88,13 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 viewBtn.style.background = 'white';
                 viewBtn.style.color = 'black';
                 viewBtn.textContent = 'View Details';
-                // Attach dynamic product route connection if yours is functional
-              // Add or update this exact line inside updateCarousel() where the viewBtn is configured:
-viewBtn.onclick = () => {
-    if (item._id || item.id) {
-        window.location.href = `product-details.html?id=${item._id || item.id}`;
-    }
-};
+                
+                viewBtn.onclick = () => {
+                    if (item._id || item.id) {
+                        window.location.href = `product-details.html?id=${item._id || item.id}`;
+                    }
+                };
+            } // <-- THIS WAS THE CLOSING BRACE THAT WAS MISSING!
+
             // Sync visual active indices across dot elements array
             document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
                 if (idx === carouselIndex) {
