@@ -1,42 +1,42 @@
 // Preloader Logic
-        window.addEventListener('load', () => {
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('preloader').classList.add('preloader-hidden');
+    }, 1000);
+});
+
+// Scroll Reveal Logic
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
             setTimeout(() => {
-                document.getElementById('preloader').classList.add('preloader-hidden');
-            }, 1000);
-        });
+                entry.target.classList.add('reveal');
+            }, index * 100);
+        }
+    });
+}, { threshold: 0.1 });
 
-        // Scroll Reveal Logic
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('reveal');
-                    }, index * 100);
-                }
-            });
-        }, { threshold: 0.1 });
+document.querySelectorAll('.bento-item, .step-card').forEach(el => observer.observe(el));
 
-        document.querySelectorAll('.bento-item, .step-card').forEach(el => observer.observe(el));
+// Magnetic Hero Effect
+const hero = document.querySelector('.hero-tile');
+hero.addEventListener('mousemove', (e) => {
+    const { left, top, width, height } = hero.getBoundingClientRect();
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top) / height - 0.5;
+    hero.style.transform = `perspective(1000px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateY(-8px)`;
+});
 
-        // Magnetic Hero Effect
-        const hero = document.querySelector('.hero-tile');
-        hero.addEventListener('mousemove', (e) => {
-            const { left, top, width, height } = hero.getBoundingClientRect();
-            const x = (e.clientX - left) / width - 0.5;
-            const y = (e.clientY - top) / height - 0.5;
-            hero.style.transform = `perspective(1000px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateY(-8px)`;
-        });
+hero.addEventListener('mouseleave', () => {
+    hero.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0)`;
+});
 
-        hero.addEventListener('mouseleave', () => {
-            hero.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0)`;
-        });
 // ==========================================
 // CAROUSEL DATA SYNC LAYER START
 // ==========================================
 let products = [];
 let carouselIndex = 0;
 
-// Ensure execution waits until structural nodes populate completely
 document.addEventListener("DOMContentLoaded", () => {
     const contentWrapper = document.getElementById('carousel-content');
     const imgEl = document.getElementById('carousel-img');
@@ -45,6 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const descEl = document.getElementById('carousel-desc');
     const priceEl = document.getElementById('carousel-price');
     const dotsContainer = document.getElementById('carousel-dots');
+    
+    // Target the view button to restore its clickable state
+    const viewBtn = document.querySelector('.carousel-tile button');
 
     if (!contentWrapper || !dotsContainer) return;
 
@@ -59,12 +62,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 2. Intercept data layer, re-hydrate nodes, restore layout state
         setTimeout(() => {
-            imgEl.src = item.image || "https://via.placeholder.com/300";
-            imgEl.alt = item.name;
-            categoryEl.textContent = item.category || "General";
-            titleEl.textContent = item.name;
+            // Safely alter image references without triggering connection blocks
+            if (item.image) {
+                imgEl.src = item.image;
+            } else {
+                imgEl.src = "https://via.placeholder.com/300?text=ShopSphere";
+            }
+            
+            imgEl.alt = item.name || "Product Showcase";
+            categoryEl.textContent = item.category || "Trending Now";
+            titleEl.textContent = item.name || "Premium Product";
             descEl.textContent = item.description || "Explore this exclusive item available now on Shopsphere.";
-            priceEl.textContent = `$${item.price}`;
+            
+            // Format currency strings smoothly
+            if (item.price) {
+                priceEl.textContent = typeof item.price === 'number' ? `KES ${item.price}` : item.price;
+            } else {
+                priceEl.textContent = "";
+            }
+
+            // Unlock and style the button once data connects completely
+            if (viewBtn) {
+                viewBtn.removeAttribute('disabled');
+                viewBtn.style.cursor = 'pointer';
+                viewBtn.style.background = 'white';
+                viewBtn.style.color = 'black';
+                viewBtn.textContent = 'View Details';
+                // Attach dynamic product route connection if yours is functional
+                viewBtn.onclick = () => {
+                    window.location.href = `products.html?id=${item._id || item.id || ''}`;
+                };
+            }
 
             // Sync visual active indices across dot elements array
             document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
@@ -84,10 +112,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     fetch('https://shopsphere-backend-wr5o.onrender.com/products')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            return res.json();
+        })
         .then(data => {
-            products = data;
+            // Handle both object-array mappings or direct arrays safely
+            products = Array.isArray(data) ? data : (data.products || []);
+            
             if (products.length > 0) {
+                dotsContainer.innerHTML = ''; // Clear fallback states
+                
                 // Dynamically build dot interface triggers 
                 products.forEach((_, idx) => {
                     const dot = document.createElement('button');
@@ -100,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         cursor: pointer;
                         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                     `;
-                    // Build initial layout configurations matching dynamic scale assignments
+                    
                     if (idx === 0) {
                         dot.style.width = '24px';
                         dot.style.background = 'var(--accent)';
@@ -122,7 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 4500);
             }
         })
-        .catch(err => console.error("Error loading showcase items:", err));
+        .catch(err => {
+            console.error("Error loading showcase items:", err);
+            titleEl.textContent = "ShopSphere Favorites";
+            descEl.textContent = "Browse our premium listings live directly from the products dashboard catalog page.";
+        });
 });
 // ==========================================
 // CAROUSEL DATA SYNC LAYER END
