@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
     }
 
-    fetch('https://shopsphere-backend-wr5o.onrender.com/api/products')
+    fetch('https://shopsphere-backend-wr5o.onrender.com/products')
         .then(res => res.json())
         .then(data => {
             products = data;
