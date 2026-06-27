@@ -9,7 +9,7 @@
         :root {
             --bg: #030712;
             --card-bg: rgba(17, 24, 39, 0.7);
-            --accent: #ef4444; /* Alert Red for incomplete items */
+            --accent: #ef4444; 
             --text-main: #f9fafb;
             --text-dim: #9ca3af;
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -88,100 +88,72 @@
 <header class="audit-header">
     <div>
         <h1 style="margin: 0 0 5px 0; font-weight: 800; letter-spacing: -1px;">Incomplete Products</h1>
-        <p style="margin: 0; color: var(--text-dim); font-size: 14px;">Items missing descriptions, prices, or placeholder details.</p>
+        <p style="margin: 0; color: var(--text-dim); font-size: 14px;">Direct API live database audit filter.</p>
     </div>
     <div style="display: flex; align-items: center; gap: 15px;">
-        <span class="counter-badge" id="issue-count">0 Items</span>
+        <span class="counter-badge" id="issue-count">Connecting...</span>
         <a href="products.html" class="btn-back">← Storefront</a>
     </div>
 </header>
 
-<main class="grid" id="audit-container"></main>
-<div style="display: none;">
-    <span id="cart-badge">0</span>
-    <select id="category"></select>
-    <div id="products"></div>
-    <input id="search" type="text"> </div>
-
-<script src="products.js"></script>
+<main class="grid" id="audit-container">
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Connecting straight to Render API database instance...</div>
+</main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
         const container = document.getElementById("audit-container");
         const counter = document.getElementById("issue-count");
-        const hiddenProductGrid = document.getElementById("products");
 
-        // Temporary debug indicator inside the main grid area
-        container.innerHTML = `<div id="audit-status" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Watching backend stream for incoming products...</div>`;
+        // Change this URL string to match your exact live backend endpoint
+        const BACKEND_API_URL = "https://shopsphere-backend.onrender.com/api/products"; 
 
-        function checkHiddenProducts() {
-            // Grab all individual product card elements that products.js injected into the hidden div
-            // Adjust the selector (e.g., '.card' or 'div') based on what your layout creates
-            const renderedCards = hiddenProductGrid.querySelectorAll('.card, [class*="card"], div > h3');
+        try {
+            // 1. Fetch straight from the backend database endpoint
+            const response = await fetch(BACKEND_API_URL);
+            if (!response.ok) throw new Error("Database offline or rejected request stream");
             
-            if (renderedCards.length === 0) return;
+            const allProducts = await response.json();
 
-            let incompleteItems = [];
-
-            renderedCards.forEach(card) => {
-                // Find the parent element card container
-                const cardContainer = card.closest('.card') || card.parentElement;
+            // 2. Filter items where the details property is missing
+            const incompleteItems = allProducts.filter(item => {
+                const detailsField = item.details || item.description || item.desc || null;
                 
-                // Extract data directly from the DOM elements rendered by your script
-                const title = cardContainer.querySelector('h3')?.textContent || "Unnamed Item";
-                const priceText = cardContainer.querySelector('.price, [class*="price"]')?.textContent || "0";
-                const category = cardContainer.querySelector('.category, p')?.textContent || "Unassigned";
-
-                // Check your database's specific detail link setup or look inside the description element if it exists
-                const detailsBtn = cardContainer.querySelector('button, a');
-                const hasDetailsAdded = detailsBtn && !detailsBtn.textContent.includes("Add/Edit Details");
-
-                // If it still has the "Add/Edit Details" button or lacks custom description text, it's incomplete!
-                if (!hasDetailsAdded) {
-                    incompleteItems.push({
-                        title: title,
-                        price: priceText,
-                        category: category
-                    });
-                }
+                // Checks if details property doesn't exist, is null, or is an empty string
+                return (detailsField === null) || (String(detailsField).trim() === "");
             });
 
-            // Update the header counter indicator
-            counter.textContent = `${incompleteItems.length} Items Need Attention`;
+            counter.textContent = `${incompleteItems.length} Issues Found`;
 
             if (incompleteItems.length === 0) {
                 container.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
-                        <h2>🎉 Clean Audit! All live products have their details filled out.</h2>
+                        <h2>🎉 Clean Audit! Every item in the database has details filled out.</h2>
                     </div>`;
                 return;
             }
 
-            // Render the items onto the audit page layout view
+            // 3. Render items directly
             container.innerHTML = incompleteItems.map(item => {
                 return `
                     <div class="audit-card">
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                            <span class="issue-tag">❌ No Details Added Yet</span>
-                        </div>
-                        <h3 style="margin: 5px 0; color: white;">${item.title}</h3>
-                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Status:</strong> Basic Info Only</p>
-                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price / Info:</strong> ${item.price}</p>
+                        <div><span class="issue-tag">❌ No Details Configured</span></div>
+                        <h3 style="margin: 5px 0; color: white;">${item.name || item.title || "Unnamed Item"}</h3>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${item._id || item.id || 'N/A'}</p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Base Price:</strong> KES ${item.price || '0'}</p>
                     </div>
                 `;
             }).join('');
-        }
 
-        // 1. Run an immediate check in case it loaded fast
-        setTimeout(checkHiddenProducts, 600);
-
-        // 2. Set up a listener that triggers the moment your database data fills the hidden div
-        const observer = new MutationObserver(() => {
-            checkHiddenProducts();
-        });
-
-        if (hiddenProductGrid) {
-            observer.observe(hiddenProductGrid, { childList: true, subtree: true });
+        } catch (error) {
+            console.error("Audit error:", error);
+            counter.textContent = "Error";
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">
+                    <h3>❌ API Connection Failed</h3>
+                    <p>Make sure BACKEND_API_URL matches your active server address.</p>
+                </div>`;
         }
     });
 </script>
