@@ -21,7 +21,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CLEAN FIX: Removed universal 'all' transition to stop text warping & layout zooming */
+        /* Universal Sizing Structure Rule */
         * { box-sizing: border-box; }
 
         body {
@@ -37,12 +37,12 @@
             width: 100%;
         }
 
-        /* Explicit Transitions applied only to active/interactive interface tokens */
+        /* Explicit Safe Component Micro-Transitions */
         .btn-gold, .add-btn, .nav-btn, .card, input, select, textarea {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
         }
 
-        /* 2026 Floating Header */
+        /* 2026 Floating Header Sticky Base Layer */
         header.navbar {
             position: sticky; top: 10px;
             background: rgba(3, 7, 18, 0.8);
@@ -52,6 +52,16 @@
             padding: 10px 25px;
             display: flex; justify-content: space-between; align-items: center;
             margin: 10px auto 30px; z-index: 1000; max-width: 1200px;
+            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, margin-bottom 0.2s ease;
+        }
+
+        /* Merged State modification rules for the Main Header Navbar Layout */
+        header.navbar.merged {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-color: transparent;
+            background: rgba(3, 7, 18, 0.95);
+            margin-bottom: 0;
         }
 
         .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
@@ -95,7 +105,7 @@
             border-radius: 14px; font-weight: 800; cursor: pointer;
         }
 
-        /* PREMIUM DEDICATED NAV BAR STYLE FOR FILTERS */
+        /* Sub Navigation Filtering Interface Layer Element Rules */
         .sub-navbar {
             max-width: 1200px;
             margin: 0 auto 30px;
@@ -108,6 +118,21 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+            
+            /* Pinning setup beneath main navigation element limits */
+            position: sticky;
+            top: 72px; /* Accounting for top margin offsets and core layout heights */
+            z-index: 999;
+            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease;
+        }
+
+        /* Merged State design modifications rules for Sub-Navigation Filter Interface Box */
+        .sub-navbar.merged {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top-color: rgba(255, 255, 255, 0.05);
+            background: rgba(3, 7, 18, 0.95);
+            padding: 8px 25px; /* Condenses overall wrapper sizing structural footprint */
         }
 
         .search-wrapper {
@@ -124,6 +149,13 @@
             border-radius: 14px;
             color: white;
             font-family: inherit;
+            transition: padding 0.2s ease;
+        }
+
+        /* Compress layout details upon tracking activation points */
+        .sub-navbar.merged .search-wrapper input {
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
         .search-icon {
@@ -158,6 +190,12 @@
             border-radius: 14px;
             cursor: pointer;
             font-family: inherit;
+            transition: padding 0.2s ease;
+        }
+
+        .sub-navbar.merged .filter-wrapper select {
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
         /* Product Grid */
@@ -194,18 +232,20 @@
 
         @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
-            header.navbar { flex-direction: column; gap: 15px; }
+            header.navbar { flex-direction: column; gap: 15px; position: relative; top: 0; }
+            header.navbar.merged { border-radius: 20px; border-bottom-color: var(--glass-border); }
             
             .sub-navbar {
+                position: relative;
+                top: 0;
                 flex-direction: column;
                 align-items: stretch;
                 gap: 12px;
                 padding: 15px;
                 margin-bottom: 24px;
             }
-            .search-wrapper {
-                max-width: 100%;
-            }
+            .sub-navbar.merged { border-radius: 20px; border-top-color: var(--glass-border); padding: 15px; }
+            .search-wrapper { max-width: 100%; }
         }
     </style>
 </head>
@@ -215,6 +255,7 @@
     <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;">
 </div>
 
+<!-- Main Sticky Header Navigation Layout (Reference: image_8d2680.png) -->
 <header class="navbar">
     <a href="home.html" class="brand">
         <img src="logo3.1.png" alt="ShopSphere">
@@ -243,7 +284,7 @@
     </div>
 </section>
 
-<!-- DEDICATED SEARCH & CATEGORY FILTER SUB-NAVBAR -->
+<!-- Sub Navigation Filter Control Element Blocks Layer -->
 <div class="sub-navbar">
     <div class="search-wrapper">
         <span class="search-icon">🔍</span>
@@ -260,7 +301,27 @@
 
 <div class="grid" id="products"></div>
 
+<!-- Core Script Connectors -->
 <script src="products.js"></script>
 <script src="shopbuddy.js"></script>
+
+<!-- Secondary UI Shrink & Merge Window Event Tracker Logic -->
+<script>
+    window.addEventListener('scroll', () => {
+        const mainNav = document.querySelector('header.navbar');
+        const subNav = document.querySelector('.sub-navbar');
+        
+        if (!mainNav || !subNav) return;
+
+        // Triggers the merged classes precisely when elements dock against each other
+        if (subNav.getBoundingClientRect().top <= 73) {
+            mainNav.classList.add('merged');
+            subNav.classList.add('merged');
+        } else {
+            mainNav.classList.remove('merged');
+            subNav.classList.remove('merged');
+        }
+    });
+</script>
 </body>
 </html>
