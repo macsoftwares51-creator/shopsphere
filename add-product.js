@@ -7,37 +7,41 @@ const countSpan = document.getElementById("count");
 let activeProductId = null;
 
 // Form Submission (Add Product) Logic
-form.onsubmit = async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.innerText = "Processing...";
-    btn.disabled = true;
+if (form) {
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
 
-    const formData = new FormData(form);
+        const formData = new FormData(form);
 
-    try {
-        const res = await fetch(API, {
-            method: "POST",
-            body: formData
-        });
-        if (res.ok) {
-            form.reset();
-            loadProducts();
+        try {
+            const res = await fetch(API, {
+                method: "POST",
+                body: formData
+            });
+            if (res.ok) {
+                form.reset();
+                loadProducts();
+            }
+        } catch (err) {
+            alert("Upload failed. Check console.");
+        } finally {
+            btn.innerText = "Publish to Store";
+            btn.disabled = false;
         }
-    } catch (err) {
-        alert("Upload failed. Check console.");
-    } finally {
-        btn.innerText = "Publish to Store";
-        btn.disabled = false;
-    }
-};
+    };
+}
 
 // Main Load Function to Hydrate UI Grid Data
 async function loadProducts() {
     try {
         const res = await fetch(API);
         const products = await res.json();
-        countSpan.innerText = products.length;
+        if (countSpan) countSpan.innerText = products.length;
+        if (!productsDiv) return;
+        
         productsDiv.innerHTML = "";
 
         products.forEach(product => {
@@ -69,8 +73,8 @@ async function loadProducts() {
     }
 }
 
-// Modal Interaction Actions
-function openSpecModal(id, name, currentDesc) {
+// Expose Modal Actions globally so your inline HTML card buttons can click them instantly
+window.openSpecModal = function(id, name, currentDesc) {
     activeProductId = id;
     
     const modalTitle = document.getElementById("modalTitle");
@@ -80,60 +84,58 @@ function openSpecModal(id, name, currentDesc) {
     if (modalTitle) modalTitle.innerText = `Edit Specs: ${name}`;
     if (specTextTextarea) specTextTextarea.value = currentDesc;
     if (specModal) specModal.classList.add("active");
-}
+};
 
-function closeSpecModal() {
+window.closeSpecModal = function() {
     const specModal = document.getElementById("specModal");
     const specTextTextarea = document.getElementById("specTextTextarea");
 
     if (specModal) specModal.classList.remove("active");
     if (specTextTextarea) specTextTextarea.value = "";
     activeProductId = null;
-}
+};
 
-// Safely bind the saving operations when the DOM engine lands fully loaded
-document.addEventListener("DOMContentLoaded", () => {
-    const modalSaveBtn = document.getElementById("modalSaveBtn");
-    const specTextTextarea = document.getElementById("specTextTextarea");
+// Handle Save Operations directly (no DOMContentLoaded wrapper required anymore)
+const modalSaveBtn = document.getElementById("modalSaveBtn");
+if (modalSaveBtn) {
+    modalSaveBtn.onclick = async () => {
+        if (!activeProductId) {
+            alert("Error: No product element reference selected.");
+            return;
+        }
 
-    if (modalSaveBtn) {
-        modalSaveBtn.onclick = async () => {
-            if (!activeProductId) {
-                alert("Error: No product element reference selected.");
-                return;
-            }
+        const specTextTextarea = document.getElementById("specTextTextarea");
 
-            modalSaveBtn.innerText = "Saving Data...";
-            modalSaveBtn.disabled = true;
+        modalSaveBtn.innerText = "Saving Data...";
+        modalSaveBtn.disabled = true;
 
-            const updatePayload = {
-                description: specTextTextarea ? specTextTextarea.value : ""
-            };
-
-            try {
-                // Request dispatcher targeting our live backend update route
-                const res = await fetch(`${API}/${activeProductId}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updatePayload)
-                });
-
-                if (res.ok) {
-                    closeSpecModal();
-                    loadProducts(); // Instantly refresh layout state data fields
-                } else {
-                    alert("Failed to preserve structural data fields.");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Communication failure connecting to deployment cluster.");
-            } finally {
-                modalSaveBtn.innerText = "Save Information";
-                modalSaveBtn.disabled = false;
-            }
+        const updatePayload = {
+            description: specTextTextarea ? specTextTextarea.value : ""
         };
-    }
-});
+
+        try {
+            // Request dispatcher targeting our live backend update route
+            const res = await fetch(`${API}/${activeProductId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatePayload)
+            });
+
+            if (res.ok) {
+                window.closeSpecModal();
+                loadProducts(); // Instantly refresh layout state data fields
+            } else {
+                alert("Failed to preserve structural data fields.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Communication failure connecting to deployment cluster.");
+        } finally {
+            modalSaveBtn.innerText = "Save Information";
+            modalSaveBtn.disabled = false;
+        }
+    };
+}
 
 // Delete Execution Loop Hook
 async function deleteProduct(id) {
