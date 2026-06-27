@@ -101,65 +101,70 @@
 <script src="products.js"></script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("audit-container");
     const counter = document.getElementById("issue-count");
 
-    // Safety check for your products array
-    const allProducts = typeof products !== 'undefined' ? products : [];
+    function runProductAudit() {
+        // Look for your live data array (checking both local variables or window objects)
+        const allProducts = typeof products !== 'undefined' ? products : (window.allProducts || []);
+        
+        if (allProducts.length === 0) {
+            // If data hasn't arrived from the server yet, keep waiting
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Connecting to inventory stream...</div>`;
+            return;
+        }
 
-    // 1. Ultra-aggressive filter: check if ANY core property is missing or blank
-    const incompleteItems = allProducts.filter(item => {
-        // Look for common variations of description / details fields
-        const descriptionField = item.description || item.details || item.desc || "";
-        const priceField = item.price || item.cost || 0;
-        const imageField = item.image || item.img || item.productImage || "";
+        // 1. Filter items where the details property is totally missing (undefined), null, or blank
+        const incompleteItems = allProducts.filter(item => {
+            // Check all common naming variations you might use
+            const detailsValue = item.details ?? item.description ?? item.desc ?? null;
+            
+            // It's incomplete if the key doesn't exist, is null, or is just empty whitespace
+            const isMissingDetails = (detailsValue === null) || (String(detailsValue).trim() === "");
+            
+            const priceField = item.price || item.cost || 0;
+            const isMissingPrice = !priceField || priceField === 0;
 
-        // True if any of these are missing text or default to 0
-        const isMissingDesc = String(descriptionField).trim() === "" || String(descriptionField).includes("Loading");
-        const isMissingPrice = !priceField || priceField === 0 || String(priceField).trim() === "";
-        const isMissingImg = String(imageField).trim() === "" || String(imageField).includes("placeholder");
+            return isMissingDetails || isMissingPrice;
+        });
 
-        // Also check if the item has a "details" object or array that is completely empty
-        const hasEmptyDetailsProperty = item.hasOwnProperty('details') && (!item.details || (Array.isArray(item.details) && item.details.length === 0));
+        counter.textContent = `${incompleteItems.length} Items Need Attention`;
 
-        return isMissingDesc || isMissingPrice || isMissingImg || hasEmptyDetailsProperty;
-    });
+        if (incompleteItems.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
+                    <h2>🎉 Clean Audit! All live products have their details filled out.</h2>
+                </div>`;
+            return;
+        }
 
-    // Update indicator counter total
-    counter.textContent = `${incompleteItems.length} Issues Found`;
-
-    if (incompleteItems.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
-                <h2>🎉 Clean Audit! All products have their details filled out.</h2>
-            </div>`;
-        return;
+        // 2. Render the items that only have basic info so far
+        container.innerHTML = incompleteItems.map(item => {
+            return `
+                <div class="audit-card">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <span class="issue-tag">❌ No Details Added Yet</span>
+                    </div>
+                    <h3 style="margin: 5px 0; color: white;">${item.title || item.name || "Unnamed Item"}</h3>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price:</strong> KES ${item.price || '0'}</p>
+                </div>
+            `;
+        }).join('');
     }
 
-    // 2. Map and display the incomplete cards
-    container.innerHTML = incompleteItems.map(item => {
-        let issues = [];
-        
-        const descriptionField = item.description || item.details || item.desc || "";
-        const priceField = item.price || item.cost || 0;
-        const imageField = item.image || item.img || item.productImage || "";
+    // Run immediately
+    runProductAudit();
 
-        if (String(descriptionField).trim() === "") issues.push("❌ Missing Details/Description");
-        if (!priceField || priceField === 0) issues.push("❌ Missing Price");
-        if (String(imageField).trim() === "" || String(imageField).includes("placeholder")) issues.push("❌ Missing Image");
-
-        return `
-            <div class="audit-card">
-                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    ${issues.map(issue => `<span class="issue-tag">${issue}</span>`).join('')}
-                </div>
-                <h3 style="margin: 5px 0; color: white;">${item.title || item.name || "Unnamed Item"}</h3>
-                <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${item.id || item._id || 'N/A'}</p>
-                <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
-            </div>
-        `;
-    }).join('');
+    // Check back every 500ms until data arrives from your backend stream
+    const dataCheckInterval = setInterval(() => {
+        const currentProducts = typeof products !== 'undefined' ? products : (window.allProducts || []);
+        if (currentProducts.length > 0) {
+            runProductAudit();
+            clearInterval(dataCheckInterval); // Stop checking once loaded
+        }
+    }, 500);
 });
 </script>
 </body>
