@@ -3,16 +3,11 @@ const form = document.getElementById("form");
 const productsDiv = document.getElementById("products");
 const countSpan = document.getElementById("count");
 
-// Modal Component Hooks
-const specModal = document.getElementById("specModal");
-const modalTitle = document.getElementById("modalTitle");
-const specTextTextarea = document.getElementById("specTextTextarea");
-const modalSaveBtn = document.getElementById("modalSaveBtn");
-
 // Runtime pointer storage variable capturing the target update element scope
 let activeProductId = null;
 
-form.onsubmit = async (e)=>{
+// Form Submission (Add Product) Logic
+form.onsubmit = async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
     btn.innerText = "Processing...";
@@ -25,7 +20,7 @@ form.onsubmit = async (e)=>{
             method: "POST",
             body: formData
         });
-        if(res.ok) {
+        if (res.ok) {
             form.reset();
             loadProducts();
         }
@@ -37,82 +32,115 @@ form.onsubmit = async (e)=>{
     }
 };
 
-async function loadProducts(){
-    const res = await fetch(API);
-    const products = await res.json();
-    countSpan.innerText = products.length;
-    productsDiv.innerHTML = "";
+// Main Load Function to Hydrate UI Grid Data
+async function loadProducts() {
+    try {
+        const res = await fetch(API);
+        const products = await res.json();
+        countSpan.innerText = products.length;
+        productsDiv.innerHTML = "";
 
-    products.forEach(product=>{
-        // Store technical description details cleanly into a data attribute
-        const descriptionEscaped = (product.description || "").replace(/"/g, '&quot;');
-        
-        productsDiv.innerHTML += `
-            <div class="card">
-                <img src="${product.image}" />
-                <h3>${product.name}</h3>
-                <p class="price">KES ${Number(product.price).toLocaleString()}</p>
-                <p>${product.category}</p>
-                <div class="card-controls">
-                    <button class="info-btn" onclick="openSpecModal('${product._id}', '${product.name}', '${descriptionEscaped}')">
-                        Add/Edit Details
-                    </button>
-                    <button class="delete-btn" onclick="deleteProduct('${product._id}')">
-                        Remove Product
-                    </button>
+        products.forEach(product => {
+            // Cleanly format text values to hide break spaces or quote characters inside parameters
+            const descriptionEscaped = (product.description || "")
+                .replace(/&/g, "&amp;")
+                .replace(/'/g, "\\'")
+                .replace(/"/g, "&quot;");
+
+            productsDiv.innerHTML += `
+                <div class="card">
+                    <img src="${product.image}" alt="${product.name || 'Product'}" />
+                    <h3>${product.name}</h3>
+                    <p class="price">KES ${Number(product.price).toLocaleString()}</p>
+                    <p>${product.category}</p>
+                    <div class="card-controls">
+                        <button class="info-btn" onclick="openSpecModal('${product._id}', '${product.name.replace(/'/g, "\\'")}', '${descriptionEscaped}')">
+                            Add/Edit Details
+                        </button>
+                        <button class="delete-btn" onclick="deleteProduct('${product._id}')">
+                            Remove Product
+                        </button>
+                    </div>
                 </div>
-            </div>
-        `;
-    });
+            `;
+        });
+    } catch (err) {
+        console.error("Error populating system inventory cards:", err);
+    }
 }
 
 // Modal Interaction Actions
 function openSpecModal(id, name, currentDesc) {
     activeProductId = id;
-    modalTitle.innerText = `Edit Specs: ${name}`;
-    specTextTextarea.value = currentDesc;
-    specModal.classList.add("active");
+    
+    const modalTitle = document.getElementById("modalTitle");
+    const specTextTextarea = document.getElementById("specTextTextarea");
+    const specModal = document.getElementById("specModal");
+
+    if (modalTitle) modalTitle.innerText = `Edit Specs: ${name}`;
+    if (specTextTextarea) specTextTextarea.value = currentDesc;
+    if (specModal) specModal.classList.add("active");
 }
 
 function closeSpecModal() {
-    specModal.classList.remove("active");
+    const specModal = document.getElementById("specModal");
+    const specTextTextarea = document.getElementById("specTextTextarea");
+
+    if (specModal) specModal.classList.remove("active");
+    if (specTextTextarea) specTextTextarea.value = "";
     activeProductId = null;
-    specTextTextarea.value = "";
 }
 
-// Request dispatcher targeting our new server PUT endpoint route
-modalSaveBtn.onclick = async () => {
-    if (!activeProductId) return;
-    
-    modalSaveBtn.innerText = "Saving Data...";
-    modalSaveBtn.disabled = true;
+// Safely bind the saving operations when the DOM engine lands fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+    const modalSaveBtn = document.getElementById("modalSaveBtn");
+    const specTextTextarea = document.getElementById("specTextTextarea");
 
-    try {
-        const res = await fetch(`${API}/${activeProductId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ description: specTextTextarea.value })
-        });
+    if (modalSaveBtn) {
+        modalSaveBtn.onclick = async () => {
+            if (!activeProductId) {
+                alert("Error: No product element reference selected.");
+                return;
+            }
 
-        if (res.ok) {
-            closeSpecModal();
-            loadProducts();
-        } else {
-            alert("Failed to preserve structural data fields.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Communication failure connecting to deployment cluster.");
-    } finally {
-        modalSaveBtn.innerText = "Save Information";
-        modalSaveBtn.disabled = false;
+            modalSaveBtn.innerText = "Saving Data...";
+            modalSaveBtn.disabled = true;
+
+            const updatePayload = {
+                description: specTextTextarea ? specTextTextarea.value : ""
+            };
+
+            try {
+                // Request dispatcher targeting our live backend update route
+                const res = await fetch(`${API}/${activeProductId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatePayload)
+                });
+
+                if (res.ok) {
+                    closeSpecModal();
+                    loadProducts(); // Instantly refresh layout state data fields
+                } else {
+                    alert("Failed to preserve structural data fields.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Communication failure connecting to deployment cluster.");
+            } finally {
+                modalSaveBtn.innerText = "Save Information";
+                modalSaveBtn.disabled = false;
+            }
+        };
     }
-};
+});
 
-async function deleteProduct(id){
-    if(!confirm("Are you sure? This will remove the product from the public site immediately.")) return;
+// Delete Execution Loop Hook
+async function deleteProduct(id) {
+    if (!confirm("Are you sure? This will remove the product from the public site immediately.")) return;
     await fetch(API + "/" + id, { method: "DELETE" });
     loadProducts();
 }
 
+// Initial Boot Trigger
 loadProducts();
