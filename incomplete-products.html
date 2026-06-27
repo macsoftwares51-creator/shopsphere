@@ -101,75 +101,87 @@
     <span id="cart-badge">0</span>
     <select id="category"></select>
     <div id="products"></div>
-</div>
+    <input id="search" type="text"> </div>
+
 <script src="products.js"></script>
 
 <script>
- document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("audit-container");
-    const counter = document.getElementById("issue-count");
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("audit-container");
+        const counter = document.getElementById("issue-count");
 
-    function runProductAudit() {
-        // Look for your live data array (checking both local variables or window objects)
-        const allProducts = typeof products !== 'undefined' ? products : (window.allProducts || []);
-        
-        if (allProducts.length === 0) {
-            // If data hasn't arrived from the server yet, keep waiting
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Connecting to inventory stream...</div>`;
-            return;
-        }
+        function runProductAudit() {
+            // 1. Safely grab and parse the products data source
+            let rawData = typeof products !== 'undefined' ? products : (window.allProducts || []);
+            let allProducts = [];
 
-        // 1. Filter items where the details property is totally missing (undefined), null, or blank
-        const incompleteItems = allProducts.filter(item => {
-            // Check all common naming variations you might use
-            const detailsValue = item.details ?? item.description ?? item.desc ?? null;
-            
-            // It's incomplete if the key doesn't exist, is null, or is just empty whitespace
-            const isMissingDetails = (detailsValue === null) || (String(detailsValue).trim() === "");
-            
-            const priceField = item.price || item.cost || 0;
-            const isMissingPrice = !priceField || priceField === 0;
+            // If the data is a JSON string from your backend, parse it into an array
+            if (typeof rawData === 'string') {
+                try {
+                    allProducts = JSON.parse(rawData);
+                } catch (e) {
+                    console.error("Failed to parse products JSON:", e);
+                }
+            } else if (Array.isArray(rawData)) {
+                allProducts = rawData;
+            } else if (rawData && typeof rawData === 'object' && Array.isArray(rawData.products)) {
+                // In case it's an object containing an array (e.g., { products: [...] })
+                allProducts = rawData.products;
+            }
 
-            return isMissingDetails || isMissingPrice;
-        });
+            if (!Array.isArray(allProducts) || allProducts.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Connecting to inventory stream...</div>`;
+                return;
+            }
 
-        counter.textContent = `${incompleteItems.length} Items Need Attention`;
+            // 2. Filter items where the details property is totally missing or blank
+            const incompleteItems = allProducts.filter(item => {
+                const detailsValue = item.details ?? item.description ?? item.desc ?? null;
+                const isMissingDetails = (detailsValue === null) || (String(detailsValue).trim() === "");
+                
+                const priceField = item.price || item.cost || 0;
+                const isMissingPrice = !priceField || priceField === 0;
 
-        if (incompleteItems.length === 0) {
-            container.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
-                    <h2>🎉 Clean Audit! All live products have their details filled out.</h2>
-                </div>`;
-            return;
-        }
+                return isMissingDetails || isMissingPrice;
+            });
 
-        // 2. Render the items that only have basic info so far
-        container.innerHTML = incompleteItems.map(item => {
-            return `
-                <div class="audit-card">
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <span class="issue-tag">❌ No Details Added Yet</span>
+            counter.textContent = `${incompleteItems.length} Items Need Attention`;
+
+            if (incompleteItems.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
+                        <h2>🎉 Clean Audit! All live products have their details filled out.</h2>
+                    </div>`;
+                return;
+            }
+
+            // 3. Render the items
+            container.innerHTML = incompleteItems.map(item => {
+                return `
+                    <div class="audit-card">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <span class="issue-tag">❌ No Details Added Yet</span>
+                        </div>
+                        <h3 style="margin: 5px 0; color: white;">${item.title || item.name || "Unnamed Item"}</h3>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price:</strong> KES ${item.price || '0'}</p>
                     </div>
-                    <h3 style="margin: 5px 0; color: white;">${item.title || item.name || "Unnamed Item"}</h3>
-                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
-                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price:</strong> KES ${item.price || '0'}</p>
-                </div>
-            `;
-        }).join('');
-    }
-
-    // Run immediately
-    runProductAudit();
-
-    // Check back every 500ms until data arrives from your backend stream
-    const dataCheckInterval = setInterval(() => {
-        const currentProducts = typeof products !== 'undefined' ? products : (window.allProducts || []);
-        if (currentProducts.length > 0) {
-            runProductAudit();
-            clearInterval(dataCheckInterval); // Stop checking once loaded
+                `;
+            }).join('');
         }
-    }, 500);
-});
+
+        // Run immediately
+        runProductAudit();
+
+        // Check back every 500ms until data arrives and initializes from your backend stream
+        const dataCheckInterval = setInterval(() => {
+            let currentData = typeof products !== 'undefined' ? products : (window.allProducts || []);
+            if (currentData && (currentData.length > 0 || Object.keys(currentData).length > 0)) {
+                runProductAudit();
+                clearInterval(dataCheckInterval);
+            }
+        }, 500);
+    });
 </script>
 </body>
 </html>
