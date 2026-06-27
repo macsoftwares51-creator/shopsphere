@@ -121,9 +121,9 @@
             
             /* Pinning setup beneath main navigation element limits */
             position: sticky;
-            top: 72px; /* Accounting for top margin offsets and core layout heights */
+            top: 72px; /* Set to default desktop layout height offset */
             z-index: 999;
-            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease;
+            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease, margin 0.2s ease;
         }
 
         /* Merged State design modifications rules for Sub-Navigation Filter Interface Box */
@@ -230,7 +230,7 @@
             background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
         }
 
-       @media (max-width: 768px) {
+        @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
             
             /* Keep navbar sticky on mobile but adjust padding to match the screen width */
@@ -243,17 +243,17 @@
             /* Clean up mobile stacking layout */
             .sub-navbar {
                 position: sticky;
-                top: 77px; /* Position accurately below the main mobile nav */
+                top: 67px; /* FIXED MATCHING OFFSET FOR MOBILE NAV HEIGHT */
                 margin: 0 10px 20px;
                 padding: 10px 15px;
                 gap: 10px;
-                flex-direction: row; /* Keep search and dropdown on the same line if possible, or flex tightly */
+                flex-direction: row; 
             }
 
             /* Shrink input areas so they stay completely on screen */
             .search-wrapper { max-width: 60%; }
             .filter-wrapper { max-width: 40%; gap: 6px; }
-            .filter-wrapper label { display: none; } /* Hide the word "Category" on mobile to save precious screen real estate */
+            .filter-wrapper label { display: none; } 
             
             .search-wrapper input { padding: 10px 10px 10px 32px; font-size: 13px; }
             .search-icon { left: 10px; font-size: 13px; }
@@ -288,7 +288,6 @@
     <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;">
 </div>
 
-<!-- Main Sticky Header Navigation Layout (Reference: image_8d2680.png) -->
 <header class="navbar">
     <a href="home.html" class="brand">
         <img src="logo3.1.png" alt="ShopSphere">
@@ -317,7 +316,6 @@
     </div>
 </section>
 
-<!-- Sub Navigation Filter Control Element Blocks Layer -->
 <div class="sub-navbar">
     <div class="search-wrapper">
         <span class="search-icon">🔍</span>
@@ -334,13 +332,10 @@
 
 <div class="grid" id="products"></div>
 
-<!-- Core Script Connectors -->
 <script src="products.js"></script>
 <script src="shopbuddy.js"></script>
 
-<!-- Secondary UI Shrink & Merge Window Event Tracker Logic -->
 <script>
-  <script>
     window.addEventListener('scroll', () => {
         const mainNav = document.querySelector('header.navbar');
         const subNav = document.querySelector('.sub-navbar');
@@ -352,7 +347,7 @@
         const subRect = subNav.getBoundingClientRect();
 
         // Check if the top of the sub-navbar has touched or crossed the bottom of the main navbar
-        if (subRect.top <= mainRect.bottom + 1) {
+        if (subRect.top <= mainRect.bottom + 2) {
             mainNav.classList.add('merged');
             subNav.classList.add('merged');
         } else {
@@ -360,7 +355,6 @@
             subNav.classList.remove('merged');
         }
     });
-</script>
 </script>
 </body>
 </html>
