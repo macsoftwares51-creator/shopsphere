@@ -110,32 +110,45 @@
         const container = document.getElementById("audit-container");
         const counter = document.getElementById("issue-count");
 
+        // 1. Create a raw data viewer box at the top of the container
+        const debugBox = document.createElement('pre');
+        debugBox.style.cssText = "grid-column: 1/-1; background: #111827; padding: 15px; border: 1px dashed #fbbf24; color: #fbbf24; border-radius: 12px; font-size: 12px; max-height: 250px; overflow: auto; margin-bottom: 20px; font-family: monospace;";
+        container.parentNode.insertBefore(debugBox, container);
+
         function runProductAudit() {
-            // 1. Safely grab and parse the products data source
-            let rawData = typeof products !== 'undefined' ? products : (window.allProducts || []);
-            let allProducts = [];
+            // Unpack the global variable
+            let rawData = typeof products !== 'undefined' ? products : (window.allProducts || null);
+            
+            // Print what the script sees into our debug box
+            debugBox.textContent = `[DEBUG SYSTEM]\nData Type Detected: ${typeof rawData}\nIs Array? ${Array.isArray(rawData)}\nRaw Content Structure:\n${JSON.stringify(rawData, null, 2)}`;
 
-            // If the data is a JSON string from your backend, parse it into an array
-            if (typeof rawData === 'string') {
-                try {
-                    allProducts = JSON.parse(rawData);
-                } catch (e) {
-                    console.error("Failed to parse products JSON:", e);
-                }
-            } else if (Array.isArray(rawData)) {
-                allProducts = rawData;
-            } else if (rawData && typeof rawData === 'object' && Array.isArray(rawData.products)) {
-                // In case it's an object containing an array (e.g., { products: [...] })
-                allProducts = rawData.products;
-            }
-
-            if (!Array.isArray(allProducts) || allProducts.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Connecting to inventory stream...</div>`;
+            if (!rawData) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 No products data source found yet...</div>`;
                 return;
             }
 
-            // 2. Filter items where the details property is totally missing or blank
+            let allProducts = [];
+
+            // Convert string JSON if needed
+            if (typeof rawData === 'string') {
+                try { allProducts = JSON.parse(rawData); } catch (e) {}
+            } else if (Array.isArray(rawData)) {
+                allProducts = rawData;
+            } else if (rawData && typeof rawData === 'object') {
+                allProducts = rawData.products || Object.values(rawData);
+            }
+
+            // Ensure we are operating on an array group
+            if (!Array.isArray(allProducts) || allProducts.length === 0) {
+                return;
+            }
+
+            // 2. Filter out items where details don't exist
             const incompleteItems = allProducts.filter(item => {
+                // If item doesn't exist, skip safely
+                if (!item) return false;
+
+                // Check if details exist or are empty string/null
                 const detailsValue = item.details ?? item.description ?? item.desc ?? null;
                 const isMissingDetails = (detailsValue === null) || (String(detailsValue).trim() === "");
                 
@@ -155,7 +168,7 @@
                 return;
             }
 
-            // 3. Render the items
+            // 3. Render cards
             container.innerHTML = incompleteItems.map(item => {
                 return `
                     <div class="audit-card">
@@ -170,15 +183,16 @@
             }).join('');
         }
 
-        // Run immediately
         runProductAudit();
 
-        // Check back every 500ms until data arrives and initializes from your backend stream
+        // Check back for async delivery shifts
         const dataCheckInterval = setInterval(() => {
-            let currentData = typeof products !== 'undefined' ? products : (window.allProducts || []);
-            if (currentData && (currentData.length > 0 || Object.keys(currentData).length > 0)) {
+            let currentData = typeof products !== 'undefined' ? products : (window.allProducts || null);
+            if (currentData) {
                 runProductAudit();
-                clearInterval(dataCheckInterval);
+                // If it successfully loaded structural items, clear the poller box interval safely
+                let parsed = Array.isArray(currentData) ? currentData : (currentData.products || []);
+                if (parsed.length > 0) clearInterval(dataCheckInterval);
             }
         }, 500);
     });
