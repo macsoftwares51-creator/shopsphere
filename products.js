@@ -25,8 +25,8 @@ function render(products) {
         const card = document.createElement('div');
         card.className = 'card';
         
-        // Remove padding from the card base style dynamically so the link hits the absolute edges
-        card.style.padding = "0";
+        // Restore standard padding and layout since it's no longer a full card link
+        card.style.padding = "20px";
         card.style.overflow = "hidden";
         card.style.display = "flex";
         card.style.flexDirection = "column";
@@ -35,17 +35,19 @@ function render(products) {
         setTimeout(() => card.classList.add('reveal'), index * 60);
 
         card.innerHTML = `
-            <a href="product-details.html?id=${id}" style="text-decoration: none; color: inherit; display: block; padding: 20px; flex-grow: 1;">
-                <img src="${image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px;">
-                <h3>${name}</h3>
-                <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase;">${category}</p>
-                <span class="price" style="color: var(--accent); font-size: 20px; font-weight: 800; display: block;">Kshs ${price}</span>
-            </a>
+            <img src="${image}" onclick="openImage('${image}')" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px; cursor: zoom-in;">
+            <h3>${name}</h3>
+            <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase; margin-top: 5px;">${category}</p>
+            <span class="price" style="color: var(--accent); font-size: 20px; font-weight: 800; display: block; margin-bottom: 15px;">Kshs ${price}</span>
             
-            <div style="padding: 0 20px 20px 20px;">
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: auto;">
                 <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
                     Add to Cart
                 </button>
+                
+                <a href="product-details.html?id=${id}" class="add-btn" style="text-decoration: none; text-align: center; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid var(--glass-border);">
+                    View Details
+                </a>
             </div>
         `;
         box.appendChild(card);
