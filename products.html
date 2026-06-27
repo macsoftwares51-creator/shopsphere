@@ -340,14 +340,19 @@
 
 <!-- Secondary UI Shrink & Merge Window Event Tracker Logic -->
 <script>
+  <script>
     window.addEventListener('scroll', () => {
         const mainNav = document.querySelector('header.navbar');
         const subNav = document.querySelector('.sub-navbar');
         
         if (!mainNav || !subNav) return;
 
-        // Triggers the merged classes precisely when elements dock against each other
-        if (subNav.getBoundingClientRect().top <= 73) {
+        // Get bounding rectangles for both elements dynamically
+        const mainRect = mainNav.getBoundingClientRect();
+        const subRect = subNav.getBoundingClientRect();
+
+        // Check if the top of the sub-navbar has touched or crossed the bottom of the main navbar
+        if (subRect.top <= mainRect.bottom + 1) {
             mainNav.classList.add('merged');
             subNav.classList.add('merged');
         } else {
@@ -355,6 +360,7 @@
             subNav.classList.remove('merged');
         }
     });
+</script>
 </script>
 </body>
 </html>
