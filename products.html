@@ -183,8 +183,41 @@
 
         #imageModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000; }
 
-        @media (max-width: 768px) {
+       @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
+            
+            /* FORCE 2 COLUMNS ON MOBILE */
+            .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px; /* Slightly tighter gap so cards fit nicely on small screens */
+            }
+
+            /* Optimize padding inside the cards for tight mobile spacing */
+            .card {
+                padding: 12px;
+                border-radius: 20px;
+            }
+            .card img {
+                height: 140px; /* Reduce image height slightly so it doesn't distort the card proportions */
+                border-radius: 14px;
+            }
+            .card h3 {
+                font-size: 14px; /* Slightly smaller text so titles don't wrap onto 3+ lines */
+                margin: 10px 0 4px;
+            }
+            .card p {
+                font-size: 11px;
+                margin-bottom: 8px;
+            }
+            .price {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            .add-btn {
+                padding: 10px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
             
             .sticky-nav-group { margin: 5px 10px 20px; top: 5px; }
             header.navbar { padding: 10px 15px; }
