@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             imgEl.alt = item.name || "Product Showcase";
             categoryEl.textContent = item.category || "Trending Now";
             titleEl.textContent = item.name || "Premium Product";
-            descEl.textContent = item.description || "Explore this exclusive item available now on Shopsphere.";
+            descEl.textContent ="Explore this exclusive item available now on Shopsphere.";
             
             // Format currency strings smoothly
             if (item.price) {
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         window.location.href = `product-details.html?id=${item._id || item.id}`;
                     }
                 };
-            } // <-- THIS WAS THE CLOSING BRACE THAT WAS MISSING!
+            } 
 
             // Sync visual active indices across dot elements array
             document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
