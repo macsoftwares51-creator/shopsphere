@@ -261,8 +261,41 @@
             <a href="terms.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: white; font-weight: 600;">Terms</a>
         </div>
     </main>
-
-    <script src="home.js"></script>
+<script src="home.js"></script>
     <script src="shopbuddy.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const updateHomeBadge = () => {
+                const badge = document.getElementById("cart-badge");
+                if (!badge) return;
+
+                // Grab current items from your localStorage array
+                const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                
+                // Calculate total quantity across items
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+                if (totalItems > 0) {
+                    badge.textContent = totalItems;
+                    badge.classList.add("badge-pop");
+                    badge.style.transform = "scale(1)";
+                } else {
+                    badge.textContent = "0";
+                    badge.classList.remove("badge-pop");
+                    badge.style.transform = "scale(0)";
+                }
+            };
+
+            // Run instantly on layout generation
+            updateHomeBadge();
+
+            // Intercept storage updates if items are changed in another tab or window background process
+            window.addEventListener("storage", updateHomeBadge);
+            
+            // Listen for custom add-to-cart events if your shopbuddy.js triggers them
+            window.addEventListener("cartUpdated", updateHomeBadge);
+        });
+    </script>
 </body>
 </html>
