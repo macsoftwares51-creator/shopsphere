@@ -92,10 +92,17 @@
 </head>
 <body>
 
-    <header class="navbar">
-        <a href="home.html" class="brand">ShopSphere</a>
-        <a class="nav-btn" href="products.html">← Back to Shop</a>
-    </header>
+   <header class="navbar">
+    <a href="home.html" class="brand">
+        <span>ShopSphere</span>
+    </a>
+    <nav style="display: flex; gap: 10px;">
+        <a class="nav-btn" href="products.html" style="background: rgba(255,255,255,0.1); color: white;">← Back to Shop</a>
+        <a class="nav-btn" href="cart.html" style="background: white; color: black; position: relative; display: flex; align-items: center; text-decoration: none;">
+            🛒 Cart <span id="cart-badge" style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 11px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid var(--bg);">0</span>
+        </a>
+    </nav>
+</header>
 
     <div class="details-container" id="details-box">
         <div class="error-message">
@@ -104,7 +111,7 @@
     </div>
 
     <script>
-       document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     const container = document.getElementById('details-box');
@@ -114,50 +121,52 @@
         return;
     }
 
-    // Fetch the target item data directly from your live API endpoint
+    // Run dynamic initial badge check when page mounts
+    updateDetailsCartBadge();
+
+    // Fetch single item data blueprint from live backend
     fetch(`https://shopsphere-backend-wr5o.onrender.com/products/${productId}`)
         .then(res => {
             if (!res.ok) throw new Error("Item fetch failed");
             return res.json();
         })
         .then(product => {
-            // Inject structural layout dynamically with an updated Add to Cart button
             container.innerHTML = `
                 <div class="image-box">
-                    <img src="${product.image || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/></svg>'}" alt="${product.name}">
+                    <img src="${product.image || 'https://via.placeholder.com/400'}" alt="${product.name}">
                 </div>
                 <div class="info-box">
                     <span class="category">${product.category || 'Premium Listing'}</span>
                     <h1 class="title">${product.name}</h1>
-                    <div class="price">KES ${product.price ? product.price.toLocaleString() : 'N/A'}</div>
-                    <p class="description">${product.description || 'No description available for this product item.'}</p>
+                    <div class="price">Kshs ${product.price ? product.price.toLocaleString() : '0'}</div>
+                    <p class="description" style="white-space: pre-wrap;">${product.description || 'No additional specifications listed for this product.'}</p>
                     <button class="order-btn" id="add-to-cart-btn">Add to Cart 🛒</button>
                 </div>
             `;
 
-            // Handle adding items to your persistent cart structure
+            // Setup localized push pipeline without leaving the window view
             document.getElementById('add-to-cart-btn').onclick = () => {
-                // 1. Pull current storage list matching cart.js scheme
                 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+                const existing = cart.find(item => item.name === product.name);
 
-                // 2. Check if the product already exists in the cart array
-                const existingItem = cart.find(item => item.name === product.name);
-
-                if (existingItem) {
-                    existingItem.qty += 1; // Increment matching your 'qty' property rule
+                if (existing) {
+                    existing.qty++;
                 } else {
                     cart.push({
                         name: product.name,
-                        price: product.price,
-                        qty: 1 // Match the property schema expected by cart.js
+                        price: Number(product.price) || 0,
+                        qty: 1
                     });
                 }
 
-                // 3. Save changes back to local storage
+                // 1. Commit mutated arrays to browser localStorage cache
                 localStorage.setItem("cart", JSON.stringify(cart));
-
-                // 4. Send the user to your functional checkout page
-                window.location.href = "cart.html"; // Adjust file name path if yours is named checkout.html
+                
+                // 2. Dynamically refresh badge count UI elements instantly
+                updateDetailsCartBadge();
+                
+                // 3. Confirm target execution success to customer
+                alert(`✅ "${product.name}" has been successfully added to your cart!`);
             };
         })
         .catch(err => {
@@ -165,6 +174,22 @@
             container.innerHTML = `<div class="error-message"><h2>Failed to load item details.</h2><p>Please check your connection or try again later.</p></div>`;
         });
 });
+
+// Helper Function to keep header counts dynamically tracked
+function updateDetailsCartBadge() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const badge = document.getElementById("cart-badge");
+    if (!badge) return;
+
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    badge.innerText = totalItems;
+    
+    if (totalItems > 0) {
+        badge.style.display = "flex";
+    } else {
+        badge.style.display = "none";
+    }
+}
     </script>
 </body>
 </html>
