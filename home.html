@@ -33,9 +33,9 @@
         }
 
         * { 
-    box-sizing: border-box; 
-    transition: background-color 0.3s ease, opacity 0.3s ease, border-color 0.3s ease; 
-}
+            box-sizing: border-box; 
+            transition: background-color 0.3s ease, opacity 0.3s ease, border-color 0.3s ease; 
+        }
 
         body {
             margin: 0;
@@ -61,7 +61,7 @@
         .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--accent); animation: loading 1.5s infinite; }
         .preloader-hidden { opacity: 0; visibility: hidden; }
 
-        /* HEADER (Mirrors Terms Structure) */
+        /* HEADER */
         header.navbar {
             position: sticky; top: 10px;
             background: rgba(3, 7, 18, 0.8);
@@ -79,11 +79,23 @@
         .logo img { height: 35px; border-radius: 8px; }
         .logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -1px; margin: 0; color: white; }
 
+        /* RE-ENGINEERED COMPONENT ACCENT FOR BADGES */
         .nav-btn {
-            background: var(--accent); color: #000;
+            background: white; color: #000;
             padding: 8px 18px; border-radius: 12px;
             text-decoration: none; font-weight: 700; font-size: 14px;
+            position: relative; display: flex; align-items: center; gap: 6px;
         }
+
+        #cart-badge {
+            position: absolute; top: -8px; right: -8px;
+            background: #ef4444; color: white; font-size: 11px;
+            font-weight: 800; width: 20px; height: 20px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg); transform: scale(0);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .badge-pop { transform: scale(1) !important; }
 
         /* BENTO CONTAINER */
         .container {
@@ -144,7 +156,6 @@
         .step-card { background: var(--card-bg); border: 1px solid var(--glass-border); padding: 25px; border-radius: 24px; text-align: center; }
         .step-num { width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: 800; }
 
-        /* THE EXACT FIX FROM YOUR TERMS FILE (max-width: 600px) */
         @media (max-width: 600px) {
             body { padding: 0 12px 40px; }
             header.navbar { margin: 10px auto 24px; padding: 12px 16px; }
@@ -154,13 +165,11 @@
                 gap: 16px;
             }
 
-            /* DROPS ALL ROW AND COLUMN EXTENSIONS CLEANLY */
             .hero-tile, .action-tile, .carousel-tile, .info-tile, .loc-tile, .full-width { 
                 grid-column: span 1 !important; 
                 grid-row: span 1 !important;
             }
 
-            /* Unrolls carousel into a single stacked column */
             .carousel-split { 
                 grid-template-columns: 1fr; 
                 gap: 16px; 
@@ -168,7 +177,6 @@
             }
             .carousel-img-box { max-width: 200px; margin: 0 auto; }
 
-            /* Child elements smoothly turn into fluid 2-column links just like your grids */
             .nested-grid { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 12px; 
@@ -192,26 +200,25 @@
             <h1>ShopSphere</h1>
         </div>
         <nav>
-            <a class="nav-btn" href="cart.html">Cart</a>
+            <a class="nav-btn" href="cart.html">
+                🛒 Cart <span id="cart-badge">0</span>
+            </a>
         </nav>
     </header>
 
     <main class="container">
-        <!-- HERO TILE -->
         <section class="bento-item hero-tile">
             <h2>Discover.<br>Shop. Enjoy.</h2>
             <p>Your premium marketplace. Verified sellers, secure payments, and lightning fast delivery.</p>
         </section>
 
-        <!-- ACTION TILE -->
         <section class="bento-item action-tile">
             <a href="products.html" class="btn-modern btn-green">Official Shop</a>
             <a href="CustomerProduct.html" class="btn-modern">Customer Market</a>
             <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
         </section>
 
-        <!-- TRENDING CAROUSEL -->
-      <section class="bento-item carousel-tile">
+        <section class="bento-item carousel-tile">
             <div class="carousel-split">
                 <div class="carousel-img-box">
                     <img id="carousel-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><rect width='100%' height='100%' fill='%23111827'/></svg>" alt="Product" />
@@ -228,13 +235,11 @@
             <div id="carousel-dots" style="display: flex; justify-content: center; gap: 6px; margin-top: 15px;"></div>
         </section>
 
-        <!-- SECURE SHOPPING -->
         <section class="bento-item info-tile">
             <h3>💳 Secure Shopping</h3>
             <p>Pay <strong>9%</strong> commitment fee to confirm your order, and <strong>91%</strong> balance on delivery.</p>
         </section>
 
-        <!-- COVERAGE AREAS -->
         <section class="bento-item loc-tile">
             <h3>📍 Coverage Areas</h3>
             <div class="loc-list">
@@ -242,7 +247,6 @@
             </div>
         </section>
 
-        <!-- STEPS TRACK -->
         <div class="full-width nested-grid">
             <div class="step-card"><div class="step-num">1</div><p style="margin:0; font-size:14px; font-weight:600;">Pick Item</p></div>
             <div class="step-card"><div class="step-num">2</div><p style="margin:0; font-size:14px; font-weight:600;">Add to Cart</p></div>
@@ -250,7 +254,6 @@
             <div class="step-card"><div class="step-num">4</div><p style="margin:0; font-size:14px; font-weight:600;">WhatsApp</p></div>
         </div>
 
-        <!-- FOOTER TRACK -->
         <div class="full-width nested-grid">
             <a href="review.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: var(--accent); font-weight: 700;">Reviews →</a>
             <a href="about.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: white; font-weight: 600;">About</a>
