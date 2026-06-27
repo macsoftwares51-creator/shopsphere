@@ -104,49 +104,67 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // 1. Get product ID from the URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            const container = document.getElementById('details-box');
+       document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const container = document.getElementById('details-box');
 
-            if (!productId) {
-                container.innerHTML = `<div class="error-message"><h2>Product not found.</h2><a href="products.html" class="nav-btn">Return to Shop</a></div>`;
-                return;
-            }
+    if (!productId) {
+        container.innerHTML = `<div class="error-message"><h2>Product not found.</h2><a href="products.html" class="nav-btn">Return to Shop</a></div>`;
+        return;
+    }
 
-            // 2. Fetch the target item's data directly from your live API endpoint
-            fetch(`https://shopsphere-backend-wr5o.onrender.com/products/${productId}`)
-                .then(res => {
-                    if (!res.ok) throw new Error("Item fetch failed");
-                    return res.json();
-                })
-                .then(product => {
-                    // Inject structural layout dynamically
-                    container.innerHTML = `
-                        <div class="image-box">
-                            <img src="${product.image || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/></svg>'}" alt="${product.name}">
-                        </div>
-                        <div class="info-box">
-                            <span class="category">${product.category || 'Premium Listing'}</span>
-                            <h1 class="title">${product.name}</h1>
-                            <div class="price">KES ${product.price ? product.price.toLocaleString() : 'N/A'}</div>
-                            <p class="description">${product.description || 'No description available for this product item.'}</p>
-                            <button class="order-btn" id="whatsapp-btn">Order via WhatsApp</button>
-                        </div>
-                    `;
+    // Fetch the target item data directly from your live API endpoint
+    fetch(`https://shopsphere-backend-wr5o.onrender.com/products/${productId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Item fetch failed");
+            return res.json();
+        })
+        .then(product => {
+            // Inject structural layout dynamically with an updated Add to Cart button
+            container.innerHTML = `
+                <div class="image-box">
+                    <img src="${product.image || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/></svg>'}" alt="${product.name}">
+                </div>
+                <div class="info-box">
+                    <span class="category">${product.category || 'Premium Listing'}</span>
+                    <h1 class="title">${product.name}</h1>
+                    <div class="price">KES ${product.price ? product.price.toLocaleString() : 'N/A'}</div>
+                    <p class="description">${product.description || 'No description available for this product item.'}</p>
+                    <button class="order-btn" id="add-to-cart-btn">Add to Cart 🛒</button>
+                </div>
+            `;
 
-                    // 3. Set up dynamic checkout redirect hook targeting your business line
-                    document.getElementById('whatsapp-btn').onclick = () => {
-                        const message = encodeURIComponent(`Hi ShopSphere, I would like to order: ${product.name} (ID: ${productId}) for KES ${product.price}`);
-                        window.open(`https://wa.me/254712345678?text=${message}`, '_blank'); // Replace with your phone number string
-                    };
-                })
-                .catch(err => {
-                    console.error(err);
-                    container.innerHTML = `<div class="error-message"><h2>Failed to load item details.</h2><p>Please check your connection or try again later.</p></div>`;
-                });
+            // Handle adding items to your persistent cart structure
+            document.getElementById('add-to-cart-btn').onclick = () => {
+                // 1. Pull current storage list matching cart.js scheme
+                let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                // 2. Check if the product already exists in the cart array
+                const existingItem = cart.find(item => item.name === product.name);
+
+                if (existingItem) {
+                    existingItem.qty += 1; // Increment matching your 'qty' property rule
+                } else {
+                    cart.push({
+                        name: product.name,
+                        price: product.price,
+                        qty: 1 // Match the property schema expected by cart.js
+                    });
+                }
+
+                // 3. Save changes back to local storage
+                localStorage.setItem("cart", JSON.stringify(cart));
+
+                // 4. Send the user to your functional checkout page
+                window.location.href = "cart.html"; // Adjust file name path if yours is named checkout.html
+            };
+        })
+        .catch(err => {
+            console.error(err);
+            container.innerHTML = `<div class="error-message"><h2>Failed to load item details.</h2><p>Please check your connection or try again later.</p></div>`;
         });
+});
     </script>
 </body>
 </html>
