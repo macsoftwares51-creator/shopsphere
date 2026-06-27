@@ -109,55 +109,44 @@
     document.addEventListener("DOMContentLoaded", () => {
         const container = document.getElementById("audit-container");
         const counter = document.getElementById("issue-count");
+        const hiddenProductGrid = document.getElementById("products");
 
-        // 1. Create a raw data viewer box at the top of the container
-        const debugBox = document.createElement('pre');
-        debugBox.style.cssText = "grid-column: 1/-1; background: #111827; padding: 15px; border: 1px dashed #fbbf24; color: #fbbf24; border-radius: 12px; font-size: 12px; max-height: 250px; overflow: auto; margin-bottom: 20px; font-family: monospace;";
-        container.parentNode.insertBefore(debugBox, container);
+        // Temporary debug indicator inside the main grid area
+        container.innerHTML = `<div id="audit-status" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Watching backend stream for incoming products...</div>`;
 
-        function runProductAudit() {
-            // Unpack the global variable
-            let rawData = typeof products !== 'undefined' ? products : (window.allProducts || null);
+        function checkHiddenProducts() {
+            // Grab all individual product card elements that products.js injected into the hidden div
+            // Adjust the selector (e.g., '.card' or 'div') based on what your layout creates
+            const renderedCards = hiddenProductGrid.querySelectorAll('.card, [class*="card"], div > h3');
             
-            // Print what the script sees into our debug box
-            debugBox.textContent = `[DEBUG SYSTEM]\nData Type Detected: ${typeof rawData}\nIs Array? ${Array.isArray(rawData)}\nRaw Content Structure:\n${JSON.stringify(rawData, null, 2)}`;
+            if (renderedCards.length === 0) return;
 
-            if (!rawData) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 No products data source found yet...</div>`;
-                return;
-            }
+            let incompleteItems = [];
 
-            let allProducts = [];
-
-            // Convert string JSON if needed
-            if (typeof rawData === 'string') {
-                try { allProducts = JSON.parse(rawData); } catch (e) {}
-            } else if (Array.isArray(rawData)) {
-                allProducts = rawData;
-            } else if (rawData && typeof rawData === 'object') {
-                allProducts = rawData.products || Object.values(rawData);
-            }
-
-            // Ensure we are operating on an array group
-            if (!Array.isArray(allProducts) || allProducts.length === 0) {
-                return;
-            }
-
-            // 2. Filter out items where details don't exist
-            const incompleteItems = allProducts.filter(item => {
-                // If item doesn't exist, skip safely
-                if (!item) return false;
-
-                // Check if details exist or are empty string/null
-                const detailsValue = item.details ?? item.description ?? item.desc ?? null;
-                const isMissingDetails = (detailsValue === null) || (String(detailsValue).trim() === "");
+            renderedCards.forEach(card) => {
+                // Find the parent element card container
+                const cardContainer = card.closest('.card') || card.parentElement;
                 
-                const priceField = item.price || item.cost || 0;
-                const isMissingPrice = !priceField || priceField === 0;
+                // Extract data directly from the DOM elements rendered by your script
+                const title = cardContainer.querySelector('h3')?.textContent || "Unnamed Item";
+                const priceText = cardContainer.querySelector('.price, [class*="price"]')?.textContent || "0";
+                const category = cardContainer.querySelector('.category, p')?.textContent || "Unassigned";
 
-                return isMissingDetails || isMissingPrice;
+                // Check your database's specific detail link setup or look inside the description element if it exists
+                const detailsBtn = cardContainer.querySelector('button, a');
+                const hasDetailsAdded = detailsBtn && !detailsBtn.textContent.includes("Add/Edit Details");
+
+                // If it still has the "Add/Edit Details" button or lacks custom description text, it's incomplete!
+                if (!hasDetailsAdded) {
+                    incompleteItems.push({
+                        title: title,
+                        price: priceText,
+                        category: category
+                    });
+                }
             });
 
+            // Update the header counter indicator
             counter.textContent = `${incompleteItems.length} Items Need Attention`;
 
             if (incompleteItems.length === 0) {
@@ -168,33 +157,32 @@
                 return;
             }
 
-            // 3. Render cards
+            // Render the items onto the audit page layout view
             container.innerHTML = incompleteItems.map(item => {
                 return `
                     <div class="audit-card">
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             <span class="issue-tag">❌ No Details Added Yet</span>
                         </div>
-                        <h3 style="margin: 5px 0; color: white;">${item.title || item.name || "Unnamed Item"}</h3>
-                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
-                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price:</strong> KES ${item.price || '0'}</p>
+                        <h3 style="margin: 5px 0; color: white;">${item.title}</h3>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Status:</strong> Basic Info Only</p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Price / Info:</strong> ${item.price}</p>
                     </div>
                 `;
             }).join('');
         }
 
-        runProductAudit();
+        // 1. Run an immediate check in case it loaded fast
+        setTimeout(checkHiddenProducts, 600);
 
-        // Check back for async delivery shifts
-        const dataCheckInterval = setInterval(() => {
-            let currentData = typeof products !== 'undefined' ? products : (window.allProducts || null);
-            if (currentData) {
-                runProductAudit();
-                // If it successfully loaded structural items, clear the poller box interval safely
-                let parsed = Array.isArray(currentData) ? currentData : (currentData.products || []);
-                if (parsed.length > 0) clearInterval(dataCheckInterval);
-            }
-        }, 500);
+        // 2. Set up a listener that triggers the moment your database data fills the hidden div
+        const observer = new MutationObserver(() => {
+            checkHiddenProducts();
+        });
+
+        if (hiddenProductGrid) {
+            observer.observe(hiddenProductGrid, { childList: true, subtree: true });
+        }
     });
 </script>
 </body>
