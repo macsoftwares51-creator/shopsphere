@@ -16,6 +16,7 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
+        const id = p._id; // Ensure we pull the unique Mongo database ID field
         const name = p.name || "Unnamed Item";
         const category = p.category || "General";
         const price = Number(p.price) || 0;
@@ -27,8 +28,17 @@ function render(products) {
         setTimeout(() => card.classList.add('reveal'), index * 60);
 
         card.innerHTML = `
-            <img src="${image}" onclick="openImage('${image}')">
-            <h3>${name}</h3>
+            <a href="product-details.html?id=${id}" style="text-decoration: none; display: block;">
+                <img src="${image}" style="cursor: pointer;">
+            </a>
+            <h3 style="margin-bottom: 4px;">
+                <a href="product-details.html?id=${id}" style="text-decoration: none; color: white;">${name}</a>
+            </h3>
+            <div style="margin-bottom: 12px;">
+                <a href="product-details.html?id=${id}" style="color: var(--accent); font-size: 12px; font-weight: 600; text-decoration: none; display: inline-block;">
+                    View Specifications & Details →
+                </a>
+            </div>
             <p>${category}</p>
             <span class="price">Kshs ${price}</span>
             <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
@@ -38,7 +48,6 @@ function render(products) {
         box.appendChild(card);
     });
 }
-
 // Cart Logic
 function addToCart(name, price) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
