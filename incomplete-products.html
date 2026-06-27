@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere | Incomplete Items Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #ef4444; /* Alert Red for incomplete items */
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b, #030712);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header.audit-header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+        }
+
+        .counter-badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .audit-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .issue-tag {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .btn-back {
+            background: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<header class="audit-header">
+    <div>
+        <h1 style="margin: 0 0 5px 0; font-weight: 800; letter-spacing: -1px;">Incomplete Products</h1>
+        <p style="margin: 0; color: var(--text-dim); font-size: 14px;">Items missing descriptions, prices, or placeholder details.</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <span class="counter-badge" id="issue-count">0 Items</span>
+        <a href="products.html" class="btn-back">← Storefront</a>
+    </div>
+</header>
+
+<main class="grid" id="audit-container"></main>
+
+<script src="products.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("audit-container");
+        const counter = document.getElementById("issue-count");
+
+        // Safety check: ensure your products array exists globally from products.js
+        const allProducts = typeof products !== 'undefined' ? products : [];
+
+        // 1. Filter out ONLY the items that are missing critical fields
+        const incompleteItems = allProducts.filter(item => {
+            const hasMissingDesc = !item.description || item.description.trim() === "" || item.description.includes("Loading");
+            const hasMissingPrice = !item.price || item.price === 0 || item.price === "";
+            const hasMissingImg = !item.image || item.image.includes("placeholder") || item.image === "";
+            
+            return hasMissingDesc || hasMissingPrice || hasMissingImg;
+        });
+
+        // Update indicator counter total
+        counter.textContent = `${incompleteItems.length} Issues Found`;
+
+        if (incompleteItems.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
+                    <h2>🎉 Clean Audit! All products have their details filled out.</h2>
+                </div>`;
+            return;
+        }
+
+        // 2. Map and display the incomplete cards
+        container.innerHTML = incompleteItems.map(item => {
+            // Figure out exactly what is missing to display as tags
+            let issues = [];
+            if (!item.description || item.description.trim() === "") issues.push("❌ Missing Description");
+            if (!item.price || item.price === 0) issues.push("❌ Missing/Zero Price");
+            if (!item.image || item.image.includes("placeholder")) issues.push("❌ Missing Image");
+
+            return `
+                <div class="audit-card">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        ${issues.map(issue => `<span class="issue-tag">${issue}</span>`).join('')}
+                    </div>
+                    <h3 style="margin: 5px 0; color: white;">${item.title || "Unnamed Item"}</h3>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${item.id || 'N/A'}</p>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
+                </div>
+            `;
+        }).join('');
+    });
+</script>
+</body>
+</html>
