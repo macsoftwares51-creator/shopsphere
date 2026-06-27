@@ -95,47 +95,49 @@ window.closeSpecModal = function() {
     activeProductId = null;
 };
 
-// Handle Save Operations directly (no DOMContentLoaded wrapper required anymore)
-const modalSaveBtn = document.getElementById("modalSaveBtn");
-if (modalSaveBtn) {
-    modalSaveBtn.onclick = async () => {
-        if (!activeProductId) {
-            alert("Error: No product element reference selected.");
-            return;
-        }
+// Global Window Function to handle Save Operations instantly from the HTML onclick listener
+window.handleSaveInformation = async function() {
+    if (!activeProductId) {
+        alert("Error: No product element reference selected.");
+        return;
+    }
 
-        const specTextTextarea = document.getElementById("specTextTextarea");
+    const modalSaveBtn = document.getElementById("modalSaveBtn");
+    const specTextTextarea = document.getElementById("specTextTextarea");
 
+    if (modalSaveBtn) {
         modalSaveBtn.innerText = "Saving Data...";
         modalSaveBtn.disabled = true;
+    }
 
-        const updatePayload = {
-            description: specTextTextarea ? specTextTextarea.value : ""
-        };
+    const updatePayload = {
+        description: specTextTextarea ? specTextTextarea.value : ""
+    };
 
-        try {
-            // Request dispatcher targeting our live backend update route
-            const res = await fetch(`${API}/${activeProductId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatePayload)
-            });
+    try {
+        // Request dispatcher targeting our live backend update route
+        const res = await fetch(`${API}/${activeProductId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatePayload)
+        });
 
-            if (res.ok) {
-                window.closeSpecModal();
-                loadProducts(); // Instantly refresh layout state data fields
-            } else {
-                alert("Failed to preserve structural data fields.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Communication failure connecting to deployment cluster.");
-        } finally {
+        if (res.ok) {
+            window.closeSpecModal();
+            loadProducts(); // Instantly refresh layout state data fields
+        } else {
+            alert("Failed to preserve structural data fields.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Communication failure connecting to deployment cluster.");
+    } finally {
+        if (modalSaveBtn) {
             modalSaveBtn.innerText = "Save Information";
             modalSaveBtn.disabled = false;
         }
-    };
-}
+    }
+};
 
 // Delete Execution Loop Hook
 async function deleteProduct(id) {
