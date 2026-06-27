@@ -16,7 +16,7 @@ function render(products) {
     box.innerHTML = "";
     
     products.forEach((p, index) => {
-        const id = p._id; // Ensure we pull the unique Mongo database ID field
+        const id = p._id; // Unique MongoDB Product ID
         const name = p.name || "Unnamed Item";
         const category = p.category || "General";
         const price = Number(p.price) || 0;
@@ -24,26 +24,29 @@ function render(products) {
         
         const card = document.createElement('div');
         card.className = 'card';
+        
+        // Remove padding from the card base style dynamically so the link hits the absolute edges
+        card.style.padding = "0";
+        card.style.overflow = "hidden";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+
         // Staggered reveal animation
         setTimeout(() => card.classList.add('reveal'), index * 60);
 
         card.innerHTML = `
-            <a href="product-details.html?id=${id}" style="text-decoration: none; display: block;">
-                <img src="${image}" style="cursor: pointer;">
+            <a href="product-details.html?id=${id}" style="text-decoration: none; color: inherit; display: block; padding: 20px; flex-grow: 1;">
+                <img src="${image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px;">
+                <h3>${name}</h3>
+                <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase;">${category}</p>
+                <span class="price" style="color: var(--accent); font-size: 20px; font-weight: 800; display: block;">Kshs ${price}</span>
             </a>
-            <h3 style="margin-bottom: 4px;">
-                <a href="product-details.html?id=${id}" style="text-decoration: none; color: white;">${name}</a>
-            </h3>
-            <div style="margin-bottom: 12px;">
-                <a href="product-details.html?id=${id}" style="color: var(--accent); font-size: 12px; font-weight: 600; text-decoration: none; display: inline-block;">
-                    View Specifications & Details →
-                </a>
+            
+            <div style="padding: 0 20px 20px 20px;">
+                <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
+                    Add to Cart
+                </button>
             </div>
-            <p>${category}</p>
-            <span class="price">Kshs ${price}</span>
-            <button class="add-btn" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price})">
-                Add to Cart
-            </button>
         `;
         box.appendChild(card);
     });
