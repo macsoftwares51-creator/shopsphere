@@ -32,7 +32,6 @@
             color: var(--text-main);
             padding: 0 20px 40px;
             min-height: 100vh;
-            /* SAFEGUARD OVERFLOW CORES */
             overflow-x: hidden;
             width: 100%;
         }
@@ -55,7 +54,6 @@
             transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, margin-bottom 0.2s ease;
         }
 
-        /* Merged State modification rules for the Main Header Navbar Layout */
         header.navbar.merged {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -75,7 +73,6 @@
             position: relative;
         }
 
-        /* Cart Badge Style */
         #cart-badge {
             position: absolute; top: -8px; right: -8px;
             background: #ef4444; color: white; font-size: 11px;
@@ -105,10 +102,15 @@
             border-radius: 14px; font-weight: 800; cursor: pointer;
         }
 
-        /* Sub Navigation Filtering Interface Layer Element Rules */
-        .sub-navbar {
+        /* Sub Navigation Outer Sentinel Container */
+        .sub-nav-container {
             max-width: 1200px;
             margin: 0 auto 30px;
+            min-height: 58px; /* Keeps layout space intact when sub-navbar becomes fixed */
+        }
+
+        /* Sub Navigation Filtering Interface Layer Element Rules */
+        .sub-navbar {
             background: rgba(17, 24, 39, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
@@ -118,85 +120,47 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+            width: 100%;
             
-            /* Pinning setup beneath main navigation element limits */
+            /* CSS Sticky fallback framework */
             position: sticky;
-            top: 72px; /* Set to default desktop layout height offset */
+            top: 72px; 
             z-index: 999;
-            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease, margin 0.2s ease;
+            transition: border-radius 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease, width 0.2s ease;
         }
 
-        /* Merged State design modifications rules for Sub-Navigation Filter Interface Box */
+        /* FORCE LOCK STATE FOR SMARTPHONES */
         .sub-navbar.merged {
+            position: fixed;
+            top: 62px; /* Docks right under header edge */
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 1200px;
+            width: calc(100% - 40px); /* Preserves padding margins safely */
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             border-top-color: rgba(255, 255, 255, 0.05);
             background: rgba(3, 7, 18, 0.95);
-            padding: 8px 25px; /* Condenses overall wrapper sizing structural footprint */
+            padding: 8px 25px;
         }
 
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-            max-width: 400px;
-        }
-
+        .search-wrapper { position: relative; flex: 1; max-width: 400px; }
         .search-wrapper input {
-            width: 100%;
-            padding: 12px 16px 12px 42px;
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: white;
-            font-family: inherit;
-            transition: padding 0.2s ease;
+            width: 100%; padding: 12px 16px 12px 42px;
+            background: rgba(3, 7, 18, 0.6); border: 1px solid var(--glass-border);
+            border-radius: 14px; color: white; font-family: inherit; transition: padding 0.2s ease;
         }
 
-        /* Compress layout details upon tracking activation points */
-        .sub-navbar.merged .search-wrapper input {
-            padding-top: 8px;
-            padding-bottom: 8px;
-        }
+        .sub-navbar.merged .search-wrapper input { padding-top: 8px; padding-bottom: 8px; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 15px; pointer-events: none; }
 
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-dim);
-            font-size: 15px;
-            pointer-events: none;
-        }
-
-        .filter-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .filter-wrapper label {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .filter-wrapper { display: flex; align-items: center; gap: 12px; }
+        .filter-wrapper label { font-size: 12px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
         .filter-wrapper select {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: padding 0.2s ease;
+            background: rgba(3, 7, 18, 0.6); border: 1px solid var(--glass-border);
+            color: white; padding: 12px 20px; border-radius: 14px; cursor: pointer; font-family: inherit; transition: padding 0.2s ease;
         }
-
-        .sub-navbar.merged .filter-wrapper select {
-            padding-top: 8px;
-            padding-bottom: 8px;
-        }
+        .sub-navbar.merged .filter-wrapper select { padding-top: 8px; padding-bottom: 8px; }
 
         /* Product Grid */
         .grid {
@@ -205,52 +169,32 @@
             gap: 25px;
         }
 
-        .card {
-            background: var(--card-bg); backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            padding: 20px; border-radius: 28px; opacity: 0;
-        }
+        .card { background: var(--card-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); padding: 20px; border-radius: 28px; opacity: 0; }
         .reveal { animation: fadeInUp 0.6s forwards; }
-
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 20px; cursor: zoom-in; }
         .card h3 { margin: 15px 0 5px; font-size: 18px; font-weight: 700; color: white; }
         .card p { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
         .price { color: var(--accent); font-size: 20px; font-weight: 800; display: block; margin-bottom: 15px; }
 
-        .add-btn {
-            background: var(--accent); color: #000; border: none;
-            width: 100%; padding: 12px; border-radius: 14px;
-            font-weight: 800; cursor: pointer;
-        }
+        .add-btn { background: var(--accent); color: #000; border: none; width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; }
         .add-btn:active { transform: scale(0.95); }
 
-        /* Modal */
-        #imageModal {
-            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
-        }
+        #imageModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000; }
 
         @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
             
-            /* Keep navbar sticky on mobile but adjust padding to match the screen width */
-            header.navbar { 
-                padding: 10px 15px; 
-                margin: 10px 10px 20px;
-                top: 5px;
-            }
+            header.navbar { padding: 10px 15px; margin: 10px 10px 20px; top: 5px; }
             
-            /* Clean up mobile stacking layout */
-            .sub-navbar {
-                position: sticky;
-                top: 67px; /* FIXED MATCHING OFFSET FOR MOBILE NAV HEIGHT */
-                margin: 0 10px 20px;
-                padding: 10px 15px;
-                gap: 10px;
-                flex-direction: row; 
+            .sub-nav-container { margin: 0 10px 20px; min-height: 52px; }
+            .sub-navbar { padding: 10px 15px; gap: 10px; flex-direction: row; top: 67px; }
+
+            .sub-navbar.merged {
+                top: 57px; /* Correct lock alignment position relative to mobile layout header */
+                width: calc(100% - 20px);
+                padding: 8px 15px;
             }
 
-            /* Shrink input areas so they stay completely on screen */
             .search-wrapper { max-width: 60%; }
             .filter-wrapper { max-width: 40%; gap: 6px; }
             .filter-wrapper label { display: none; } 
@@ -259,25 +203,14 @@
             .search-icon { left: 10px; font-size: 13px; }
             .filter-wrapper select { padding: 10px 10px; font-size: 13px; width: 100%; }
 
-            /* Smoothly handle the merged layout on mobile */
             header.navbar.merged { margin-bottom: 0; }
-            .sub-navbar.merged { padding: 8px 15px; margin-top: 0; }
         }
 
-        /* Extreme small screen tuning */
         @media (max-width: 400px) {
-            .sub-navbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .search-wrapper, .filter-wrapper {
-                max-width: 100%;
-            }
-            .filter-wrapper select {
-                width: 100%;
-            }
-            /* Stack instead of merge on micro screens to avoid squeezing */
-            .sub-navbar { position: relative; top: 0; }
+            .sub-navbar { flex-direction: column; align-items: stretch; }
+            .search-wrapper, .filter-wrapper { max-width: 100%; }
+            .filter-wrapper select { width: 100%; }
+            .sub-navbar.merged { position: relative; top: 0; transform: none; left: 0; width: 100%; }
             header.navbar.merged { border-radius: 20px; }
         }
     </style>
@@ -316,17 +249,19 @@
     </div>
 </section>
 
-<div class="sub-navbar">
-    <div class="search-wrapper">
-        <span class="search-icon">🔍</span>
-        <input id="search" type="text" placeholder="Search products...">
-    </div>
+<div class="sub-nav-container">
+    <div class="sub-navbar">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input id="search" type="text" placeholder="Search products...">
+        </div>
 
-    <div class="filter-wrapper">
-        <label for="category">Category</label>
-        <select id="category">
-            <option value="">All Categories</option>
-        </select>
+        <div class="filter-wrapper">
+            <label for="category">Category</label>
+            <select id="category">
+                <option value="">All Categories</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -336,25 +271,25 @@
 <script src="shopbuddy.js"></script>
 
 <script>
-    window.addEventListener('scroll', () => {
-        const mainNav = document.querySelector('header.navbar');
-        const subNav = document.querySelector('.sub-navbar');
-        
-        if (!mainNav || !subNav) return;
+    const mainNav = document.querySelector('header.navbar');
+    const subNav = document.querySelector('.sub-navbar');
+    const container = document.querySelector('.sub-nav-container');
 
-        // Get bounding rectangles for both elements dynamically
-        const mainRect = mainNav.getBoundingClientRect();
-        const subRect = subNav.getBoundingClientRect();
+    if (mainNav && subNav && container) {
+        window.addEventListener('scroll', () => {
+            const mainRect = mainNav.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
 
-        // Check if the top of the sub-navbar has touched or crossed the bottom of the main navbar
-        if (subRect.top <= mainRect.bottom + 2) {
-            mainNav.classList.add('merged');
-            subNav.classList.add('merged');
-        } else {
-            mainNav.classList.remove('merged');
-            subNav.classList.remove('merged');
-        }
-    });
+            // When the container's top reaches right below the header's bottom edge, force lock it
+            if (containerRect.top <= mainRect.bottom) {
+                mainNav.classList.add('merged');
+                subNav.classList.add('merged');
+            } else {
+                mainNav.classList.remove('merged');
+                subNav.classList.remove('merged');
+            }
+        });
+    }
 </script>
 </body>
 </html>
