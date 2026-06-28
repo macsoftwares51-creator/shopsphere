@@ -3,8 +3,31 @@ const form = document.getElementById("form");
 const productsDiv = document.getElementById("products");
 const countSpan = document.getElementById("count");
 
+// UI Input Nodes for Markup Utility logic
+const rawPriceInput = document.getElementById("rawPrice");
+const productPriceInput = document.getElementById("productPrice");
+
 // Runtime pointer storage variable capturing the target update element scope
 let activeProductId = null;
+
+// AUTOMATIC MARKUP DETECTOR EVENT LISTENERS
+if (rawPriceInput && productPriceInput) {
+    rawPriceInput.addEventListener("input", () => {
+        const valueStr = rawPriceInput.value.trim();
+        
+        if (valueStr === "") {
+            productPriceInput.value = "";
+            return;
+        }
+
+        const baseNum = parseFloat(valueStr);
+        if (!isNaN(baseNum)) {
+            // Apply 1.3 markup factor multiplier and round to nearest tenth
+            const computedPrice = Math.round((baseNum * 1.3) * 10) / 10;
+            productPriceInput.value = computedPrice;
+        }
+    });
+}
 
 // Form Submission (Add Product) Logic
 if (form) {
