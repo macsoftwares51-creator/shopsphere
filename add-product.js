@@ -23,7 +23,7 @@ if (rawPriceInput && productPriceInput) {
         const baseNum = parseFloat(valueStr);
         if (!isNaN(baseNum)) {
             // Apply 1.3 markup factor multiplier and round to nearest tenth
-            const computedPrice = Math.round((baseNum * 1.3) * 10) / 10;
+         const computedPrice = Math.round(baseNum * 1.3);
             productPriceInput.value = computedPrice;
         }
     });
