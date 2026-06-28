@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere | Delivery Registry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent: #22c55e;
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            padding: 40px 20px; 
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b, #030712);
+            color: var(--text-main);
+            min-height: 100vh;
+            margin: 0;
+        }
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+        }
+        h1 { font-weight: 800; margin: 0; letter-spacing: -1px; }
+        .counter-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .proof-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+        .date-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            width: fit-content;
+            border: 1px solid var(--glass-border);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+        .info-row span:first-child { color: var(--text-dim); }
+        .info-row span:last-child { font-weight: 600; color: white; }
+        
+        .signature-display {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            border: 1px solid var(--glass-border);
+        }
+        .signature-display img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>Delivery Registry</h1>
+        <p style="margin: 5px 0 0 0; color: var(--text-dim); font-size: 14px;">Review completed delivery confirmations.</p>
+    </div>
+    <span class="counter-badge" id="proof-count">Loading Records...</span>
+</header>
+
+<main class="grid" id="proofs-container">
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">📡 Retrieving confirmation archive...</div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const container = document.getElementById("proofs-container");
+        const counter = document.getElementById("proof-count");
+
+        // Points straight to your active backend route URL setup
+        const FETCH_URL = "https://shopsphere-backend-wr5o.onrender.com/proof/all-proofs";
+
+        try {
+            const response = await fetch(FETCH_URL);
+            if (!response.ok) throw new Error("Could not reach delivery archive backend endpoint.");
+            
+            const proofs = await response.json();
+            counter.textContent = `${proofs.length} Total Deliveries`;
+
+            if (proofs.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: var(--text-dim);">
+                        <h3>No delivery records found inside the database database yet.</h3>
+                    </div>`;
+                return;
+            }
+
+            // Render confirmation panels sorted by newest date natively
+            container.innerHTML = proofs.map(proof => {
+                // Parse standard ISO timestamp into a readable date string
+                const rawDate = new Date(proof.createdAt);
+                const displayDate = rawDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                return `
+                    <div class="proof-card">
+                        <div class="date-badge">🗓️ ${displayDate}</div>
+                        
+                        <div style="margin-top: 8px;">
+                            <div class="info-row">
+                                <span>Order ID</span>
+                                <span>#${proof.orderId}</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Customer</span>
+                                <span>${proof.customerName}</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Product Reference</span>
+                                <span style="font-size:11px; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${proof.productId}</span>
+                            </div>
+                            <div class="info-row" style="border:none;">
+                                <span>Delivery Code</span>
+                                <span style="color: var(--accent); font-family: monospace;">${proof.deliveryCode}</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 12px; color: var(--text-dim); margin-top: 5px; font-weight:600;">CUSTOMER SIGNATURE:</div>
+                        <div class="signature-display">
+                            <img src="${proof.signature}" alt="Customer Signature Link">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (err) {
+            console.error(err);
+            counter.textContent = "Offline";
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">
+                    <h3>❌ Connection Refused</h3>
+                    <p>Make sure you added the GET route to your backend file and redeployed.</p>
+                </div>`;
+        }
+    });
+</script>
+</body>
+</html>
