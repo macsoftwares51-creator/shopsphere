@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Grab deep active index array directly from database endpoint
     try {
-        const response = await fetch('https://shopsphere-backend.onrender.com/api/products');
+        const response = await fetch('https://shopsphere-backend-wr5o.onrender.com/products');
         if (response.ok) {
             localInventoryCache = await response.json();
         }
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const response = await fetch('https://shopsphere-backend.onrender.com/api/proof/submit-proof', { 
+            const response = await fetch('https://shopsphere-backend-wr5o.onrender.com/proof/submit-proof', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
