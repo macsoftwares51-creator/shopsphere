@@ -60,6 +60,11 @@
             gap: 12px;
             position: relative;
         }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .date-badge {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-main);
@@ -69,6 +74,21 @@
             border-radius: 8px;
             width: fit-content;
             border: 1px solid var(--glass-border);
+        }
+        .btn-delete {
+            background: transparent;
+            color: #ef4444;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
         }
         .info-row {
             display: flex;
@@ -113,73 +133,105 @@
 </main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const container = document.getElementById("proofs-container");
-        const counter = document.getElementById("proof-count");
+    // Global container tracking
+    let currentProofs = [];
+    const container = document.getElementById("proofs-container");
+    const counter = document.getElementById("proof-count");
+    
+    // Core Base URLs 
+    const BACKEND_BASE = "https://shopsphere-backend-wr5o.onrender.com/proof";
 
-        // Points straight to your active backend route URL setup
-        const FETCH_URL = "https://shopsphere-backend-wr5o.onrender.com/proof/all-proofs";
+    // Reusable UI Render loop
+    function renderCards(proofs) {
+        counter.textContent = `${proofs.length} Total Deliveries`;
 
-        try {
-            const response = await fetch(FETCH_URL);
-            if (!response.ok) throw new Error("Could not reach delivery archive backend endpoint.");
-            
-            const proofs = await response.json();
-            counter.textContent = `${proofs.length} Total Deliveries`;
+        if (proofs.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: var(--text-dim);">
+                    <h3>No delivery records found inside the database yet.</h3>
+                </div>`;
+            return;
+        }
 
-            if (proofs.length === 0) {
-                container.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: var(--text-dim);">
-                        <h3>No delivery records found inside the database yet.</h3>
-                    </div>`;
-                return;
-            }
+        container.innerHTML = proofs.map(proof => {
+            const rawDate = new Date(proof.createdAt);
+            const displayDate = rawDate.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            const displayTime = rawDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
 
-            // Render confirmation panels sorted by newest date natively
-            container.innerHTML = proofs.map(proof => {
-                // Parse standard ISO timestamp into a readable date string
-                const rawDate = new Date(proof.createdAt);
-                const displayDate = rawDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-                const displayTime = rawDate.toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
-
-                return `
-                    <div class="proof-card">
+            return `
+                <div class="proof-card" id="card-${proof._id}">
+                    <div class="card-header">
                         <div class="date-badge">🗓️ ${displayDate} @ ${displayTime}</div>
-                        
-                        <div style="margin-top: 8px;">
-                            <div class="info-row">
-                                <span>Order ID</span>
-                                <span>#${proof.orderId}</span>
-                            </div>
-                            <div class="info-row">
-                                <span>Customer</span>
-                                <span>${proof.customerName}</span>
-                            </div>
-                            <div class="info-row">
-                                <span>Product Reference</span>
-                                <span style="font-size:11px; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${proof.productId}</span>
-                            </div>
-                            <div class="info-row" style="border:none;">
-                                <span>Delivery Code</span>
-                                <span style="color: var(--accent); font-family: monospace;">${proof.deliveryCode}</span>
-                            </div>
+                        <!-- Trash Button pointing to unique entry ID -->
+                        <button class="btn-delete" onclick="deleteProofRecord('${proof._id}')" title="Remove Record">
+                            🗑️
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 8px;">
+                        <div class="info-row">
+                            <span>Order ID</span>
+                            <span>#${proof.orderId}</span>
                         </div>
-
-                        <div style="font-size: 12px; color: var(--text-dim); margin-top: 5px; font-weight:600;">CUSTOMER SIGNATURE:</div>
-                        <div class="signature-display">
-                            <img src="${proof.signature}" alt="Customer Signature Link">
+                        <div class="info-row">
+                            <span>Customer</span>
+                            <span>${proof.customerName}</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Product Reference</span>
+                            <span style="font-size:11px; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${proof.productId}</span>
+                        </div>
+                        <div class="info-row" style="border:none;">
+                            <span>Delivery Code</span>
+                            <span style="color: var(--accent); font-family: monospace;">${proof.deliveryCode}</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+
+                    <div style="font-size: 12px; color: var(--text-dim); margin-top: 5px; font-weight:600;">CUSTOMER SIGNATURE:</div>
+                    <div class="signature-display">
+                        <img src="${proof.signature}" alt="Customer Signature Link">
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Deletion Handler Function triggered by button click
+    async function deleteProofRecord(id) {
+        if (!confirm("Are you sure you want to permanently clear this proof from the registry?")) return;
+
+        try {
+            const response = await fetch(`${BACKEND_BASE}/delete-proof/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error("Backend refused deletion request execution.");
+
+            // Update local state arrays without a hard page reload
+            currentProofs = currentProofs.filter(p => p._id !== id);
+            renderCards(currentProofs);
+
+        } catch (err) {
+            console.error(err);
+            alert("Could not process deletion request. Verify backend status logs.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const response = await fetch(`${BACKEND_BASE}/all-proofs`);
+            if (!response.ok) throw new Error("Could not reach delivery archive backend endpoint.");
+            
+            currentProofs = await response.json();
+            renderCards(currentProofs);
 
         } catch (err) {
             console.error(err);
@@ -187,7 +239,7 @@
             container.innerHTML = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">
                     <h3>❌ Connection Refused</h3>
-                    <p>Make sure you added the GET route to your backend file and redeployed.</p>
+                    <p>Make sure you added the DELETE route to your backend file and redeployed.</p>
                 </div>`;
         }
     });
