@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopSphere | Delivery Proof</title>
+    <title>ShopSphere | Delivery Verification</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <style>
@@ -36,15 +36,60 @@
             max-width: 450px;
             width: 100%;
         }
-        h2 { font-weight: 800; margin-top: 0; letter-spacing: -1px; color: white;}
-        label { font-size: 14px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 8px; }
-        .input-group { margin-bottom: 20px; }
+        h2 { font-weight: 800; margin-top: 0; letter-spacing: -1px; color: white; }
+        label { font-size: 13px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group { margin-bottom: 18px; position: relative; }
         
-        /* Fixed canvas structural layout */
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--accent); }
+
+        /* Search Autocomplete Dropdown List Styling */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #111827;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+        }
+        .search-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .search-item:hover { background: rgba(255,255,255,0.08); color: var(--accent); }
+        .selected-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 600;
+        }
+
         .canvas-wrapper {
             position: relative;
             width: 100%;
-            height: 200px;
+            height: 180px;
             background: #fff;
             border-radius: 12px;
             overflow: hidden;
@@ -53,40 +98,43 @@
         }
         canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
         
-        input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px dashed var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-dim);
-            font-size: 13px;
-        }
         button { font-family: 'Inter', sans-serif; font-weight: 700; border-radius: 12px; cursor: pointer; border: none; padding: 14px; }
-        .btn-submit { background: var(--accent); color: #000; width: 100%; font-size: 16px; margin-top: 15px; }
+        .btn-submit { background: var(--accent); color: #000; width: 100%; font-size: 16px; margin-top: 10px; }
         .btn-clear { background: transparent; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); width: 100%; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>Delivery Proof</h2>
-    <p style="color: var(--text-dim); margin-bottom: 25px;">Order Reference: <strong id="orderDisplay" style="color: white;">Loading...</strong></p>
+    <h2>Delivery Receipt</h2>
+    <p style="color: var(--text-dim); margin-bottom: 25px;">Order Context ID: <strong id="orderDisplay" style="color: white;">Loading...</strong></p>
 
     <div class="input-group">
-        <label>1. Capture Package Delivery Photo</label>
-        <input type="file" id="photoInput" accept="image/*" capture="environment">
+        <label>1. Search Delivered Product</label>
+        <input type="text" id="productSearch" placeholder="Type product name..." autocomplete="off">
+        <div id="searchResults" class="search-results"></div>
+        <div id="selectedProductBadge" class="selected-badge"></div>
     </div>
 
     <div class="input-group">
-        <label>2. Customer Signature</label>
+        <label>2. Customer Name</label>
+        <input type="text" id="customerName" placeholder="Enter full name">
+    </div>
+
+    <div class="input-group">
+        <label>3. Verification / Delivery Code</label>
+        <input type="text" id="deliveryCode" placeholder="Enter delivery pin or code">
+    </div>
+
+    <div class="input-group">
+        <label>4. Customer Signature</label>
         <div class="canvas-wrapper">
             <canvas id="signature-pad"></canvas>
         </div>
         <button id="clear" class="btn-clear">Clear Signature</button>
     </div>
     
-    <button id="submit" class="btn-submit">UPLOAD SYSTEM PROOF</button>
+    <button id="submit" class="btn-submit">COMPLETE DELIVERY</button>
 </div>
 
 <script src="Delivery.js"></script>
