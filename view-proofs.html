@@ -143,11 +143,15 @@
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric'
+                    const displayTime = rawDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
                 });
 
                 return `
                     <div class="proof-card">
-                        <div class="date-badge">🗓️ ${displayDate}</div>
+                        <div class="date-badge">🗓️ ${displayDate}@ ${displaytime}</div>
                         
                         <div style="margin-top: 8px;">
                             <div class="info-row">
