@@ -89,7 +89,7 @@
             cart.forEach(i => msg += `• ${i.name} (x${i.qty}) - Kes ${i.price * i.qty}%0A`);
             msg += `%0A*Subtotal:* Kes ${subtotal}%0A*Delivery:* ${delivery}%0A*Total:* Kes ${subtotal + delivery}`;
             
-            window.open(`https://wa.me/254111803422?text=${msg}`, "_blank");
+            window.open(`https://wa.me/254705779593?text=${msg}`, "_blank");
         }
 
         renderCart();
