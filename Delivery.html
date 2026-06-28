@@ -53,7 +53,7 @@
         }
         input[type="text"]:focus { border-color: var(--accent); }
 
-        /* ADVANCED SCROLLABLE SUGGESTION WINDOW */
+        /* SCROLLABLE SUGGESTION WINDOW */
         .search-results {
             position: absolute;
             top: 100%;
@@ -62,7 +62,7 @@
             background: #111827;
             border: 1px solid var(--glass-border);
             border-radius: 16px;
-            max-height: 260px; /* Limits size to force scroll window behavior */
+            max-height: 260px;
             overflow-y: auto;
             z-index: 999;
             display: none;
@@ -71,13 +71,11 @@
             padding: 6px;
         }
         
-        /* Modern Scrollbar Formatting */
         .search-results::-webkit-scrollbar { width: 6px; }
         .search-results::-webkit-scrollbar-track { background: transparent; }
         .search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
         .search-results::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* VISUAL SUGGESTION ROW LAYOUT */
         .search-item {
             display: flex;
             align-items: center;
@@ -88,11 +86,8 @@
             transition: background 0.2s, color 0.2s;
             color: var(--text-main);
         }
-        .search-item:hover { 
-            background: rgba(255, 255, 255, 0.08); 
-        }
+        .search-item:hover { background: rgba(255, 255, 255, 0.08); }
         
-        /* Thumbnail Box Frame */
         .search-thumb {
             width: 45px;
             height: 45px;
@@ -100,14 +95,14 @@
             object-fit: cover;
             background: #1f2937;
             border: 1px solid rgba(255,255,255,0.05);
-            flex-shrink: 0; /* Keeps images crisp and circular/square without flattening */
+            flex-shrink: 0;
         }
         
         .search-meta {
             display: flex;
             flex-direction: column;
             gap: 2px;
-            min-width: 0; /* Allows text truncation bounds inside flexboxes */
+            min-width: 0;
         }
         .search-title {
             font-size: 13px;
@@ -162,6 +157,13 @@
         <a href="view-proofs.html" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--glass-border); text-decoration: none; padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--glass-border)'">
             📂 View Logs
         </a>
+    </div>
+
+    <div class="input-group">
+        <label>1. Search Delivered Product</label>
+        <input type="text" id="productSearch" placeholder="Type letters to filter inventory..." autocomplete="off">
+        <div id="searchResults" class="search-results"></div>
+        <div id="selectedProductBadge" class="selected-badge"></div>
     </div>
 
     <div class="input-group">
