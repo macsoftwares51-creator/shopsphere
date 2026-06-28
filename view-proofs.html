@@ -130,7 +130,7 @@
             if (proofs.length === 0) {
                 container.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: var(--text-dim);">
-                        <h3>No delivery records found inside the database database yet.</h3>
+                        <h3>No delivery records found inside the database yet.</h3>
                     </div>`;
                 return;
             }
@@ -145,14 +145,14 @@
                     year: 'numeric'
                 });
                 const displayTime = rawDate.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
                 });
 
                 return `
                     <div class="proof-card">
-                        <div class="date-badge">🗓️ ${displayDate}@ ${displaytime}</div>
+                        <div class="date-badge">🗓️ ${displayDate} @ ${displayTime}</div>
                         
                         <div style="margin-top: 8px;">
                             <div class="info-row">
