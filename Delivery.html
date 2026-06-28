@@ -53,7 +53,7 @@
         }
         input[type="text"]:focus { border-color: var(--accent); }
 
-        /* Search Autocomplete Dropdown List Styling */
+        /* ADVANCED SCROLLABLE SUGGESTION WINDOW */
         .search-results {
             position: absolute;
             top: 100%;
@@ -61,20 +61,68 @@
             right: 0;
             background: #111827;
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            max-height: 200px;
+            border-radius: 16px;
+            max-height: 260px; /* Limits size to force scroll window behavior */
             overflow-y: auto;
             z-index: 999;
             display: none;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.7);
+            margin-top: 5px;
+            padding: 6px;
         }
+        
+        /* Modern Scrollbar Formatting */
+        .search-results::-webkit-scrollbar { width: 6px; }
+        .search-results::-webkit-scrollbar-track { background: transparent; }
+        .search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .search-results::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* VISUAL SUGGESTION ROW LAYOUT */
         .search-item {
-            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
             cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 13px;
+            border-radius: 10px;
+            transition: background 0.2s, color 0.2s;
+            color: var(--text-main);
         }
-        .search-item:hover { background: rgba(255,255,255,0.08); color: var(--accent); }
+        .search-item:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+        }
+        
+        /* Thumbnail Box Frame */
+        .search-thumb {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #1f2937;
+            border: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0; /* Keeps images crisp and circular/square without flattening */
+        }
+        
+        .search-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0; /* Allows text truncation bounds inside flexboxes */
+        }
+        .search-title {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #ffffff;
+        }
+        .search-price {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
         .selected-badge {
             background: rgba(34, 197, 94, 0.1);
             color: var(--accent);
@@ -111,7 +159,7 @@
 
     <div class="input-group">
         <label>1. Search Delivered Product</label>
-        <input type="text" id="productSearch" placeholder="Type product name..." autocomplete="off">
+        <input type="text" id="productSearch" placeholder="Type letters to filter inventory..." autocomplete="off">
         <div id="searchResults" class="search-results"></div>
         <div id="selectedProductBadge" class="selected-badge"></div>
     </div>
