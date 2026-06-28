@@ -24,8 +24,77 @@
             background-image: radial-gradient(circle at 50% 100%, #1e1b4b, #030712);
             color: var(--text-main);
             margin: 0; padding: 0 20px 40px; min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* --- CELEBRATION PARTY STRIPS CANVAS --- */
+        #celebration-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* --- ANIMATED HANGING SIGN --- */
+        .hanging-sign-container {
+            position: absolute;
+            top: 0; left: 40px;
+            transform-origin: top center;
+            animation: swingSign 3.5s ease-in-out infinite alternate;
+            z-index: 1001;
+            cursor: pointer;
+        }
+        /* The rope/string lines holding the sign up */
+        .hanging-sign-container::before, .hanging-sign-container::after {
+            content: '';
+            position: absolute;
+            top: 0; width: 2px; height: 25px;
+            background: #475569;
+        }
+        .hanging-sign-container::before { left: 15px; }
+        .hanging-sign-container::after { right: 15px; }
+
+        .hanging-sign {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid var(--accent);
+            border-radius: 0 0 12px 12px;
+            padding: 12px 16px;
+            width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .hanging-sign h4 {
+            margin: 0 0 4px 0; font-size: 11px; text-transform: uppercase; 
+            letter-spacing: 1px; color: var(--accent); font-weight: 800;
+        }
+        .hanging-sign p {
+            margin: 0; font-size: 13px; font-weight: 600; color: #fff; line-height: 1.4;
+        }
+        .hanging-sign .tap-hint {
+            font-size: 9px; color: var(--text-dim); display: block; margin-top: 6px; font-style: italic;
+        }
+        /* Detailed conditions modal shown when sign is tapped */
+        .conditions-popup {
+            position: absolute; top: 100%; left: 0; margin-top: 10px;
+            background: #0f172a; border: 1px solid var(--glass-border);
+            border-radius: 12px; width: 240px; padding: 14px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            display: none; text-align: left; opacity: 0; transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .conditions-popup.show { display: block; opacity: 1; transform: translateY(0); }
+        .conditions-popup h5 { margin: 0 0 8px 0; font-size: 13px; color: white; border-bottom: 1px solid var(--glass-border); padding-bottom: 4px; }
+        .cond-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; color: var(--text-dim); }
+        .cond-row.active { color: var(--accent); font-weight: bold; }
+
+        @keyframes swingSign {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        /* --- STANDARD SITE LAYOUT --- */
         header.navbar {
             position: sticky; top: 10px;
             background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(12px);
@@ -41,7 +110,7 @@
             text-decoration: none; font-weight: 600; font-size: 14px;
         }
 
-        .cart-container { max-width: 800px; margin: 0 auto; }
+        .cart-container { max-width: 800px; margin: 0 auto; position: relative; }
         h1 { font-size: 32px; font-weight: 800; margin-bottom: 30px; text-align: center; }
 
         .user-tile {
@@ -92,9 +161,41 @@
         }
 
         .empty-msg { text-align: center; padding: 60px 20px; }
+
+        @media (max-width: 1024px) {
+            .hanging-sign-container { position: relative; left: 0; margin: 0 auto 20px; display: flex; justify-content: center; width: fit-content; }
+            .hanging-sign-container::before, .hanging-sign-container::after { display: none; }
+            .hanging-sign { margin-top: 0; border-radius: 12px; }
+        }
     </style>
 </head>
 <body>
+
+    <canvas id="celebration-canvas"></canvas>
+
+    <div class="hanging-sign-container" onclick="toggleSignPopup(event)">
+        <div class="hanging-sign">
+            <h4>Shipping Offer</h4>
+            <p id="sign-main-text">Free Delivery for orders KES 2,000 & above!</p>
+            <span class="tap-hint">Tap to view metrics</span>
+            
+            <div class="conditions-popup" id="conditionsPopup">
+                <h5>Delivery Rate Limits</h5>
+                <div class="cond-row" id="cond-under-1k">
+                    <span>Under KES 1,000:</span>
+                    <span>KES 200</span>
+                </div>
+                <div class="cond-row" id="cond-under-2k">
+                    <span>KES 1,000 - 2,000:</span>
+                    <span>KES 100</span>
+                </div>
+                <div class="cond-row" id="cond-free">
+                    <span>KES 2,000 & Up:</span>
+                    <span>FREE</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <header class="navbar">
         <a href="home.html" class="brand">ShopSphere</a>
@@ -141,7 +242,18 @@
         </div>
     </main>
 
-    <script src = "cart.js">
+    <script src="cart.js"></script>
+    <script>
+        // Inline layout logic for popping open details panel securely
+        function toggleSignPopup(event) {
+            event.stopPropagation();
+            const popup = document.getElementById("conditionsPopup");
+            popup.classList.toggle("show");
+        }
+        // Close modal instantly if clicking anywhere else on page
+        document.addEventListener("click", () => {
+            document.getElementById("conditionsPopup").classList.remove("show");
+        });
     </script>
 </body>
 </html>
