@@ -80,7 +80,6 @@
             width: fit-content;
         }
 
-        /* --- INLINE EDIT FORMS --- */
         .inline-fix-box {
             margin-top: 8px;
             border-top: 1px solid var(--glass-border);
@@ -174,8 +173,6 @@
 
     document.addEventListener("DOMContentLoaded", fetchAndAuditProducts);
 
-    async () => { /* Kept placeholder setup match structure */ };
-
     async function fetchAndAuditProducts() {
         const container = document.getElementById("audit-container");
         const counter = document.getElementById("issue-count");
@@ -186,9 +183,9 @@
             
             const allProducts = await response.json();
 
-            // Filter items where the details property is missing
+            // Check against description since that's what your schema/backend references
             const incompleteItems = allProducts.filter(item => {
-                const detailsField = item.details || item.description || item.desc || null;
+                const detailsField = item.description || item.details || item.desc || null;
                 return (detailsField === null) || (String(detailsField).trim() === "");
             });
 
@@ -200,19 +197,18 @@
                 return;
             }
 
-            // Render cards with direct inline update inputs
             container.innerHTML = incompleteItems.map(item => {
                 const id = item._id || item.id || 'N/A';
                 return `
                     <div class="audit-card" id="card-${id}">
-                        <div><span class="issue-tag">❌ No Details Configured</span></div>
+                        <div><span class="issue-tag">❌ No Description Configured</span></div>
                         <h3 style="margin: 5px 0; color: white;">${item.name || item.title || "Unnamed Item"}</h3>
                         <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${id}</p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Base Price:</strong> KES ${item.price || '0'}</p>
                         
                         <div class="inline-fix-box">
-                            <label>Add Missing Details</label>
+                            <label>Add Missing Description</label>
                             <textarea class="inline-input" id="input-${id}" placeholder="Type description or specs here..."></textarea>
                             <button class="btn-save" id="btn-${id}" onclick="saveProductDetails('${id}')">
                                 Save Details
@@ -233,60 +229,56 @@
         }
     }
 
-    // Direct PUT Request handler to update database record live
- async function saveProductDetails(productId) {
-    const inputField = document.getElementById(`input-${productId}`);
-    const saveButton = document.getElementById(`btn-${productId}`);
-    const targetCard = document.getElementById(`card-${productId}`);
-    const textValue = inputField.value.trim();
+    // Direct PUT handler synced up to your routes/products.js setup
+    async function saveProductDetails(productId) {
+        const inputField = document.getElementById(`input-${productId}`);
+        const saveButton = document.getElementById(`btn-${productId}`);
+        const targetCard = document.getElementById(`card-${productId}`);
+        const textValue = inputField.value.trim();
 
-    if (!textValue) return alert("Please type something before saving!");
+        if (!textValue) return alert("Please type something before saving!");
 
-    saveButton.disabled = true;
-    saveButton.innerText = "Saving to Server...";
+        saveButton.disabled = true;
+        saveButton.innerText = "Saving to Server...";
 
-    // CHANGE THIS payload key to 'description' or 'desc' if your backend schema uses a different name!
-    const payload = { details: textValue }; 
+        try {
+            // Sends 'description' property to match your router setup: const { description } = req.body;
+            const response = await fetch(`${BACKEND_API_URL}/${productId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ description: textValue })
+            });
 
-    try {
-        // 1. Try sending the update. Swap "PUT" to "PATCH" below if your backend uses app.patch()
-        const response = await fetch(`${BACKEND_API_URL}/${productId}`, {
-            method: "PUT", 
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+            const resultData = await response.json();
 
-        const resultData = await response.json();
-        console.log("Server response payload:", resultData);
-
-        if (!response.ok) {
-            throw new Error(resultData.message || "Server rejected data modifications");
-        }
-
-        // Visual feedback only after the database confirms absolute success
-        targetCard.style.borderColor = "var(--success)";
-        targetCard.style.opacity = "0";
-        targetCard.style.transform = "scale(0.9)";
-
-        setTimeout(() => {
-            targetCard.remove();
-            issuesFoundCount--;
-            updateCounterDisplay();
-
-            if (issuesFoundCount === 0) {
-                renderCleanAuditMessage(document.getElementById("audit-container"));
+            if (!response.ok || !resultData.success) {
+                throw new Error(resultData.error || "Server rejected product modifications");
             }
-        }, 300);
 
-    } catch (error) {
-        console.error("Failed updating field content:", error);
-        alert(`❌ Failed to save to database!\nReason: ${error.message}`);
-        saveButton.disabled = false;
-        saveButton.innerText = "Save Details";
+            // Animate card layout change out of frame safely
+            targetCard.style.borderColor = "var(--success)";
+            targetCard.style.opacity = "0";
+            targetCard.style.transform = "scale(0.9)";
+
+            setTimeout(() => {
+                targetCard.remove();
+                issuesFoundCount--;
+                updateCounterDisplay();
+
+                if (issuesFoundCount === 0) {
+                    renderCleanAuditMessage(document.getElementById("audit-container"));
+                }
+            }, 300);
+
+        } catch (error) {
+            console.error("Failed updating field data:", error);
+            alert(`❌ Save Failed: ${error.message}`);
+            saveButton.disabled = false;
+            saveButton.innerText = "Save Details";
+        }
     }
-}
 
     function updateCounterDisplay() {
         const counter = document.getElementById("issue-count");
