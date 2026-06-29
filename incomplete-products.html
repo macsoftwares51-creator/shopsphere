@@ -234,52 +234,59 @@
     }
 
     // Direct PUT Request handler to update database record live
-    async function saveProductDetails(productId) {
-        const inputField = document.getElementById(`input-${productId}`);
-        const saveButton = document.getElementById(`btn-${productId}`);
-        const targetCard = document.getElementById(`card-${productId}`);
-        const textValue = inputField.value.trim();
+ async function saveProductDetails(productId) {
+    const inputField = document.getElementById(`input-${productId}`);
+    const saveButton = document.getElementById(`btn-${productId}`);
+    const targetCard = document.getElementById(`card-${productId}`);
+    const textValue = inputField.value.trim();
 
-        if (!textValue) return alert("Please type something before saving!");
+    if (!textValue) return alert("Please type something before saving!");
 
-        // UI feedback while updating layout state
-        saveButton.disabled = true;
-        saveButton.innerText = "Saving to Server...";
+    saveButton.disabled = true;
+    saveButton.innerText = "Saving to Server...";
 
-        try {
-            const response = await fetch(`${BACKEND_API_URL}/${productId}`, {
-                method: "PUT", // Switches to PATCH if your router endpoint explicitly expects it
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ details: textValue })
-            });
+    // CHANGE THIS payload key to 'description' or 'desc' if your backend schema uses a different name!
+    const payload = { details: textValue }; 
 
-            if (!response.ok) throw new Error("Server rejected product modifications data parameters");
+    try {
+        // 1. Try sending the update. Swap "PUT" to "PATCH" below if your backend uses app.patch()
+        const response = await fetch(`${BACKEND_API_URL}/${productId}`, {
+            method: "PUT", 
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
 
-            // Success animation flow: turn green, slide/fade out
-            targetCard.style.borderColor = "var(--success)";
-            targetCard.style.opacity = "0";
-            targetCard.style.transform = "scale(0.9)";
+        const resultData = await response.json();
+        console.log("Server response payload:", resultData);
 
-            setTimeout(() => {
-                targetCard.remove();
-                issuesFoundCount--;
-                updateCounterDisplay();
-
-                // If that was the last item cleaned up
-                if (issuesFoundCount === 0) {
-                    renderCleanAuditMessage(document.getElementById("audit-container"));
-                }
-            }, 300);
-
-        } catch (error) {
-            console.error("Failed updating field data content context:", error);
-            alert("Error updating item. Check your database connectivity rules.");
-            saveButton.disabled = false;
-            saveButton.innerText = "Save Details";
+        if (!response.ok) {
+            throw new Error(resultData.message || "Server rejected data modifications");
         }
+
+        // Visual feedback only after the database confirms absolute success
+        targetCard.style.borderColor = "var(--success)";
+        targetCard.style.opacity = "0";
+        targetCard.style.transform = "scale(0.9)";
+
+        setTimeout(() => {
+            targetCard.remove();
+            issuesFoundCount--;
+            updateCounterDisplay();
+
+            if (issuesFoundCount === 0) {
+                renderCleanAuditMessage(document.getElementById("audit-container"));
+            }
+        }, 300);
+
+    } catch (error) {
+        console.error("Failed updating field content:", error);
+        alert(`❌ Failed to save to database!\nReason: ${error.message}`);
+        saveButton.disabled = false;
+        saveButton.innerText = "Save Details";
     }
+}
 
     function updateCounterDisplay() {
         const counter = document.getElementById("issue-count");
