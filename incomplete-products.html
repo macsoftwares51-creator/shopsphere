@@ -10,6 +10,7 @@
             --bg: #030712;
             --card-bg: rgba(17, 24, 39, 0.7);
             --accent: #ef4444; 
+            --success: #22c55e;
             --text-main: #f9fafb;
             --text-dim: #9ca3af;
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -42,13 +43,18 @@
             border-radius: 20px;
             font-weight: 800;
             font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .counter-badge.clean {
+            background: var(--success);
         }
 
         .grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
 
@@ -60,6 +66,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
         }
 
         .issue-tag {
@@ -71,6 +78,67 @@
             padding: 6px 12px;
             border-radius: 8px;
             width: fit-content;
+        }
+
+        /* --- INLINE EDIT FORMS --- */
+        .inline-fix-box {
+            margin-top: 8px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .inline-fix-box label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .inline-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.2s;
+        }
+
+        .inline-input:focus {
+            border-color: var(--success);
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #16a34a;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-back {
@@ -101,47 +169,55 @@
 </main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+    const BACKEND_API_URL = "https://shopsphere-backend-wr5o.onrender.com/products"; 
+    let issuesFoundCount = 0;
+
+    document.addEventListener("DOMContentLoaded", fetchAndAuditProducts);
+
+    async () => { /* Kept placeholder setup match structure */ };
+
+    async function fetchAndAuditProducts() {
         const container = document.getElementById("audit-container");
         const counter = document.getElementById("issue-count");
 
-        // Change this URL string to match your exact live backend endpoint
-        const BACKEND_API_URL = "https://shopsphere-backend-wr5o.onrender.com/products"; 
-
         try {
-            // 1. Fetch straight from the backend database endpoint
             const response = await fetch(BACKEND_API_URL);
             if (!response.ok) throw new Error("Database offline or rejected request stream");
             
             const allProducts = await response.json();
 
-            // 2. Filter items where the details property is missing
+            // Filter items where the details property is missing
             const incompleteItems = allProducts.filter(item => {
                 const detailsField = item.details || item.description || item.desc || null;
-                
-                // Checks if details property doesn't exist, is null, or is an empty string
                 return (detailsField === null) || (String(detailsField).trim() === "");
             });
 
-            counter.textContent = `${incompleteItems.length} Issues Found`;
+            issuesFoundCount = incompleteItems.length;
+            updateCounterDisplay();
 
-            if (incompleteItems.length === 0) {
-                container.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
-                        <h2>🎉 Clean Audit! Every item in the database has details filled out.</h2>
-                    </div>`;
+            if (issuesFoundCount === 0) {
+                renderCleanAuditMessage(container);
                 return;
             }
 
-            // 3. Render items directly
+            // Render cards with direct inline update inputs
             container.innerHTML = incompleteItems.map(item => {
+                const id = item._id || item.id || 'N/A';
                 return `
-                    <div class="audit-card">
+                    <div class="audit-card" id="card-${id}">
                         <div><span class="issue-tag">❌ No Details Configured</span></div>
                         <h3 style="margin: 5px 0; color: white;">${item.name || item.title || "Unnamed Item"}</h3>
-                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${item._id || item.id || 'N/A'}</p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>ID:</strong> ${id}</p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Category:</strong> ${item.category || 'Unassigned'}</p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-dim);"><strong>Base Price:</strong> KES ${item.price || '0'}</p>
+                        
+                        <div class="inline-fix-box">
+                            <label>Add Missing Details</label>
+                            <textarea class="inline-input" id="input-${id}" placeholder="Type description or specs here..."></textarea>
+                            <button class="btn-save" id="btn-${id}" onclick="saveProductDetails('${id}')">
+                                Save Details
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -155,7 +231,73 @@
                     <p>Make sure BACKEND_API_URL matches your active server address.</p>
                 </div>`;
         }
-    });
+    }
+
+    // Direct PUT Request handler to update database record live
+    async function saveProductDetails(productId) {
+        const inputField = document.getElementById(`input-${productId}`);
+        const saveButton = document.getElementById(`btn-${productId}`);
+        const targetCard = document.getElementById(`card-${productId}`);
+        const textValue = inputField.value.trim();
+
+        if (!textValue) return alert("Please type something before saving!");
+
+        // UI feedback while updating layout state
+        saveButton.disabled = true;
+        saveButton.innerText = "Saving to Server...";
+
+        try {
+            const response = await fetch(`${BACKEND_API_URL}/${productId}`, {
+                method: "PUT", // Switches to PATCH if your router endpoint explicitly expects it
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ details: textValue })
+            });
+
+            if (!response.ok) throw new Error("Server rejected product modifications data parameters");
+
+            // Success animation flow: turn green, slide/fade out
+            targetCard.style.borderColor = "var(--success)";
+            targetCard.style.opacity = "0";
+            targetCard.style.transform = "scale(0.9)";
+
+            setTimeout(() => {
+                targetCard.remove();
+                issuesFoundCount--;
+                updateCounterDisplay();
+
+                // If that was the last item cleaned up
+                if (issuesFoundCount === 0) {
+                    renderCleanAuditMessage(document.getElementById("audit-container"));
+                }
+            }, 300);
+
+        } catch (error) {
+            console.error("Failed updating field data content context:", error);
+            alert("Error updating item. Check your database connectivity rules.");
+            saveButton.disabled = false;
+            saveButton.innerText = "Save Details";
+        }
+    }
+
+    function updateCounterDisplay() {
+        const counter = document.getElementById("issue-count");
+        if (issuesFoundCount === 0) {
+            counter.textContent = "0 Issues Found";
+            counter.classList.add("clean");
+        } else {
+            counter.textContent = `${issuesFoundCount} Issues Found`;
+            counter.classList.remove("clean");
+        }
+    }
+
+    function renderCleanAuditMessage(domElement) {
+        domElement.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 0; color: #22c55e;">
+                <h2>🎉 Clean Audit! Every item in the database has details filled out.</h2>
+            </div>`;
+    }
 </script>
 </body>
 </html>
