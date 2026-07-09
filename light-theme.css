@@ -1,0 +1,26 @@
+/* ==========================================
+   SHOPSPHERE INDEPENDENT LIGHT THEME OVERRIDES
+   ========================================== */
+
+:root {
+    --bg: #f3f4f6;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --accent: #16a34a; /* High-contrast green for light visibility */
+    --text-main: #111827;
+    --text-dim: #4b5563;
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --gradient-top: #e0e7ff;
+}
+
+/* Force light styling for the Chatbot too if it's open */
+#ai-chat-widget {
+    --bot-bg: rgba(255, 255, 255, 0.9);
+    --bot-border: rgba(0, 0, 0, 0.08);
+    --bot-header: rgba(243, 244, 246, 0.8);
+    --bot-text: #1f2937;
+    --bot-text-dim: #4b5563;
+    --bot-bubble: rgba(0, 0, 0, 0.05);
+    --bot-input: rgba(255, 255, 255, 0.9);
+    --bot-accent: #16a34a;
+    --bot-accent-text: #fff;
+}
