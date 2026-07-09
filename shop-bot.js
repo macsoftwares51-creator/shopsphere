@@ -1,6 +1,6 @@
 /**
  * ShopSphere AI Assistant - Shared Widget Loader
- * Injects the floating AI chat interface into any page automatically.
+ * Injects the floating AI chat interface with an attention-grabbing popout cloud.
  */
 (function() {
     // 1. Inject Style Rules into Document Head
@@ -12,7 +12,53 @@
             right: 25px;
             z-index: 5000;
             font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
         }
+
+        /* --- ATTENTION GRABBING POPOUT CLOUD --- */
+        #chat-popout-cloud {
+            position: absolute;
+            right: 75px;
+            background: #22c55e;
+            color: #000;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 10px 16px;
+            border-radius: 16px;
+            white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+            opacity: 0;
+            transform: translateX(15px);
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Cloud Arrow Pointer */
+        #chat-popout-cloud::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 6px 0 6px 6px;
+            border-style: solid;
+            border-color: transparent transparent transparent #22c55e;
+        }
+
+        #chat-popout-cloud.show {
+            opacity: 1;
+            transform: translateX(0);
+            animation: gentleFloat 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gentleFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        /* --- FLOATING TRIGGER BUTTON --- */
         #chat-trigger-btn {
             width: 60px;
             height: 60px;
@@ -37,6 +83,8 @@
             width: 12px; height: 12px; background: #ef4444;
             border-radius: 50%; border: 2px solid #030712;
         }
+
+        /* --- EXPANDED PANEL LAYOUT --- */
         #chat-window-panel {
             position: absolute;
             bottom: 75px;
@@ -143,6 +191,7 @@
     const widget = document.createElement('div');
     widget.id = 'ai-chat-widget';
     widget.innerHTML = `
+        <div id="chat-popout-cloud">Ask anything about ShopSphere! ✨</div>
         <button id="chat-trigger-btn">
             <span class="bot-icon">🤖</span>
             <span class="notification-dot"></span>
@@ -177,28 +226,41 @@
     const CHAT_API_ENDPOINT = "https://shopsphere-backend-wr5o.onrender.com/ai-chat";
     const panel = document.getElementById("chat-window-panel");
     const trigger = document.getElementById("chat-trigger-btn");
+    const popoutCloud = document.getElementById("chat-popout-cloud");
     const closeBtn = widget.querySelector(".close-chat-btn");
     const sendBtn = document.getElementById("chat-send-btn");
     const userInput = document.getElementById("chat-user-input");
     const msgBox = document.getElementById("chat-messages-box");
 
+    // Clear attention getters permanently once interactive engagement begins
+    function hideAttentionGetters() {
+        if (popoutCloud) popoutCloud.remove(); 
+        const dot = trigger.querySelector(".notification-dot");
+        if (dot) dot.style.display = "none";
+    }
+
     // Global Window Function to let normal page buttons open up the bot panel frame
     window.openShopSphereChat = function() {
         panel.classList.add("open");
-        const dot = trigger.querySelector(".notification-dot");
-        if (dot) dot.style.display = "none";
+        hideAttentionGetters();
         setTimeout(() => userInput.focus(), 100);
     };
 
     function toggleChatWindow(e) {
         e.stopPropagation();
         panel.classList.toggle("open");
-        const dot = trigger.querySelector(".notification-dot");
-        if (dot) dot.style.display = "none";
+        hideAttentionGetters();
         if (panel.classList.contains("open")) {
             setTimeout(() => userInput.focus(), 100);
         }
     }
+
+    // Delay popout cloud appearance by 3 seconds for smooth delivery entry feel
+    setTimeout(() => {
+        if (popoutCloud && !panel.classList.contains("open")) {
+            popoutCloud.classList.add("show");
+        }
+    }, 3000);
 
     trigger.addEventListener("click", toggleChatWindow);
     closeBtn.addEventListener("click", toggleChatWindow);
