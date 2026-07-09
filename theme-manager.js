@@ -37,12 +37,12 @@ function applyLightTheme(enable) {
             lightLink.href = "light-theme.css"; // Path to your independent file
             document.head.appendChild(lightLink);
         }
-        if (iconSlot) iconSlot.textContent = "☀️";
+        if (iconSlot) iconSlot.textContent = "🌙";
     } else {
         // Remove the stylesheet reference completely to fall back to native dark CSS
         if (lightLink) {
             lightLink.remove();
         }
-        if (iconSlot) iconSlot.textContent = "🌙";
+        if (iconSlot) iconSlot.textContent = "☀️";
     }
 }
