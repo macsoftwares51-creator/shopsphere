@@ -34,3 +34,20 @@ body {
     --bot-accent: #16a34a;
     --bot-accent-text: #fff;
 }
+/* --- FOOTER NAVIGATION LINK CONTROLS --- */
+footer a, 
+.footer-links a, 
+.lower-nav-buttons a,
+button.lower-btn {
+    color: var(--text-main) !important; /* Changes the white text to deep off-black */
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+/* Hover state changes them to your custom green brand accent */
+footer a:hover, 
+.footer-links a:hover, 
+.lower-nav-buttons a:hover,
+button.lower-btn:hover {
+    color: var(--accent) !important; 
+}
