@@ -167,6 +167,20 @@
             .hanging-sign-container::before, .hanging-sign-container::after { display: none; }
             .hanging-sign { margin-top: 0; border-radius: 12px; }
         }
+        .global-theme-toggle {
+        background: var(--card-bg, rgba(17, 24, 39, 0.7));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        color: var(--text-main, #fff);
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+    .global-theme-toggle:hover { transform: scale(1.05); }
+    .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
 </head>
 <body>
@@ -200,6 +214,9 @@
     <header class="navbar">
         <a href="home.html" class="brand">ShopSphere</a>
         <nav style="display: flex; gap: 10px;">
+            <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
+    <span class="theme-icon-slot">🌙</span>
+</button>
             <a class="nav-btn" href="products.html">Store</a>
             <a class="nav-btn" href="home.html">Home</a>
         </nav>
@@ -241,7 +258,7 @@
             <a href="products.html" class="place-order-btn" style="text-decoration: none; display: inline-block; width: auto; padding: 12px 30px;">Go Shopping</a>
         </div>
     </main>
-
+<script src="theme-manager.js"></script>
     <script src="cart.js"></script>
     <script src="shop-bot.js"></script>
     <script>
