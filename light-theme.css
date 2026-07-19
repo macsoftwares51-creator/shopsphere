@@ -9,7 +9,7 @@
     
     /* Layout components */
     --card-bg: rgba(255, 255, 255, 0.85);
-    --accent: #16a34a;         /* High-contrast green for light visibility */
+    --accent: #2563eb;         /* Crisp, high-visibility interactive blue */
     --text-main: #111827;
     --text-dim: #4b5563;
     --glass-border: rgba(0, 0, 0, 0.08);
@@ -31,7 +31,7 @@ body {
     --bot-text-dim: #4b5563;
     --bot-bubble: rgba(0, 0, 0, 0.05);
     --bot-input: rgba(255, 255, 255, 0.9);
-    --bot-accent: #16a34a;
+    --bot-accent: #2563eb;
     --bot-accent-text: #fff;
 }
 
@@ -41,10 +41,10 @@ body {
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-/* Hover state transitions links cleanly to brand green accent */
+/* Hover state transitions links cleanly to brand blue accent */
 .nested-grid a.bento-item:hover {
     color: var(--accent) !important;
-    background-color: rgba(22, 163, 74, 0.05); /* Soft background accent flash on hover */
+    background-color: rgba(37, 99, 235, 0.05); /* Soft blue background accent flash on hover */
 }
 
 /* --- FOOTER NAVIGATION LINK CONTROLS --- */
@@ -57,10 +57,50 @@ button.lower-btn {
     transition: color 0.2s ease;
 }
 
-/* Hover state changes them to your custom green brand accent */
+/* Hover state changes them to your custom blue brand accent */
 footer a:hover, 
 .footer-links a:hover, 
 .lower-nav-buttons a:hover,
 button.lower-btn:hover {
     color: var(--accent) !important; 
+}
+
+/* --- CART QUANTITY ADJUSTMENT BUTTONS (- AND +) --- */
+.cart-item button, 
+.quantity-control button, 
+.quantity-btn,
+button[onclick*="updateQuantity"] {
+    color: var(--text-main) !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--glass-border) !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.cart-item button:hover, 
+.quantity-control button:hover,
+.quantity-btn:hover {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
+}
+
+/* --- PRODUCT PAGE "VIEW DETAILS" LINK CONTROLS --- */
+.product-card a, 
+.product-item a, 
+a.view-details-btn,
+[class*="view-details"] {
+    color: var(--accent) !important; /* Forces link name to pop out in blue */
+    font-weight: 600 !important;
+    text-decoration: none;
+}
+
+.product-card a:hover, 
+.product-item a:hover,
+a.view-details-btn:hover {
+    text-decoration: underline !important;
+    filter: brightness(0.8);
 }
