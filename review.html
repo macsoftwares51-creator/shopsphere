@@ -88,6 +88,20 @@
         }
 
         #msg { text-align: center; margin-top: 15px; font-weight: 600; }
+        .global-theme-toggle {
+        background: var(--card-bg, rgba(17, 24, 39, 0.7));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        color: var(--text-main, #fff);
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+    .global-theme-toggle:hover { transform: scale(1.05); }
+    .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
 </head>
 <body>
@@ -95,6 +109,9 @@
     <header class="navbar">
         <a class="nav-btn" href="home.html">Home</a>
         <a class="nav-btn" href="products.html">Store</a>
+        <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
+    <span class="theme-icon-slot">🌙</span>
+</button>
     </header>
 
     <div class="container">
@@ -118,7 +135,7 @@
             <p id="msg"></p>
         </div>
     </div>
-
+    <script src="theme-manager.js"></script>
     <script src = "review.js"></script>
     <script src="shop-bot.js"></script>
 </body>
