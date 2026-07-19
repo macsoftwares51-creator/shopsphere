@@ -122,6 +122,20 @@
             .market-hero h1 { font-size: 28px; }
             .controls { flex-direction: column; }
         }
+        .global-theme-toggle {
+        background: var(--card-bg, rgba(17, 24, 39, 0.7));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        color: var(--text-main, #fff);
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+    .global-theme-toggle:hover { transform: scale(1.05); }
+    .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
 </head>
 <body>
@@ -132,6 +146,9 @@
 
 <header class="navbar">
     <a href="home.html" class="brand">ShopSphere Market</a>
+     <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
+    <span class="theme-icon-slot">☀️</span>
+</button>
     <nav style="display: flex; gap: 10px;">
         <a class="nav-btn" href="home.html" style="background: rgba(255,255,255,0.1); color: white;">Home</a>
         <a class="nav-btn" href="cart.html" style="background: white;">
@@ -161,5 +178,6 @@
 </script>
     <script src="shop-bot.js"></script>
 <script src="shopbuddy.js"></script>
+    <script src="theme-manager.js"></script>
 </body>
 </html>
