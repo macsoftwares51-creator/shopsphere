@@ -238,6 +238,34 @@
             .filter-wrapper select { width: 100%; }
             .sticky-nav-group.stuck .sub-navbar { margin-top: 10px; border-radius: 20px; }
         }
+        /* Base styles (Dark Mode / Default) */
+.view-details-btn {
+    display: block;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Light Theme Override (Add this to your light mode CSS file) */
+body.light-mode .view-details-btn {
+    background: transparent !important;
+    color: var(--accent) !important; /* This will automatically use your crisp blue */
+    border: 2px solid var(--accent) !important;
+}
+
+body.light-mode .view-details-btn:hover {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+}
         .global-theme-toggle {
         background: var(--card-bg, rgba(17, 24, 39, 0.7));
         border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
