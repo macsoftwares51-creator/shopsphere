@@ -45,9 +45,9 @@ function render(products) {
                     Add to Cart
                 </button>
                 
-                <a href="product-details.html?id=${id}" class="add-btn" style="text-decoration: none; text-align: center; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid var(--glass-border);">
-                    View Details
-                </a>
+               <a href="product-details.html?id=${id}" class="view-details-btn" style="text-decoration: none; text-align: center;">
+    View Details
+</a>
             </div>
         `;
         box.appendChild(card);
