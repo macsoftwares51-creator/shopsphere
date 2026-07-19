@@ -3,13 +3,23 @@
    ========================================== */
 
 :root {
-    --bg: #f3f4f6;
+    /* Main light gray foundations */
+    --bg: #e5e7eb;             /* Light gray background base */
+    --gradient-top: #f3f4f6;   /* Slightly softer light gray for the top subtle glow */
+    
+    /* Layout components */
     --card-bg: rgba(255, 255, 255, 0.85);
-    --accent: #16a34a; /* High-contrast green for light visibility */
+    --accent: #16a34a;         /* High-contrast green for light visibility */
     --text-main: #111827;
     --text-dim: #4b5563;
     --glass-border: rgba(0, 0, 0, 0.08);
-    --gradient-top: #e0e7ff;
+}
+
+/* Apply the dynamic background styling globally across the page layout */
+body {
+    background-color: var(--bg) !important;
+    background-image: radial-gradient(circle at 50% 0%, var(--gradient-top), var(--bg)) !important;
+    color: var(--text-main) !important;
 }
 
 /* Force light styling for the Chatbot too if it's open */
