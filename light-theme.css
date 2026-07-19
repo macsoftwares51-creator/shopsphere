@@ -34,12 +34,25 @@ body {
     --bot-accent: #16a34a;
     --bot-accent-text: #fff;
 }
+
+/* --- OVERRIDE INLINE STYLES FOR NESTED GRID BENTO LINKS (<main>) --- */
+.nested-grid a.bento-item {
+    color: var(--text-main) !important; /* Forces hardcoded inline white text to dark gray */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* Hover state transitions links cleanly to brand green accent */
+.nested-grid a.bento-item:hover {
+    color: var(--accent) !important;
+    background-color: rgba(22, 163, 74, 0.05); /* Soft background accent flash on hover */
+}
+
 /* --- FOOTER NAVIGATION LINK CONTROLS --- */
 footer a, 
 .footer-links a, 
 .lower-nav-buttons a,
 button.lower-btn {
-    color: var(--text-main) !important; /* Changes the white text to deep off-black */
+    color: var(--text-main) !important; /* Changes general layout white text to deep off-black */
     font-weight: 600;
     transition: color 0.2s ease;
 }
