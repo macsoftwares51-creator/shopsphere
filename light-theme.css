@@ -97,7 +97,9 @@ a.view-details-btn,
     font-weight: 600 !important;
     text-decoration: none;
 }
-
+.card h3{
+   color: black;
+}
 .product-card a:hover, 
 .product-item a:hover,
 a.view-details-btn:hover {
