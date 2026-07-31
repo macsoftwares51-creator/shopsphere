@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Keep whatever meta tags or fonts you have here -->
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere | Official Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #030712;
@@ -42,6 +44,8 @@
         /* ==========================================================
            BULLETPROOF MOBILE STICKY COMBO SYSTEM
            ========================================================== */
+        
+        /* This container group anchors everything together naturally on mobile */
         .sticky-nav-group {
             position: sticky;
             top: 10px;
@@ -50,7 +54,7 @@
             margin: 10px auto 30px;
             display: flex;
             flex-direction: column;
-            pointer-events: none;
+            pointer-events: none; /* Prevents the invisible container from blocking clicks */
         }
 
         header.navbar {
@@ -61,10 +65,11 @@
             padding: 10px 25px;
             display: flex; justify-content: space-between; align-items: center;
             width: 100%;
-            pointer-events: auto;
+            pointer-events: auto; /* Restores click tracking for buttons */
             transition: border-radius 0.2s ease, background-color 0.2s ease, margin-bottom 0.2s ease;
         }
 
+        /* When sticky attaches, flatten bottom edges */
         .sticky-nav-group.stuck header.navbar {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -72,6 +77,7 @@
             background: rgba(3, 7, 18, 0.95);
         }
 
+        /* Sub Navigation Filtering Interface Layout */
         .sub-navbar {
             background: rgba(17, 24, 39, 0.4);
             backdrop-filter: blur(12px);
@@ -83,11 +89,12 @@
             align-items: center;
             gap: 20px;
             width: 100%;
-            margin-top: 15px;
-            pointer-events: auto;
+            margin-top: 15px; /* Creates spacing when floating normally */
+            pointer-events: auto; /* Restores input fields typing */
             transition: border-radius 0.2s ease, background-color 0.2s ease, padding 0.2s ease, margin-top 0.2s ease;
         }
 
+        /* When sticky attaches, snap up perfectly against the main navbar */
         .sticky-nav-group.stuck .sub-navbar {
             margin-top: 0;
             border-top-left-radius: 0;
@@ -96,6 +103,8 @@
             background: rgba(3, 7, 18, 0.95);
             padding: 8px 25px;
         }
+
+        /* ========================================================== */
 
         .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
         .brand img { height: 40px; border-radius: 8px; }
@@ -118,6 +127,7 @@
         }
         .badge-pop { transform: scale(1) !important; }
 
+        /* Request Bento Section */
         .request-section {
             max-width: 1200px; margin: 0 auto 50px;
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(17, 24, 39, 0.7));
@@ -154,6 +164,7 @@
         }
         .sticky-nav-group.stuck .filter-wrapper select { padding-top: 8px; padding-bottom: 8px; }
 
+        /* Product Grid */
         .grid {
             max-width: 1200px; margin: 0 auto;
             display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -163,10 +174,7 @@
         .card { background: var(--card-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); padding: 20px; border-radius: 28px; opacity: 0; }
         .reveal { animation: fadeInUp 0.6s forwards; }
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 20px; cursor: zoom-in; }
-        
         .card h3 { margin: 15px 0 5px; font-size: 18px; font-weight: 700; color: white; }
-        body.light-mode .card h3 { color: var(--text-main) !important; }
-
         .card p { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
         .price { color: var(--accent); font-size: 20px; font-weight: 800; display: block; margin-bottom: 15px; }
 
@@ -175,21 +183,50 @@
 
         #imageModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000; }
 
-        @media (max-width: 768px) {
+       @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
-            .grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
-            .card { padding: 12px; border-radius: 20px; }
-            .card img { height: 140px; border-radius: 14px; }
-            .card h3 { font-size: 14px; margin: 10px 0 4px; }
-            .card p { font-size: 11px; margin-bottom: 8px; }
-            .price { font-size: 16px; margin-bottom: 10px; }
-            .add-btn { padding: 10px; font-size: 13px; border-radius: 10px; }
+            
+            /* FORCE 2 COLUMNS ON MOBILE */
+            .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px; /* Slightly tighter gap so cards fit nicely on small screens */
+            }
+
+            /* Optimize padding inside the cards for tight mobile spacing */
+            .card {
+                padding: 12px;
+                border-radius: 20px;
+            }
+            .card img {
+                height: 140px; /* Reduce image height slightly so it doesn't distort the card proportions */
+                border-radius: 14px;
+            }
+            .card h3 {
+                font-size: 14px; /* Slightly smaller text so titles don't wrap onto 3+ lines */
+                margin: 10px 0 4px;
+            }
+            .card p {
+                font-size: 11px;
+                margin-bottom: 8px;
+            }
+            .price {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            .add-btn {
+                padding: 10px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+            
             .sticky-nav-group { margin: 5px 10px 20px; top: 5px; }
             header.navbar { padding: 10px 15px; }
             .sub-navbar { padding: 10px 15px; gap: 10px; margin-top: 10px; }
+
             .search-wrapper { max-width: 60%; }
             .filter-wrapper { max-width: 40%; gap: 6px; }
             .filter-wrapper label { display: none; } 
+            
             .search-wrapper input { padding: 10px 10px 10px 32px; font-size: 13px; }
             .search-icon { left: 10px; font-size: 13px; }
             .filter-wrapper select { padding: 10px 10px; font-size: 13px; width: 100%; }
@@ -201,24 +238,122 @@
             .filter-wrapper select { width: 100%; }
             .sticky-nav-group.stuck .sub-navbar { margin-top: 10px; border-radius: 20px; }
         }
+        /* Base styles (Dark Mode / Default) */
+.view-details-btn {
+    display: block;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
 
-        .view-details-btn {
-            display: block; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer;
-            background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid var(--glass-border); transition: all 0.3s ease;
-        }
-        .view-details-btn:hover { background: rgba(255, 255, 255, 0.2); }
-        body.light-mode .view-details-btn { background: transparent !important; color: var(--accent) !important; border: 2px solid var(--accent) !important; }
-        body.light-mode .view-details-btn:hover { background: var(--accent) !important; color: #ffffff !important; }
+.view-details-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
 
+/* Light Theme Override (Add this to your light mode CSS file) */
+body.light-mode .view-details-btn {
+    background: transparent !important;
+    color: var(--accent) !important; /* This will automatically use your crisp blue */
+    border: 2px solid var(--accent) !important;
+}
+
+body.light-mode .view-details-btn:hover {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+}
         .global-theme-toggle {
-            background: var(--card-bg, rgba(17, 24, 39, 0.7)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
-            color: var(--text-main, #fff); cursor: pointer; padding: 10px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s;
-        }
-        .global-theme-toggle:hover { transform: scale(1.05); }
-        .theme-icon-slot { font-size: 16px; line-height: 1; }
+        background: var(--card-bg, rgba(17, 24, 39, 0.7));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        color: var(--text-main, #fff);
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+    .global-theme-toggle:hover { transform: scale(1.05); }
+    .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
 </head>
 <body>
-    <!-- YOUR ENTIRE HTML CONTENT AND LAYOUT (HEADER, MAIN, CARD GRID, SCRIPTS) SHOULD STAY RIGHT HERE -->
+
+<div id="imageModal" onclick="this.style.display='none'">
+    <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:15px;">
+</div>
+
+<section class="request-section">
+    <div>
+        <h2 style="margin-bottom: 10px;">Missing something?</h2>
+        <p style="color: var(--text-dim);">Tell us what you're looking for and we'll source it for you at the best price.</p>
+        <p style="font-size: 12px; color: var(--accent); font-weight: bold;">⚡ Ready in 10-30s if server is sleeping.</p>
+    </div>
+    <div class="request-form">
+        <input id="reqName" placeholder="Your Name">
+        <input id="reqEmail" placeholder="Your Email">
+        <textarea id="reqProduct" placeholder="Item details (Size, color, brand)..." rows="3"></textarea>
+        <button class="btn-gold" onclick="sendRequest()">Send Request</button>
+        <p id="reqMessage" style="font-size: 14px; text-align: center; margin: 0;"></p>
+    </div>
+</section>
+
+<div class="sticky-nav-group">
+    <header class="navbar">
+        <a href="home.html" class="brand">
+            <img src="logo3.1.png" alt="ShopSphere">
+            <span>ShopSphere</span>
+        </a>
+        <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
+    <span class="theme-icon-slot">🌙</span>
+</button>
+        <nav style="display: flex; gap: 10px;">
+            <a class="nav-btn" href="home.html" style="background: rgba(255,255,255,0.1); color: white;">Home</a>
+            <a class="nav-btn" href="cart.html" style="background: white;">
+                🛒 Cart <span id="cart-badge">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="sub-navbar">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input id="search" type="text" placeholder="Search products...">
+        </div>
+
+        <div class="filter-wrapper">
+            <label for="category">Category</label>
+            <select id="category">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="grid" id="products"></div>
+<script src="theme-manager.js"></script>
+<script src="products.js"></script>
+<script src="shopbuddy.js"></script>
+    <script src="shop-bot.js"></script>
+
+<script>
+    const navGroup = document.querySelector('.sticky-nav-group');
+    
+    if (navGroup) {
+        // Track precisely when the entire nav container group docks against the ceiling boundary
+        window.addEventListener('scroll', () => {
+            if (navGroup.getBoundingClientRect().top <= 11) {
+                navGroup.classList.add('stuck');
+            } else {
+                navGroup.classList.remove('stuck');
+            }
+        });
+    }
+</script>
 </body>
 </html>
