@@ -1,4 +1,9 @@
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Keep whatever meta tags or fonts you have here -->
+
+    <style>
         :root {
             --bg: #030712;
             --card-bg: rgba(17, 24, 39, 0.7);
@@ -37,8 +42,6 @@
         /* ==========================================================
            BULLETPROOF MOBILE STICKY COMBO SYSTEM
            ========================================================== */
-        
-        /* This container group anchors everything together naturally on mobile */
         .sticky-nav-group {
             position: sticky;
             top: 10px;
@@ -47,7 +50,7 @@
             margin: 10px auto 30px;
             display: flex;
             flex-direction: column;
-            pointer-events: none; /* Prevents the invisible container from blocking clicks */
+            pointer-events: none;
         }
 
         header.navbar {
@@ -58,11 +61,10 @@
             padding: 10px 25px;
             display: flex; justify-content: space-between; align-items: center;
             width: 100%;
-            pointer-events: auto; /* Restores click tracking for buttons */
+            pointer-events: auto;
             transition: border-radius 0.2s ease, background-color 0.2s ease, margin-bottom 0.2s ease;
         }
 
-        /* When sticky attaches, flatten bottom edges */
         .sticky-nav-group.stuck header.navbar {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -70,7 +72,6 @@
             background: rgba(3, 7, 18, 0.95);
         }
 
-        /* Sub Navigation Filtering Interface Layout */
         .sub-navbar {
             background: rgba(17, 24, 39, 0.4);
             backdrop-filter: blur(12px);
@@ -82,12 +83,11 @@
             align-items: center;
             gap: 20px;
             width: 100%;
-            margin-top: 15px; /* Creates spacing when floating normally */
-            pointer-events: auto; /* Restores input fields typing */
+            margin-top: 15px;
+            pointer-events: auto;
             transition: border-radius 0.2s ease, background-color 0.2s ease, padding 0.2s ease, margin-top 0.2s ease;
         }
 
-        /* When sticky attaches, snap up perfectly against the main navbar */
         .sticky-nav-group.stuck .sub-navbar {
             margin-top: 0;
             border-top-left-radius: 0;
@@ -96,8 +96,6 @@
             background: rgba(3, 7, 18, 0.95);
             padding: 8px 25px;
         }
-
-        /* ========================================================== */
 
         .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
         .brand img { height: 40px; border-radius: 8px; }
@@ -120,7 +118,6 @@
         }
         .badge-pop { transform: scale(1) !important; }
 
-        /* Request Bento Section */
         .request-section {
             max-width: 1200px; margin: 0 auto 50px;
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(17, 24, 39, 0.7));
@@ -157,7 +154,6 @@
         }
         .sticky-nav-group.stuck .filter-wrapper select { padding-top: 8px; padding-bottom: 8px; }
 
-        /* Product Grid */
         .grid {
             max-width: 1200px; margin: 0 auto;
             display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -168,10 +164,7 @@
         .reveal { animation: fadeInUp 0.6s forwards; }
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 20px; cursor: zoom-in; }
         
-        /* Dark mode title default styling */
         .card h3 { margin: 15px 0 5px; font-size: 18px; font-weight: 700; color: white; }
-        
-        /* Light mode title visibility override */
         body.light-mode .card h3 { color: var(--text-main) !important; }
 
         .card p { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
@@ -184,47 +177,19 @@
 
         @media (max-width: 768px) {
             .request-section { grid-template-columns: 1fr; text-align: center; }
-            
-            /* FORCE 2 COLUMNS ON MOBILE */
-            .grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 12px;
-            }
-
-            .card {
-                padding: 12px;
-                border-radius: 20px;
-            }
-            .card img {
-                height: 140px;
-                border-radius: 14px;
-            }
-            .card h3 {
-                font-size: 14px;
-                margin: 10px 0 4px;
-            }
-            .card p {
-                font-size: 11px;
-                margin-bottom: 8px;
-            }
-            .price {
-                font-size: 16px;
-                margin-bottom: 10px;
-            }
-            .add-btn {
-                padding: 10px;
-                font-size: 13px;
-                border-radius: 10px;
-            }
-            
+            .grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
+            .card { padding: 12px; border-radius: 20px; }
+            .card img { height: 140px; border-radius: 14px; }
+            .card h3 { font-size: 14px; margin: 10px 0 4px; }
+            .card p { font-size: 11px; margin-bottom: 8px; }
+            .price { font-size: 16px; margin-bottom: 10px; }
+            .add-btn { padding: 10px; font-size: 13px; border-radius: 10px; }
             .sticky-nav-group { margin: 5px 10px 20px; top: 5px; }
             header.navbar { padding: 10px 15px; }
             .sub-navbar { padding: 10px 15px; gap: 10px; margin-top: 10px; }
-
             .search-wrapper { max-width: 60%; }
             .filter-wrapper { max-width: 40%; gap: 6px; }
             .filter-wrapper label { display: none; } 
-            
             .search-wrapper input { padding: 10px 10px 10px 32px; font-size: 13px; }
             .search-icon { left: 10px; font-size: 13px; }
             .filter-wrapper select { padding: 10px 10px; font-size: 13px; width: 100%; }
@@ -237,47 +202,23 @@
             .sticky-nav-group.stuck .sub-navbar { margin-top: 10px; border-radius: 20px; }
         }
 
-        /* Base styles (Dark Mode / Default) */
         .view-details-btn {
-            display: block;
-            padding: 12px;
-            border-radius: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid var(--glass-border);
-            transition: all 0.3s ease;
+            display: block; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer;
+            background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid var(--glass-border); transition: all 0.3s ease;
         }
-
-        .view-details-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Light Theme Override */
-        body.light-mode .view-details-btn {
-            background: transparent !important;
-            color: var(--accent) !important;
-            border: 2px solid var(--accent) !important;
-        }
-
-        body.light-mode .view-details-btn:hover {
-            background: var(--accent) !important;
-            color: #ffffff !important;
-        }
+        .view-details-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        body.light-mode .view-details-btn { background: transparent !important; color: var(--accent) !important; border: 2px solid var(--accent) !important; }
+        body.light-mode .view-details-btn:hover { background: var(--accent) !important; color: #ffffff !important; }
 
         .global-theme-toggle {
-            background: var(--card-bg, rgba(17, 24, 39, 0.7));
-            border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
-            color: var(--text-main, #fff);
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
+            background: var(--card-bg, rgba(17, 24, 39, 0.7)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+            color: var(--text-main, #fff); cursor: pointer; padding: 10px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s;
         }
         .global-theme-toggle:hover { transform: scale(1.05); }
         .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
+</head>
+<body>
+    <!-- YOUR ENTIRE HTML CONTENT AND LAYOUT (HEADER, MAIN, CARD GRID, SCRIPTS) SHOULD STAY RIGHT HERE -->
+</body>
+</html>
