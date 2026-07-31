@@ -104,7 +104,3 @@ a.view-details-btn:hover {
     text-decoration: underline !important;
     filter: brightness(0.8);
 }
-/* --- PRODUCT CARD LIGHT THEME TEXT CONTROLS --- */
-body.light-mode .card h3 {
-    color: var(--text-main) !important; /* Dynamically forces the text to deep off-black */
-}
