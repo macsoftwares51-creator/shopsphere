@@ -97,15 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
             } 
 
             // Sync visual active indices across dot elements array
-            document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
-                if (idx === carouselIndex) {
-                    dot.style.width = '24px';
-                    dot.style.background = 'var(--accent)';
-                } else {
-                    dot.style.width = '8px';
-                    dot.style.background = 'rgba(255, 255, 255, 0.2)';
-                }
-            });
+document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+    // Map index using modulo 8 so dot indicators cycle cleanly when items > 8
+    const activeDotIndex = carouselIndex % Math.min(products.length, 8);
+
+    if (idx === activeDotIndex) {
+        dot.style.width = '24px';
+        dot.style.background = 'var(--accent)';
+    } else {
+        dot.style.width = '8px';
+        dot.style.background = 'rgba(255, 255, 255, 0.2)';
+    }
+});
 
             // Return presentation layers back to normal view space
             contentWrapper.style.opacity = '1';
@@ -126,29 +129,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 dotsContainer.innerHTML = ''; // Clear fallback states
                 
                 // Dynamically build dot interface triggers 
-                products.forEach((_, idx) => {
-                    const dot = document.createElement('button');
-                    dot.className = 'carousel-dot';
-                    dot.style.cssText = `
-                        height: 8px;
-                        border-radius: 9999px;
-                        border: none;
-                        outline: none;
-                        cursor: pointer;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    `;
-                    
-                    if (idx === 0) {
-                        dot.style.width = '24px';
-                        dot.style.background = 'var(--accent)';
-                    } else {
-                        dot.style.width = '8px';
-                        dot.style.background = 'rgba(255, 255, 255, 0.2)';
-                    }
-                    
-                    dot.addEventListener('click', () => updateCarousel(idx));
-                    dotsContainer.appendChild(dot);
-                });
+                // AFTER: Cap dot generation at 8 items
+products.slice(0, 8).forEach((_, idx) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot';
+    dot.style.cssText = `
+        height: 8px;
+        border-radius: 9999px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
+    
+    if (idx === 0) {
+        dot.style.width = '24px';
+        dot.style.background = 'var(--accent)';
+    } else {
+        dot.style.width = '8px';
+        dot.style.background = 'rgba(255, 255, 255, 0.2)';
+    }
+    
+    dot.addEventListener('click', () => updateCarousel(idx));
+    dotsContainer.appendChild(dot);
+});
 
                 updateCarousel(0);
 
