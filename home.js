@@ -36,6 +36,7 @@ hero.addEventListener('mouseleave', () => {
 // ==========================================
 let products = [];
 let carouselIndex = 0;
+const MAX_DOTS = 8; // Cap visible pagination dots at 8
 
 document.addEventListener("DOMContentLoaded", () => {
     const contentWrapper = document.getElementById('carousel-content');
@@ -51,7 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateCarousel(index) {
         if (products.length === 0) return;
-        carouselIndex = index;
+        
+        // Wrap index around total products array
+        carouselIndex = (index + products.length) % products.length;
         const item = products[carouselIndex];
 
         contentWrapper.style.opacity = '0';
@@ -89,8 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             } 
 
-            // Sync dots - highlights the active dot out of the 8 visible dots
-            const activeDotIndex = carouselIndex % Math.min(products.length, 8);
+            // Calculate active dot index (0 to 7) based on full carousel position
+            const visibleDotsCount = Math.min(products.length, MAX_DOTS);
+            const activeDotIndex = carouselIndex % visibleDotsCount;
+
             document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
                 if (idx === activeDotIndex) {
                     dot.style.width = '24px';
@@ -117,8 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (products.length > 0) {
                 dotsContainer.innerHTML = ''; 
                 
-                // ONLY RENDER A MAXIMUM OF 8 DOTS
-                products.slice(0, 8).forEach((_, idx) => {
+                // Dynamically render EXACTLY up to 8 dots
+                const visibleDotsCount = Math.min(products.length, MAX_DOTS);
+                
+                for (let idx = 0; idx < visibleDotsCount; idx++) {
                     const dot = document.createElement('button');
                     dot.className = 'carousel-dot';
                     dot.style.cssText = `
@@ -138,15 +145,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         dot.style.background = 'rgba(255, 255, 255, 0.2)';
                     }
                     
+                    // Clicking dot [i] jumps directly to item [i]
                     dot.addEventListener('click', () => updateCarousel(idx));
                     dotsContainer.appendChild(dot);
-                });
+                }
 
                 updateCarousel(0);
 
+                // Auto-advance through ALL products sequentially
                 setInterval(() => {
-                    let nextIndex = (carouselIndex + 1) % products.length;
-                    updateCarousel(nextIndex);
+                    updateCarousel(carouselIndex + 1);
                 }, 4500);
             }
         })
