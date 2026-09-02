@@ -45,8 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const descEl = document.getElementById('carousel-desc');
     const priceEl = document.getElementById('carousel-price');
     const dotsContainer = document.getElementById('carousel-dots');
-    
-    // Target the view button to restore its clickable state
     const viewBtn = document.querySelector('.carousel-tile button');
 
     if (!contentWrapper || !dotsContainer) return;
@@ -56,13 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
         carouselIndex = index;
         const item = products[carouselIndex];
 
-        // 1. Shift node layers into transient animation space
         contentWrapper.style.opacity = '0';
         contentWrapper.style.transform = 'translateX(-16px) scale(0.98)';
 
-        // 2. Intercept data layer, re-hydrate nodes, restore layout state
         setTimeout(() => {
-            // Safely alter image references without triggering connection blocks
             if (item.image) {
                 imgEl.src = item.image;
             } else {
@@ -72,16 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
             imgEl.alt = item.name || "Product Showcase";
             categoryEl.textContent = item.category || "Trending Now";
             titleEl.textContent = item.name || "Premium Product";
-            descEl.textContent ="Explore this exclusive item available now on Shopsphere.";
+            descEl.textContent = "Explore this exclusive item available now on Shopsphere.";
             
-            // Format currency strings smoothly
             if (item.price) {
                 priceEl.textContent = typeof item.price === 'number' ? `KES ${item.price}` : item.price;
             } else {
                 priceEl.textContent = "";
             }
 
-            // Unlock and style the button once data connects completely
             if (viewBtn) {
                 viewBtn.removeAttribute('disabled');
                 viewBtn.style.cursor = 'pointer';
@@ -96,21 +89,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             } 
 
-            // Sync visual active indices across dot elements array
-document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
-    // Map index using modulo 8 so dot indicators cycle cleanly when items > 8
-    const activeDotIndex = carouselIndex % Math.min(products.length, 8);
+            // Sync dots - highlights the active dot out of the 8 visible dots
+            const activeDotIndex = carouselIndex % Math.min(products.length, 8);
+            document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+                if (idx === activeDotIndex) {
+                    dot.style.width = '24px';
+                    dot.style.background = 'var(--accent)';
+                } else {
+                    dot.style.width = '8px';
+                    dot.style.background = 'rgba(255, 255, 255, 0.2)';
+                }
+            });
 
-    if (idx === activeDotIndex) {
-        dot.style.width = '24px';
-        dot.style.background = 'var(--accent)';
-    } else {
-        dot.style.width = '8px';
-        dot.style.background = 'rgba(255, 255, 255, 0.2)';
-    }
-});
-
-            // Return presentation layers back to normal view space
             contentWrapper.style.opacity = '1';
             contentWrapper.style.transform = 'translateX(0) scale(1)';
         }, 300);
@@ -122,41 +112,38 @@ document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
             return res.json();
         })
         .then(data => {
-            // Handle both object-array mappings or direct arrays safely
             products = Array.isArray(data) ? data : (data.products || []);
             
             if (products.length > 0) {
-                dotsContainer.innerHTML = ''; // Clear fallback states
+                dotsContainer.innerHTML = ''; 
                 
-                // Dynamically build dot interface triggers 
-                // AFTER: Cap dot generation at 8 items
-products.slice(0, 8).forEach((_, idx) => {
-    const dot = document.createElement('button');
-    dot.className = 'carousel-dot';
-    dot.style.cssText = `
-        height: 8px;
-        border-radius: 9999px;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    `;
-    
-    if (idx === 0) {
-        dot.style.width = '24px';
-        dot.style.background = 'var(--accent)';
-    } else {
-        dot.style.width = '8px';
-        dot.style.background = 'rgba(255, 255, 255, 0.2)';
-    }
-    
-    dot.addEventListener('click', () => updateCarousel(idx));
-    dotsContainer.appendChild(dot);
-});
+                // ONLY RENDER A MAXIMUM OF 8 DOTS
+                products.slice(0, 8).forEach((_, idx) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot';
+                    dot.style.cssText = `
+                        height: 8px;
+                        border-radius: 9999px;
+                        border: none;
+                        outline: none;
+                        cursor: pointer;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    `;
+                    
+                    if (idx === 0) {
+                        dot.style.width = '24px';
+                        dot.style.background = 'var(--accent)';
+                    } else {
+                        dot.style.width = '8px';
+                        dot.style.background = 'rgba(255, 255, 255, 0.2)';
+                    }
+                    
+                    dot.addEventListener('click', () => updateCarousel(idx));
+                    dotsContainer.appendChild(dot);
+                });
 
                 updateCarousel(0);
 
-                // Auto-cycle rotation loop assignment
                 setInterval(() => {
                     let nextIndex = (carouselIndex + 1) % products.length;
                     updateCarousel(nextIndex);
