@@ -4,199 +4,245 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopSphere | Next-Gen Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030712;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --accent: #22c55e;
-            --text-main: #f9fafb;
-            --text-dim: #9ca3af;
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-main: #0b0f19;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --accent: #ff4d2d;
+            --accent-green: #22c55e;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
-        /* ANIMATIONS */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes orbit {
-            from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
-        }
-
-        @keyframes loading {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
-        }
-
-        * { 
-            box-sizing: border-box; 
-            transition: background-color 0.3s ease, opacity 0.3s ease, border-color 0.3s ease; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
         }
 
         body {
-            margin: 0;
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 0% 100%, #1e1b4b, #030712);
-            color: var(--text-main);
-            padding: 0 20px 60px;
-            overflow-x: hidden;
-            width: 100%;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding-bottom: 60px;
         }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; font-family: inherit; }
 
         /* PRELOADER */
         #preloader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
+            background: var(--bg-main);
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
         }
-        .loader-content img { height: 100px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--accent)); }
+        .loader-content img { height: 80px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--accent)); }
         .loader-bar { width: 120px; height: 3px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; border-radius: 2px; margin: 0 auto; }
         .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--accent); animation: loading 1.5s infinite; }
-        .preloader-hidden { opacity: 0; visibility: hidden; }
+        .preloader-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        @keyframes loading { 0% { left: -100%; } 100% { left: 100%; } }
 
-        /* HEADER */
+        /* TOP ANNOUNCEMENT BAR */
+        .top-bar {
+            background: #111827;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            text-align: center;
+            display: flex; justify-content: center; gap: 20px;
+        }
+        .top-bar span strong { color: var(--accent); }
+
+        /* HEADER / NAVBAR */
         header.navbar {
-            position: sticky; top: 10px;
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 12px 25px;
+            position: sticky; top: 0;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
             display: flex; justify-content: space-between; align-items: center;
-            margin: 10px auto 40px; z-index: 1000;
-            max-width: 1200px;
-            width: 100%;
+            z-index: 1000;
         }
 
-        .logo { display: flex; align-items: center; gap: 15px; }
-        .logo img { height: 35px; border-radius: 8px; }
-        .logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -1px; margin: 0; color: white; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 32px; border-radius: 6px; }
+        .logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: white; }
 
-        /* RE-ENGINEERED COMPONENT ACCENT FOR BADGES */
+        .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+        .nav-links a:hover { color: white; }
+
+        .nav-actions { display: flex; align-items: center; gap: 16px; }
+        .global-theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px; border-radius: var(--radius-sm);
+        }
         .nav-btn {
-            background: white; color: #000;
-            padding: 8px 18px; border-radius: 12px;
-            text-decoration: none; font-weight: 700; font-size: 14px;
-            position: relative; display: flex; align-items: center; gap: 6px;
+            background: white; color: black;
+            padding: 8px 16px; border-radius: var(--radius-md);
+            font-weight: 700; font-size: 13px; position: relative;
+            display: flex; align-items: center; gap: 6px;
         }
-
         #cart-badge {
-            position: absolute; top: -8px; right: -8px;
-            background: #ef4444; color: white; font-size: 11px;
-            font-weight: 800; width: 20px; height: 20px;
+            position: absolute; top: -6px; right: -6px;
+            background: var(--accent); color: white; font-size: 10px;
+            font-weight: 800; width: 18px; height: 18px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--bg); transform: scale(0);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .badge-pop { transform: scale(1) !important; }
 
-        /* BENTO CONTAINER */
-        .container {
-            max-width: 1200px;
-            margin: auto;
+        /* LAYOUT CONTAINER */
+        .wrapper { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+        /* HERO SECTION */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 60px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-text h2 { font-size: clamp(32px, 4vw, 54px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+        .hero-text p { color: var(--text-secondary); font-size: 16px; margin-bottom: 28px; max-width: 480px; }
+        .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-primary { background: var(--accent); color: white; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 700; }
+        .btn-secondary { background: rgba(255,255,255,0.08); color: white; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; border: 1px solid var(--border-color); }
+        .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
+
+        .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; }
+        .hero-main-img { max-width: 100%; height: auto; max-height: 380px; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5)); }
+
+        /* VALUE PROPOSITIONS BAR */
+        .features-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 40px;
         }
+        .feature-item { display: flex; align-items: center; gap: 14px; font-size: 13px; }
+        .feature-icon { font-size: 20px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: var(--radius-md); }
+        .feature-title { font-weight: 700; color: white; }
+        .feature-desc { color: var(--text-secondary); }
 
-        .bento-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            padding: 25px;
+        /* SECTION TITLES */
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+        .section-title { font-size: 22px; font-weight: 800; }
+        .section-subtitle { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+        /* CATEGORIES GRID */
+        .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 50px; }
+        .category-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px 10px;
+            text-align: center;
+        }
+        .category-card:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+        .category-icon { font-size: 28px; margin-bottom: 8px; }
+        .category-name { font-size: 13px; font-weight: 600; color: white; }
+
+        /* CAROUSEL / TRENDING SHOWCASE */
+        .carousel-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 28px;
-            opacity: 0;
-            animation: fadeInUp 0.6s forwards;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            padding: 30px;
+            margin-bottom: 50px;
         }
-
-        /* DESKTOP SPANS */
-        .hero-tile { grid-column: span 3; grid-row: span 2; border: 1px solid rgba(34, 197, 94, 0.2); }
-        .action-tile { grid-column: span 1; grid-row: span 2; gap: 12px; }
-        .carousel-tile { grid-column: span 4; padding: 25px; }
-        .info-tile { grid-column: span 2; background: #111827; }
-        .loc-tile { grid-column: span 2; }
-        .full-width { grid-column: span 4; }
-
-        /* HERO TYPOGRAPHY */
-        .hero-tile h2 { font-size: clamp(28px, 4vw, 48px); line-height: 1.1; margin: 0 0 10px 0; font-weight: 800; }
-        .hero-tile p { color: var(--text-dim); font-size: 16px; margin: 0; }
-
-        /* ACTIONS */
-        .btn-modern {
-            background: white; color: black; padding: 14px;
-            border-radius: 16px; text-decoration: none; text-align: center;
-            font-weight: 700; font-size: 15px;
+        .carousel-split { display: grid; grid-template-columns: 280px 1fr; gap: 30px; align-items: center; }
+        .carousel-img-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            aspect-ratio: 1;
+            display: flex; justify-content: center; align-items: center;
         }
-        .btn-green { background: var(--accent) !important; }
-
-        /* DATA ELEMENTS */
-        h3 { color: var(--accent); font-size: 18px; font-weight: 800; margin-top: 0; text-transform: uppercase; }
-        p { line-height: 1.6; color: var(--text-dim); font-size: 15px; }
-        strong { color: white; }
-        .loc-list { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 1px; line-height: 1.8; }
-
-        /* CAROUSEL STRUCTURAL CONTAINER */
-        .carousel-split { display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: center; width: 100%; }
-        .carousel-img-box { background: rgba(3, 7, 18, 0.4); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
         .carousel-img-box img { max-width: 100%; max-height: 220px; object-fit: contain; }
+        .carousel-info { display: flex; flex-direction: column; gap: 12px; }
 
-        /* CHILD ROW TRACKS */
-        .nested-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
-        .step-card { background: var(--card-bg); border: 1px solid var(--glass-border); padding: 25px; border-radius: 24px; text-align: center; }
-        .step-num { width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: 800; }
+        /* WORKFLOW / STEPS GRID */
+        .nested-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        .step-num {
+            width: 28px; height: 28px;
+            background: var(--accent-green); color: black;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px; font-weight: 800; font-size: 12px;
+        }
+
+        /* INFO & COVERAGE CARDS */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+        }
+        .info-card h3 { color: var(--accent-green); font-size: 16px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .loc-list { font-size: 13px; color: var(--accent-green); font-weight: 700; letter-spacing: 1px; line-height: 1.8; }
+
+        /* FOOTER LINKS GRID */
+        .footer-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .footer-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center; font-weight: 600; font-size: 14px; color: white;
+        }
+        .footer-btn:hover { border-color: var(--accent); }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 900px) {
+            .hero-section { grid-template-columns: 1fr; padding: 30px; text-align: center; }
+            .hero-text p { margin: 0 auto 24px auto; }
+            .hero-cta { justify-content: center; }
+            .features-bar { grid-template-columns: repeat(2, 1fr); }
+            .category-grid { grid-template-columns: repeat(3, 1fr); }
+            .carousel-split { grid-template-columns: 1fr; }
+            .carousel-img-box { max-width: 220px; margin: 0 auto; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
 
         @media (max-width: 600px) {
-            body { padding: 0 12px 40px; }
-            header.navbar { margin: 10px auto 24px; padding: 12px 16px; }
-            
-            .container { 
-                grid-template-columns: 1fr; 
-                gap: 16px;
-            }
-
-            .hero-tile, .action-tile, .carousel-tile, .info-tile, .loc-tile, .full-width { 
-                grid-column: span 1 !important; 
-                grid-row: span 1 !important;
-            }
-
-            .carousel-split { 
-                grid-template-columns: 1fr; 
-                gap: 16px; 
-                text-align: center; 
-            }
-            .carousel-img-box { max-width: 200px; margin: 0 auto; }
-
-            .nested-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 12px; 
-            }
-            .step-card { padding: 16px 12px; }
+            header.navbar { padding: 12px 16px; }
+            .nav-links { display: none; }
+            .features-bar { grid-template-columns: 1fr; }
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .nested-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-links { grid-template-columns: repeat(2, 1fr); }
         }
-        .global-theme-toggle {
-        background: var(--card-bg, rgba(17, 24, 39, 0.7));
-        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
-        color: var(--text-main, #fff);
-        cursor: pointer;
-        padding: 10px;
-        border-radius: 14px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s;
-    }
-    .global-theme-toggle:hover { transform: scale(1.05); }
-    .theme-icon-slot { font-size: 16px; line-height: 1; }
     </style>
 </head>
 <body>
@@ -208,78 +254,146 @@
         </div>
     </div>
 
+    <div class="top-bar">
+        <span>🚚 Free Doorstep Delivery Over <strong>KES 5,000</strong></span>
+        <span>🛡️ Secure Escrow Checkout</span>
+    </div>
+
     <header class="navbar">
         <div class="logo">
             <img src="logo3.1.png" alt="Logo">
             <h1>ShopSphere</h1>
         </div>
-         <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
-    <span class="theme-icon-slot">☀️</span>
-</button>
-        <nav>
+        <nav class="nav-links">
+            <a href="products.html">Products</a>
+            <a href="CustomerProduct.html">Marketplace</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="global-theme-toggle" id="theme-switch-btn" onclick="toggleGlobalTheme()" title="Switch Theme">
+                <span class="theme-icon-slot">☀️</span>
+            </button>
             <a class="nav-btn" href="cart.html">
                 🛒 Cart <span id="cart-badge">0</span>
             </a>
-        </nav>
+        </div>
     </header>
 
-    <main class="container">
-        <section class="bento-item hero-tile">
-            <h2>Discover.<br>Shop. Enjoy.</h2>
-            <p>Your premium marketplace. Verified sellers, secure payments, and lightning fast delivery.</p>
+    <main class="wrapper">
+        <!-- HERO BANNER -->
+        <section class="hero-section">
+            <div class="hero-text">
+                <h2>Discover Products<br>You'll Love</h2>
+                <p>Shop verified seller items, enjoy 9% escrow deposits, and experience fast regional delivery.</p>
+                <div class="hero-cta">
+                    <a href="products.html" class="btn-primary">Official Shop</a>
+                    <a href="CustomerProduct.html" class="btn-secondary">Customer Market</a>
+                    <a href="sellerrequest.html" class="btn-secondary">Start Selling</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="logo3.1.png" class="hero-main-img" alt="ShopSphere Showcase">
+            </div>
         </section>
 
-        <section class="bento-item action-tile">
-            <a href="products.html" class="btn-modern btn-green">Official Shop</a>
-            <a href="CustomerProduct.html" class="btn-modern">Customer Market</a>
-            <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
+        <!-- VALUE PROPOSITIONS -->
+        <section class="features-bar">
+            <div class="feature-item">
+                <div class="feature-icon">🚚</div>
+                <div>
+                    <div class="feature-title">Fast Shipping</div>
+                    <div class="feature-desc">Same-day regional dispatch</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <div>
+                    <div class="feature-title">Escrow Protection</div>
+                    <div class="feature-desc">Pay balance on delivery</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div>
+                    <div class="feature-title">Verified Sellers</div>
+                    <div class="feature-desc">Strict vendor quality checks</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💬</div>
+                <div>
+                    <div class="feature-title">24/7 Support</div>
+                    <div class="feature-desc">Instant WhatsApp resolution</div>
+                </div>
+            </div>
         </section>
 
-        <section class="bento-item carousel-tile">
+        <!-- CATEGORIES -->
+        <div class="section-header">
+            <div>
+                <h3 class="section-title">Shop by Categories</h3>
+                <p class="section-subtitle">Find exact items from our catalog collections</p>
+            </div>
+        </div>
+        <section class="category-grid">
+            <div class="category-card"><div class="category-icon">📱</div><div class="category-name">Phones</div></div>
+            <div class="category-card"><div class="category-icon">🎧</div><div class="category-name">Audio</div></div>
+            <div class="category-card"><div class="category-icon">💻</div><div class="category-name">Laptops</div></div>
+            <div class="category-card"><div class="category-icon">👟</div><div class="category-name">Footwear</div></div>
+            <div class="category-card"><div class="category-icon">⌚</div><div class="category-name">Watches</div></div>
+            <div class="category-card"><div class="category-icon">🎮</div><div class="category-name">Gaming</div></div>
+        </section>
+
+        <!-- TRENDING CAROUSEL -->
+        <section class="carousel-section">
             <div class="carousel-split">
-                 <div class="carousel-img-box">
+                <div class="carousel-img-box">
                     <img id="carousel-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><rect width='100%' height='100%' fill='%23111827'/></svg>" alt="Product" />
                 </div>
-               
-                
-                <div id="carousel-content" style="display: flex; flex-direction: column; gap: 10px;">
+                <div id="carousel-content" class="carousel-info">
                     <span id="carousel-category" style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;">Trending Now</span>
                     <h2 id="carousel-title" style="font-size: 24px; font-weight: 800; margin: 0; color: white;">Loading favorite products...</h2>
-                    <p id="carousel-desc" style="margin: 0; font-size: 14px; color: var(--text-dim);"></p>
-                    <span id="carousel-price" style="font-size: 22px; font-weight: 800; color: var(--accent);"></span>
-                    <button style="width: fit-content; padding: 10px 24px; background: white; color: black; border: none; font-weight: 700; border-radius: 12px; margin-top: 5px; cursor: pointer;">View Details</button>
-                <div id="carousel-dots" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; max-width: 100%;"></div>
+                    <p id="carousel-desc" style="margin: 0; font-size: 14px; color: var(--text-secondary);"></p>
+                    <span id="carousel-price" style="font-size: 22px; font-weight: 800; color: var(--accent-green);"></span>
+                    <button style="width: fit-content; padding: 10px 24px; background: white; color: black; border: none; font-weight: 700; border-radius: var(--radius-md); margin-top: 5px; cursor: pointer;">View Details</button>
+                    <div id="carousel-dots" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; max-width: 100%;"></div>
                 </div>
             </div>
         </section>
 
-        <section class="bento-item info-tile">
-            <h3>💳 Secure Shopping</h3>
-            <p>Pay <strong>9%</strong> commitment fee to confirm your order, and <strong>91%</strong> balance on delivery.</p>
-        </section>
-
-        <section class="bento-item loc-tile">
-            <h3>📍 Coverage Areas</h3>
-            <div class="loc-list">
-                MERU CBD • MAKUTANO • NKUBU • IGOJI • CHUKA • EMBU • RUIRU • NAIROBI
+        <!-- PAYMENT & COVERAGE INFO -->
+        <section class="info-grid">
+            <div class="info-card">
+                <h3>💳 Secure Escrow Payment</h3>
+                <p style="color: var(--text-secondary); font-size: 15px;">Pay <strong style="color: white;">9%</strong> commitment fee to confirm your order, and <strong style="color: white;">91%</strong> balance on delivery.</p>
+            </div>
+            <div class="info-card">
+                <h3>📍 Regional Coverage Areas</h3>
+                <div class="loc-list">
+                    MERU CBD • MAKUTANO • NKUBU • IGOJI • CHUKA • EMBU • RUIRU • NAIROBI
+                </div>
             </div>
         </section>
 
-        <div class="full-width nested-grid">
+        <!-- WORKFLOW STEPS -->
+        <section class="nested-grid">
             <div class="step-card"><div class="step-num">1</div><p style="margin:0; font-size:14px; font-weight:600;">Pick Item</p></div>
             <div class="step-card"><div class="step-num">2</div><p style="margin:0; font-size:14px; font-weight:600;">Add to Cart</p></div>
             <div class="step-card"><div class="step-num">3</div><p style="margin:0; font-size:14px; font-weight:600;">Review</p></div>
             <div class="step-card"><div class="step-num">4</div><p style="margin:0; font-size:14px; font-weight:600;">WhatsApp</p></div>
-        </div>
+        </section>
 
-        <div class="full-width nested-grid">
-            <a href="review.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: var(--accent); font-weight: 700;">Reviews →</a>
-            <a href="about.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: white; font-weight: 600;">About</a>
-            <a href="contact.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: white; font-weight: 600;">Contact</a>
-            <a href="terms.html" class="bento-item" style="padding: 20px; text-align: center; text-decoration: none; color: white; font-weight: 600;">Terms</a>
-        </div>
+        <!-- NAVIGATION LINKS -->
+        <section class="footer-links">
+            <a href="review.html" class="footer-btn" style="color: var(--accent-green);">Reviews →</a>
+            <a href="about.html" class="footer-btn">About</a>
+            <a href="contact.html" class="footer-btn">Contact</a>
+            <a href="terms.html" class="footer-btn">Terms</a>
+        </section>
     </main>
-<script src="home.js"></script>
+
+    <script src="home.js"></script>
     <script src="shopbuddy.js"></script>
     <script src="shop-bot.js"></script>
     <script src="theme-manager.js"></script>
@@ -290,10 +404,7 @@
                 const badge = document.getElementById("cart-badge");
                 if (!badge) return;
 
-                // Grab current items from your localStorage array
                 const cart = JSON.parse(localStorage.getItem("cart")) || [];
-                
-                // Calculate total quantity across items
                 const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
                 if (totalItems > 0) {
@@ -307,13 +418,8 @@
                 }
             };
 
-            // Run instantly on layout generation
             updateHomeBadge();
-
-            // Intercept storage updates if items are changed in another tab or window background process
             window.addEventListener("storage", updateHomeBadge);
-            
-            // Listen for custom add-to-cart events if your shopbuddy.js triggers them
             window.addEventListener("cartUpdated", updateHomeBadge);
         });
     </script>
