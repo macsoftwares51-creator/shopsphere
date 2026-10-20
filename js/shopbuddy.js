@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const buddy = document.createElement("img");
-  buddy.src = "m.png";
+  buddy.src = "assets/m.png";
   buddy.id = "shopBuddy";
 
   // ==========================================

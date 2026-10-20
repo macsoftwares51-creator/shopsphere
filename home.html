@@ -244,11 +244,25 @@
 
         /* DESKTOP SPANS */
 
-        .hero-tile { grid-column: span 3; grid-row: span 2; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .hero-showcase { grid-column: span 4; min-height: 470px; padding: 34px; border-color: rgba(34, 197, 94, 0.25); display: grid; grid-template-columns: minmax(250px, .8fr) minmax(420px, 1.4fr); gap: 20px; overflow: hidden; }
 
-        .action-tile { grid-column: span 1; grid-row: span 2; gap: 12px; }
-
-        .carousel-tile { grid-column: span 4; padding: 25px; }
+        .hero-copy { display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 3; }
+        .hero-copy h2 { font-size: clamp(36px, 5vw, 68px); line-height: .98; margin: 0 0 18px; font-weight: 800; letter-spacing: -2px; }
+        .hero-copy p { max-width: 390px; margin: 0 0 24px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .orbit-stage { min-height: 400px; position: relative; display: grid; place-items: center; isolation: isolate; overflow: hidden; }
+        .orbit-stage::before, .orbit-stage::after { content: ""; position: absolute; border: 1px solid rgba(34, 197, 94, .16); border-radius: 50%; transform: rotate(-12deg); pointer-events: none; }
+        .orbit-stage::before { width: min(460px, 90%); aspect-ratio: 1; }
+        .orbit-stage::after { width: min(620px, 125%); aspect-ratio: 1; border-color: rgba(255,255,255,.08); }
+        .orbit-logo { width: clamp(130px, 18vw, 220px); height: clamp(130px, 18vw, 220px); object-fit: contain; border-radius: 50%; z-index: 2; filter: drop-shadow(0 18px 35px rgba(0,0,0,.42)); animation: logoFloat 5s ease-in-out infinite; }
+        .orbit-cards { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+        .orbit-card { position: absolute; width: 142px; min-height: 154px; padding: 10px; border: 1px solid rgba(255,255,255,.16); border-radius: 18px; background: rgba(15, 23, 42, .88); box-shadow: 0 18px 35px rgba(0,0,0,.35); cursor: pointer; color: white; text-align: left; transform: translate(-50%, -50%); will-change: left, top, transform, opacity; pointer-events: auto; transition: opacity .35s ease, border-color .2s ease, box-shadow .2s ease; }
+        .orbit-card:hover { transform: translate(-50%, -50%) scale(1.08) !important; border-color: var(--accent); box-shadow: 0 20px 45px rgba(34,197,94,.25); z-index: 8; }
+        .orbit-card img { width: 100%; height: 88px; object-fit: contain; border-radius: 12px; background: rgba(255,255,255,.06); }
+        .orbit-card strong { display: block; margin-top: 7px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .orbit-card span { display: block; color: var(--accent); font-size: 11px; font-weight: 800; margin-top: 3px; }
+        .orbit-empty { color: var(--text-dim); text-align: center; z-index: 5; }
+        @keyframes logoFloat { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
 
         .info-tile { grid-column: span 2; background: #111827; }
 
@@ -256,15 +270,52 @@
 
         .full-width { grid-column: span 4; }
 
+        .storefront-section { grid-column: span 4; padding: 10px 0; }
+        .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 14px 0 18px; }
+        .section-heading h2 { margin: 0; font-size: clamp(20px, 3vw, 28px); letter-spacing: -.7px; }
+        .section-heading p { margin: 5px 0 0; font-size: 13px; }
+        .section-link { color: var(--accent); text-decoration: none; font-size: 12px; font-weight: 800; white-space: nowrap; }
+        .category-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+        .category-card { min-height: 132px; position: relative; overflow: hidden; display: flex; align-items: end; padding: 14px; color: white; text-decoration: none; border: 1px solid var(--glass-border); border-radius: 18px; background: #111827 center/cover no-repeat; isolation: isolate; }
+        .category-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(3,7,18,.92), rgba(3,7,18,.08)); z-index: -1; }
+        .category-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+        .category-card strong { font-size: 12px; text-transform: capitalize; }
+        .category-card small { display: block; color: #cbd5e1; font-size: 10px; margin-top: 3px; }
+        .product-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+        .home-product-card { min-width: 0; overflow: hidden; position: relative; background: rgba(17,24,39,.78); border: 1px solid var(--glass-border); border-radius: 18px; padding: 10px; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+        .home-product-card:hover { transform: translateY(-5px); border-color: rgba(34,197,94,.7); box-shadow: 0 18px 35px rgba(0,0,0,.28); }
+        .home-product-card a { color: inherit; text-decoration: none; }
+        .home-product-image { width: 100%; height: 150px; object-fit: contain; border-radius: 13px; background: rgba(255,255,255,.06); }
+        .home-product-card h3 { color: white; font-size: 13px; margin: 10px 2px 4px; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .home-product-meta { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+        .home-product-category { color: var(--text-dim); font-size: 10px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .home-product-price { color: var(--accent); font-size: 13px; font-weight: 800; white-space: nowrap; }
+        .home-product-badge { position: absolute; left: 16px; top: 16px; padding: 4px 7px; border-radius: 6px; color: #052e16; background: var(--accent); font-size: 9px; font-weight: 800; }
+        .promo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .promo-card { min-height: 150px; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; position: relative; }
+        .promo-card h2 { max-width: 240px; margin: 0 0 7px; font-size: 25px; line-height: 1; }
+        .promo-card p { max-width: 250px; margin: 0 0 15px; color: rgba(255,255,255,.75); font-size: 12px; }
+        .promo-card a { width: fit-content; padding: 9px 13px; border-radius: 9px; color: #000; background: white; text-decoration: none; font-size: 11px; font-weight: 800; }
+        .promo-sale { background: linear-gradient(120deg, #f97316, #ef4444); }
+        .promo-new { background: linear-gradient(120deg, #111827, #334155); }
+        .service-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 20px; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+        .service-item { display: flex; gap: 10px; align-items: center; }
+        .service-icon { width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 10px; color: var(--accent); background: rgba(34,197,94,.12); }
+        .service-item strong { display: block; font-size: 12px; }
+        .service-item span { display: block; color: var(--text-dim); font-size: 10px; margin-top: 3px; }
+        .store-empty { grid-column: 1 / -1; color: var(--text-dim); padding: 18px; border: 1px dashed var(--glass-border); border-radius: 14px; text-align: center; }
+        @keyframes skeletonShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-shimmer { background: linear-gradient(100deg, rgba(255,255,255,.06) 30%, rgba(255,255,255,.14) 50%, rgba(255,255,255,.06) 70%); background-size: 200% 100%; animation: skeletonShimmer 1.4s ease-in-out infinite; }
+        .skeleton-category { min-height: 132px; border-radius: 18px; border: 1px solid var(--glass-border); padding: 14px; display: flex; align-items: end; }
+        .skeleton-category::after { content: ""; width: 70%; height: 12px; border-radius: 6px; background: rgba(255,255,255,.11); }
+        .skeleton-product { height: 224px; padding: 10px; border: 1px solid var(--glass-border); border-radius: 18px; }
+        .skeleton-product::before { content: ""; display: block; height: 150px; border-radius: 13px; background: rgba(255,255,255,.08); }
+        .skeleton-product::after { content: ""; display: block; width: 72%; height: 12px; margin: 15px 2px 0; border-radius: 6px; background: rgba(255,255,255,.11); }
+        .legacy-info, .legacy-steps { display: none !important; }
+
 
 
         /* HERO TYPOGRAPHY */
-
-        .hero-tile h2 { font-size: clamp(28px, 4vw, 48px); line-height: 1.1; margin: 0 0 10px 0; font-weight: 800; }
-
-        .hero-tile p { color: var(--text-dim); font-size: 16px; margin: 0; }
-
-
 
         /* ACTIONS */
 
@@ -291,16 +342,6 @@
         strong { color: white; }
 
         .loc-list { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 1px; line-height: 1.8; }
-
-
-
-        /* CAROUSEL STRUCTURAL CONTAINER */
-
-        .carousel-split { display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: center; width: 100%; }
-
-        .carousel-img-box { background: rgba(3, 7, 18, 0.4); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
-
-        .carousel-img-box img { max-width: 100%; max-height: 220px; object-fit: contain; }
 
 
 
@@ -332,7 +373,7 @@
 
 
 
-            .hero-tile, .action-tile, .carousel-tile, .info-tile, .loc-tile, .full-width { 
+            .hero-showcase, .storefront-section, .info-tile, .loc-tile, .full-width {
 
                 grid-column: span 1 !important; 
 
@@ -342,19 +383,22 @@
 
 
 
-            .carousel-split { 
-
-                grid-template-columns: 1fr; 
-
-                gap: 16px; 
-
-                text-align: center; 
-
+            .hero-showcase {
+                grid-template-columns: 1fr;
+                padding: 24px 18px;
             }
 
-            .carousel-img-box { max-width: 200px; margin: 0 auto; }
+            .hero-copy { text-align: center; align-items: center; }
+            .hero-actions { justify-content: center; }
+            .orbit-stage { min-height: 340px; }
+            .orbit-card { width: 112px; min-height: 128px; padding: 7px; }
+            .orbit-card img { height: 68px; }
 
-
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .home-product-image { height: 130px; }
+            .promo-grid, .service-strip { grid-template-columns: 1fr; }
+            .service-strip { padding: 16px; }
 
             .nested-grid { 
 
@@ -408,7 +452,7 @@
 
         <div class="loader-content">
 
-            <img src="logo3.1.png" alt="ShopSphere">
+            <img src="assets/logo3.1.png" alt="ShopSphere">
 
             <div class="loader-bar"></div>
 
@@ -422,7 +466,7 @@
 
         <div class="logo">
 
-            <img src="logo3.1.png" alt="Logo">
+            <img src="assets/logo3.1.png" alt="Logo">
 
             <h1>ShopSphere</h1>
 
@@ -450,65 +494,98 @@
 
     <main class="container">
 
-        <section class="bento-item hero-tile">
+        <section class="bento-item hero-showcase">
+
+            <div class="hero-copy">
+
+                <span style="font-size: 12px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px;">Trending now</span>
 
             <h2>Discover.<br>Shop. Enjoy.</h2>
 
             <p>Your premium marketplace. Verified sellers, secure payments, and lightning fast delivery.</p>
 
-        </section>
-
-
-
-        <section class="bento-item action-tile">
-
-            <a href="products.html" class="btn-modern btn-green">Official Shop</a>
-
-            <a href="CustomerProduct.html" class="btn-modern">Customer Market</a>
-
-            <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
-
-        </section>
-
-
-
-        <section class="bento-item carousel-tile">
-
-            <div class="carousel-split">
-
-                 <div class="carousel-img-box">
-
-                    <img id="carousel-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><rect width='100%' height='100%' fill='%23111827'/></svg>" alt="Product" />
-
+                <div class="hero-actions">
+                    <a href="products.html" class="btn-modern btn-green">Official Shop</a>
+                    <a href="CustomerProduct.html" class="btn-modern">Customer Market</a>
+                    <a href="sellerrequest.html" class="btn-modern">Start Selling</a>
                 </div>
 
-               
+            </div>
 
-                
-
-                <div id="carousel-content" style="display: flex; flex-direction: column; gap: 10px;">
-
-                    <span id="carousel-category" style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;">Trending Now</span>
-
-                    <h2 id="carousel-title" style="font-size: 24px; font-weight: 800; margin: 0; color: white;">Loading favorite products...</h2>
-
-                    <p id="carousel-desc" style="margin: 0; font-size: 14px; color: var(--text-dim);"></p>
-
-                    <span id="carousel-price" style="font-size: 22px; font-weight: 800; color: var(--accent);"></span>
-
-                    <button style="width: fit-content; padding: 10px 24px; background: white; color: black; border: none; font-weight: 700; border-radius: 12px; margin-top: 5px; cursor: pointer;">View Details</button>
-
-                <div id="carousel-dots" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; max-width: 100%;"></div>
-
-                </div>
-
+            <div class="orbit-stage" aria-label="Featured products">
+                <img class="orbit-logo" src="assets/logo3.1.png" alt="ShopSphere" />
+                <div id="orbit-cards" class="orbit-cards"></div>
             </div>
 
         </section>
 
 
+        <section class="storefront-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Shop by category</h2>
+                    <p>Browse the collections our customers love.</p>
+                </div>
+                <a class="section-link" href="products.html">View all categories →</a>
+            </div>
+            <div id="homeCategories" class="category-grid">
+                <div class="skeleton-category skeleton-shimmer"></div><div class="skeleton-category skeleton-shimmer"></div><div class="skeleton-category skeleton-shimmer"></div>
+                <div class="skeleton-category skeleton-shimmer"></div><div class="skeleton-category skeleton-shimmer"></div><div class="skeleton-category skeleton-shimmer"></div>
+            </div>
+        </section>
 
-        <section class="bento-item info-tile">
+
+        <section class="storefront-section">
+            <div class="section-heading">
+                <div>
+                    <h2>New arrivals</h2>
+                    <p>Fresh finds added to the ShopSphere marketplace.</p>
+                </div>
+                <a class="section-link" href="products.html">View all products →</a>
+            </div>
+            <div id="newArrivals" class="product-grid">
+                <div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div>
+            </div>
+        </section>
+
+
+        <section class="storefront-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Best sellers</h2>
+                    <p>Popular products picked by the community.</p>
+                </div>
+                <a class="section-link" href="products.html">Shop best sellers →</a>
+            </div>
+            <div id="bestSellers" class="product-grid">
+                <div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div><div class="skeleton-product skeleton-shimmer"></div>
+            </div>
+        </section>
+
+
+        <section class="storefront-section promo-grid">
+            <article class="promo-card promo-sale">
+                <h2>Smart shopping, better value.</h2>
+                <p>Pay a 9% commitment fee and settle the balance safely on delivery.</p>
+                <a href="products.html">Shop deals →</a>
+            </article>
+            <article class="promo-card promo-new">
+                <h2>Discover your next favorite.</h2>
+                <p>Explore verified sellers and customer marketplace finds in one place.</p>
+                <a href="CustomerProduct.html">Explore collection →</a>
+            </article>
+        </section>
+
+
+        <section class="storefront-section service-strip">
+            <div class="service-item"><div class="service-icon">🚚</div><div><strong>Fast delivery</strong><span>Reliable delivery across our coverage areas.</span></div></div>
+            <div class="service-item"><div class="service-icon">🔒</div><div><strong>Secure checkout</strong><span>Simple, transparent payment steps.</span></div></div>
+            <div class="service-item"><div class="service-icon">✓</div><div><strong>Verified sellers</strong><span>Products reviewed before they go live.</span></div></div>
+            <div class="service-item"><div class="service-icon">💬</div><div><strong>Real support</strong><span>Chat with ShopSphere whenever you need help.</span></div></div>
+        </section>
+
+
+        <section class="bento-item legacy-info info-tile">
 
             <h3>💳 Secure Shopping</h3>
 
@@ -518,7 +595,7 @@
 
 
 
-        <section class="bento-item loc-tile">
+        <section class="bento-item legacy-info loc-tile">
 
             <h3>📍 Coverage Areas</h3>
 
@@ -532,7 +609,7 @@
 
 
 
-        <div class="full-width nested-grid">
+        <div class="full-width nested-grid legacy-steps">
 
             <div class="step-card"><div class="step-num">1</div><p style="margin:0; font-size:14px; font-weight:600;">Pick Item</p></div>
 
@@ -560,13 +637,13 @@
 
     </main>
 
-<script src="home.js"></script>
+<script src="js/home.js"></script>
 
-    <script src="shopbuddy.js"></script>
+    <script src="js/shopbuddy.js"></script>
 
-    <script src="shop-bot.js"></script>
+    <script src="js/shop-bot.js"></script>
 
-    <script src="theme-manager.js"></script>
+    <script src="js/theme-manager.js"></script>
 
 
 

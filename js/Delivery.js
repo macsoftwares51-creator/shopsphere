@@ -47,11 +47,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                 const itemName = item.name || item.title;
                 // Graceful check for different image key variants your schema might use
-                const itemImgSrc = item.image || item.img || item.productImage || "logo3.1.png";
+                const itemImgSrc = item.image || item.img || item.productImage || "assets/logo3.1.png";
 
                 // Build modern image rows dynamically
                 itemRow.innerHTML = `
-                    <img src="${itemImgSrc}" class="search-thumb" alt="" onerror="this.src='logo3.1.png'">
+                    <img src="${itemImgSrc}" class="search-thumb" alt="" onerror="this.src='assets/logo3.1.png'">
                     <div class="search-meta">
                         <span class="search-title">${itemName}</span>
                         <span class="search-price">KES ${item.price || '0'}</span>

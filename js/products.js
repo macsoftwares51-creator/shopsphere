@@ -6,7 +6,10 @@ fetch("https://shopsphere-backend-wr5o.onrender.com/products")
     .then(data => {
         allProducts = data;
         fillCategories(data);
-        render(data);
+        const requestedCategory = new URLSearchParams(window.location.search).get("category");
+        const categorySelect = document.getElementById("category");
+        if (requestedCategory && categorySelect) categorySelect.value = requestedCategory;
+        render(requestedCategory ? data.filter(p => p.category === requestedCategory) : data);
     })
     .catch(err => console.error("Error:", err));
 

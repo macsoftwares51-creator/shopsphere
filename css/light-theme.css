@@ -22,6 +22,79 @@ body {
     color: var(--text-main) !important;
 }
 
+/* Keep hardcoded dark-theme text readable after the light stylesheet is added. */
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6,
+body p,
+body label,
+body td,
+body th,
+body strong,
+body .logo h1,
+body .brand,
+body .nav-btn {
+    color: var(--text-main) !important;
+}
+
+body input,
+body select,
+body textarea {
+    color: var(--text-main) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(17, 24, 39, 0.18) !important;
+}
+
+body input::placeholder,
+body textarea::placeholder {
+    color: #6b7280 !important;
+    opacity: 1;
+}
+
+body .global-theme-toggle {
+    color: var(--text-main) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(17, 24, 39, 0.18) !important;
+}
+
+/* These components intentionally sit over dark imagery or a dark card. */
+body .orbit-card,
+body .orbit-card strong,
+body .orbit-card span,
+body .category-card,
+body .category-card span,
+body .category-card small {
+    color: #ffffff !important;
+}
+
+body .home-product-card h3,
+body .card h3 {
+    color: var(--text-main) !important;
+}
+
+body #cart-badge,
+body .home-product-badge,
+body .place-order-btn {
+    color: #ffffff !important;
+}
+
+body .card .add-btn,
+body .btn-gold {
+    color: #111827 !important;
+}
+
+body .nav-btn {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(17, 24, 39, 0.14) !important;
+}
+
+body .nav-btn:hover {
+    color: var(--accent) !important;
+}
+
 /* Force light styling for the Chatbot too if it's open */
 #ai-chat-widget {
     --bot-bg: rgba(255, 255, 255, 0.9);
@@ -98,7 +171,7 @@ a.view-details-btn,
     text-decoration: none;
 }
 .card h3{
-   color: black;
+   color: var(--text-main) !important;
 }
 .product-card a:hover, 
 .product-item a:hover,

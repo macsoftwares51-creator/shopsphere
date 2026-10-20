@@ -189,6 +189,23 @@
             border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .info-btn:hover { background: var(--accent); color: white; }
+
+        .category-manager {
+            background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px;
+            padding: 20px; margin-bottom: 30px;
+        }
+        .category-manager h2 { margin: 0 0 14px; font-size: 18px; }
+        .category-create { display: flex; gap: 10px; margin-bottom: 15px; }
+        .category-create input { margin: 0; }
+        .category-create button { width: auto; white-space: nowrap; }
+        .category-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .category-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; background: #1e293b; border: 1px solid var(--glass-border); color: white; font-size: 12px; }
+        .category-chip button { border: 0; background: transparent; color: var(--danger); cursor: pointer; font-weight: 800; padding: 0 2px; }
+        .inventory-tools { display: flex; gap: 10px; align-items: center; margin: -8px 0 18px; }
+        .inventory-tools select, .card select { width: 100%; padding: 9px; border-radius: 8px; background: #1e293b; border: 1px solid var(--glass-border); color: white; }
+        .inventory-tools select { max-width: 240px; }
+        .card .category-label { color: var(--text-dim); font-size: 11px; margin: 8px 0 3px; display: block; }
+        .empty-state { color: var(--text-dim); padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -223,6 +240,15 @@
         </a>
     </div>
 
+    <section class="category-manager">
+        <h2>Category Management</h2>
+        <div class="category-create">
+            <input id="newCategory" placeholder="New category name" maxlength="40" />
+            <button class="add-btn" id="createCategoryBtn" type="button">Create Category</button>
+        </div>
+        <div class="category-list" id="categoryList"><span class="empty-state">Loading categories...</span></div>
+    </section>
+
     <div class="dashboard-grid">
         <div class="form-section">
             <h2>Add New Product</h2>
@@ -242,6 +268,11 @@
 
         <div class="inventory-section">
             <h2>Live Inventory <span id="count" style="color: var(--accent);">0</span></h2>
+            <div class="inventory-tools">
+                <select id="categoryFilter" aria-label="Filter products by category">
+                    <option value="">All categories</option>
+                </select>
+            </div>
             <div class="products-grid" id="products"></div>
         </div>
     </div>
@@ -258,6 +289,6 @@
     </div>
 </div>
 
-<script src="add-product.js"></script>
+<script src="js/add-product.js"></script>
 </body>
 </html>

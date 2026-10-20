@@ -26,6 +26,7 @@ function toggleGlobalTheme() {
 
 function applyLightTheme(enable) {
     const iconSlot = document.querySelector("#theme-switch-btn .theme-icon-slot");
+    const switchButton = document.getElementById("theme-switch-btn");
     let lightLink = document.getElementById(LIGHT_STYLE_ID);
 
     if (enable) {
@@ -34,15 +35,23 @@ function applyLightTheme(enable) {
             lightLink = document.createElement("link");
             lightLink.id = LIGHT_STYLE_ID;
             lightLink.rel = "stylesheet";
-            lightLink.href = "light-theme.css"; // Path to your independent file
+            lightLink.href = "css/light-theme.css"; // Path to your independent file
             document.head.appendChild(lightLink);
         }
         if (iconSlot) iconSlot.textContent = "🌙";
+        if (switchButton) {
+            switchButton.title = "Switch to dark mode";
+            switchButton.setAttribute("aria-label", "Switch to dark mode");
+        }
     } else {
         // Remove the stylesheet reference completely to fall back to native dark CSS
         if (lightLink) {
             lightLink.remove();
         }
         if (iconSlot) iconSlot.textContent = "☀️";
+        if (switchButton) {
+            switchButton.title = "Switch to light mode";
+            switchButton.setAttribute("aria-label", "Switch to light mode");
+        }
     }
 }
